@@ -847,7 +847,7 @@ ending_player:-
     write(''), nl,
     write('"Ja żem już wystarczająco widzoł, to ty zabiłeś dziołchę Warszawiaku" - powiedział baca z obrzydzeniem w oczach'), nl,
     write('"Pan baca ma rację, nie ma jak wezwać organy ścigania, a ja nie będę tu siedział z mordercą" - dołączył się kacper'), nl,
-    write('"Nie próbuj uciekać" - odpowiedział baca chwytając nas za bark i wyrzucając cię na \e[1mdwór\e[0m'),
+    write('"Nie próbuj uciekać" - odpowiedział baca chwytając cię za bark i wyrzucając na \e[1mdwór\e[0m'),
     assert(can_see(dwor)), !, nl.
 
 

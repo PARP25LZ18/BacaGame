@@ -1,7 +1,6 @@
-
 % instructions for `start`
 
-:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1.
+:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1, kacper_hates/1, oskarz/1, can_accuse/0.
 :- discontiguous spojrz/1, odpowiedz/2.
 
 instructions :-
@@ -105,6 +104,7 @@ spojrz(schronisko) :-
 
 % TUTORIAL ODPOWIADANIA
 spojrz(stol) :-
+    at_introduction,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
@@ -585,7 +585,7 @@ odpowiedz(baca, p) :-
     ;   true
     ),
     finish_answer(baca, cialo, p), !, nl,
-    (   \+ can_see(kacper) ->
+    (   answered(kacper, cialo, _) ->
         all_dialogued;
         true
     ),
@@ -601,7 +601,7 @@ odpowiedz(baca, f) :-
         assert(baca_hates(kacper))
     ),
     finish_answer(baca, cialo, f), !, nl,
-    (   finish_answer(kacper, cialo, _) ->
+    (   answered(kacper, cialo, _) ->
         all_dialogued
     ;   true
     ),
@@ -612,7 +612,7 @@ odpowiedz(baca, w) :-
     write('\e[1m"Nie wiem, zbiegłem na dół razem z wami"\e[0m'), nl,
     write('\e[1;31m"Dziwne, nie widziałem cię."\e[0m - odpowiedział baca z nutą niepewności'), nl,
     finish_answer(baca, cialo, w), !, nl,
-    (   finish_answer(kacper, cialo, _) ->
+    (   answered(kacper, cialo, _) ->
         all_dialogued
     ;   true
     ),
@@ -702,7 +702,7 @@ odpowiedz(kacper, t) :-
     assert(kacper_hates(baca)),   
     retract(can_see(osoba)),
     finish_answer(kacper, cialo, t), !, nl,
-    (   finish_answer(baca, cialo, _) ->
+    (   answered(baca, cialo, _) ->
         !, all_dialogued;   
         true
     ), !, nl.
@@ -720,7 +720,7 @@ odpowiedz(kacper, p) :-
     write('\e[1m"W sumie to nie studiuję prawa, jestem studentem informatyki"\e[0m - odpowiadasz'), nl,
     write('\e[1;32m"Ehhh... ścisłowiec, no nic kolego, nie twoja wina że jesteś ciemnotą"\e[0m - odparł rozczarowany Kacper'), nl,
     finish_answer(kacper, uczelnia, p),
-    (   finish_answer(baca, cialo, _) ->
+    (   answered(baca, cialo, _) ->
         all_dialogued
     ;   true
     ), 
@@ -735,12 +735,74 @@ odpowiedz(kacper, w) :-
     finish_answer(kacper, uczelnia, w), !.
 
 all_dialogued :-
-    write("end of dialogue"), !, nl.
+    write('\e[1;31m"Dobra, siadojcie do \e[1mstołu\e[0m. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy."\e[0m'),
+    write('- powiedział Baca i postawił na \e[1mstole\e[0m wielki dzban kompotu'), nl,
+    write('\e[1;32m"Tak!! Czekałem na ten moment całe życie! Moje umiejętności społecznej dedukcji zakończą tą sprawę w sekundę!"\e[0m'),
+    write('- wtrąca Kacper i siadając do stołu potyka się o jego nogę.'), nl,
+    (   baca_hates(kacper) ->
+        write('Baca spogląda na Kacpra z zażenowaniem'), nl
+    ;   write('Ukradkiem spoglądasz na Bacę próbując zauważyć gniew w jego oczach...'), nl, true
+    ),
+    (   baca_hates(player) ->
+        write('Baca zauważa, że się mu przyglądasz'), nl,
+        write('\e[1;31m"A ty czego się patrzysz!?"\e[0m'), nl
+    ;   true
+    ), !,
+    nl, nl,
+    write('\e[2mOd teraz masz dostęp do polecenia: \e[1moskarz(baca/kacper)\e[0m'), nl,
+    write('\e[2mWywołanie polecenia spowoduje oskarżenie postaci o morderstwo i natychmiastowy koniec gry.'), nl,
+    write('\e[2mW zależności od twoich relacji z postaciami, oskarżenie może mieć różny wynik'), nl,
+    assert(can_accuse),
+    assert(can_see(stol)), !.
+
+% ----------------------------------------------------------------------------- %
+%                                    STAGE 2                                    %
+% ----------------------------------------------------------------------------- %
+% Rozmowy przy stole z Bacą i Kacprem, ogarnianie kto zabił Karolinę.
+
+spojrz(stol) :-
+    \+ at_introduction,
+    write('Zasiadasz do stołu z Bacą i Kacprem. Ogień w \e[1mkominku\e[0m już się dopala...'), nl,
+    write('Przed tobą stoi najprawdopodobniej ostatnia \e[1mszklanka\e[0m słynnego kompotu \e[36mKaroliny.\e[39m'), nl,
+    write('Zauważasz, że Kacper trzyma \e[1mręce\e[0m pod stołem i nerwowo spogląda naprzemiennie na ciebie i na Bacę.'), nl,
+    write('Baca z kolei, wydaje się spokojny, spogląda na Ciebie oraz Kacpra z wyższością... do tego stopnia, że zaczynasz '),
+    write('drugi raz zastanawiać się, czy to nie ty zabiłeś Karolinę...'), !, nl.
+
+
 
 
 % ----------------------------------------------------------------------------- %
 %                                    ENDINGS                                   %
 % ----------------------------------------------------------------------------- %
+
+oskarz(baca) :- % kacper nie lubi gracza, bad ending
+    kacper_hates(player),
+    ending_player, !.
+
+oskarz(baca) :- % kacper nie lubi bacy
+    kacper_hates(baca),
+    ending_baca, !.
+
+oskarz(baca) :-  % kacper lubi bace
+    write('"\e[1mpsst... Kacper... myślę, że to Baca zabił Karolinę"'), nl,
+    write('"\e[1;32mEKHM..! Czy masz jakieś oficjalne dowody podtrzymujące twoją tezę? Jeżeli nie prosiłbym o milczenie!"\e[0m'), nl, nl,
+    write('Czujesz, że Kacprowi nie spodobało się twoje oskarżenie, dodatkowo zaczął on nerwowo na ciebie spoglądać...'), nl,
+    assert(kacper_hates(player)), !, nl.
+
+oskarz(kacper) :- % baca nie lubi gracza, bad ending
+    baca_hates(player),
+    ending_player, !.
+
+oskarz(kacper) :- % baca nie lubi kacpra
+    baca_hates(kacper),
+    ending_kacper, !.
+
+oskarz(kacper) :- % baca lubi kacpra (czy to mozliwe?)
+    write('\e[1m"Baca... słuchaj... myślę, że to ten Warszawiak zabił-"'), nl,
+    write('\e[1;31m"Odezwoł się! A ty niby skąd jesteś? Pomyśl trochę zanim zaczniesz takie głupstwa paplać,'),
+    write('bo wezmę ciupogę i obu was stąd na zbity pysk wyrzucę!"\e[0m'),
+    assert(baca_hates(player)), !.
+
 
 ending_kacper :-
     write('▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████'), nl,
@@ -958,7 +1020,9 @@ ending_player:-
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████████░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▓▓▒░░░░░░░░░░░░░░░░'), nl, nl,
     write(''), nl,
-    write('\e[1;31m"Ja żem już wystarczająco widzoł, to ty zabiłeś dziołchę Warszawiaku"\e[0m - powiedział baca z obrzydzeniem w oczach'), nl,
+    write('\e[1m"Ja wiem! wiem kto zabi-"\e[0m'), nl,
+    write('\e[1;31m"CICHO!"\e[0m'), nl,
+    write('\e[1;31m"Ja żem już wystarczająco widzoł! To ty zabiłeś dziołchę Warszawiaku"\e[0m - powiedział baca z obrzydzeniem w oczach'), nl,
     write('\e[1;32m"Pan baca ma rację, nie ma jak wezwać organy ścigania, a ja nie będę tu siedział z mordercą"\e[0m - dołączył się kacper'), nl,
     write('\e[1;31m"Nie próbuj uciekać" - odpowiedział baca chwytając cię za bark i wyrzucając na \e[39;1mdwór\e[0m"'),
     assert(can_see(dwor)), !, nl.

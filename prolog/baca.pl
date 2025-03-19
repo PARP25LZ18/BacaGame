@@ -6,13 +6,13 @@
 
 instructions :-
     tty_clear,
-    write('░▒▓███████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░        ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓██████████████▓▒░░▒▓████████▓▒░ '), nl,
-    write('░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        '), nl,
-    write('░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        '), nl,
-    write('░▒▓███████▓▒░░▒▓████████▓▒░▒▓█▓▒░      ░▒▓████████▓▒░      ░▒▓█▓▒▒▓███▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░   '), nl,
-    write('░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        '), nl,
-    write('░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░        '), nl,
-    write('░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░       ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░ '), nl,
+    write('\e[31m░▒▓███████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░ \e[32m       ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓██████████████▓▒░░▒▓████████▓▒░\e[0m '), nl,
+    write('\e[31m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░\e[32m      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░       \e[0m '), nl,
+    write('\e[31m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\e[32m      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░       \e[0m '), nl,
+    write('\e[31m░▒▓███████▓▒░░▒▓████████▓▒░▒▓█▓▒░      ░▒▓████████▓▒░\e[32m      ░▒▓█▓▒▒▓███▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓██████▓▒░  \e[0m '), nl,
+    write('\e[31m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\e[32m      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░       \e[0m '), nl,
+    write('\e[31m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░\e[32m      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░       \e[0m '), nl,
+    write('\e[31m░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░\e[32m       ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓████████▓▒░\e[0m '), nl,
     nl,
     write('Dostepne polecenia:'), nl,
     write('\tstart.                                 -- rozpocznij gre'), nl,
@@ -27,8 +27,8 @@ introduction :-
         nl,
         write('Była to zimna grudniowa noc, wybrałeś się w Tatry...'), nl,
         write('Po 5 godzinach wchodzenia pod górę, wreszcie widzisz przed sobą \e[1mschronisko\e[0m'), nl, nl,
-        write('(TIP: Spróbuj \e[1mspojrzeć\e[0m na \e[1mschronisko\e[0m)'), nl, 
-        write('(TIP: aby wyświetlić wszystkie rzeczy na które możesz spojrzeć wpisz \e[1mlvo.\e[0m)'),
+        write('\e[2mTIP: Spróbuj \e[1mspojrzeć\e[0m\e[2m na \e[1mschronisko\e[0m'), nl, 
+        write('\e[2mTIP: aby wyświetlić wszystkie rzeczy na które możesz spojrzeć wpisz \e[1mlvo.\e[0m'),
         assert(can_see(schronisko)), !, nl.
 
 start :-
@@ -95,7 +95,7 @@ spojrz(schronisko) :-
     write('obok stołu znajduje się ceglany \e[1mkominek\e[0m. Przed kominkiem, na bujanym fotelu siedzi starszy \e[1mmężczyzna\e[0m'), nl,
     write('Po drugiej stronie stołu znajduje się \e[1mokienko\e[0m, które najpewniej jest recepcją oraz miejscem, z którego'), nl,
     write('przez cały dzień można pobierać ciepłe posiłki.'), nl, nl,
-    write('TIP: Możesz \e[1mspojrzeć\e[0m na pogrubione obiekty.'),
+    write('\e[2mTIP: Możesz \e[1mspojrzeć\e[22m\e[2m na pogrubione obiekty.\e[0m'),
     assert(can_see(stol)),
     assert(can_see(kominek)),
     assert(can_see(okienko)),
@@ -141,10 +141,10 @@ spojrz(stol) :-
     write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
     write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
     write('▒░░░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl, nl,
-    write('Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś.'), nl,
-    write('"Co tam tak sznupiesz, młody? Drewno wydaje się znajome?" - słyszysz głos [mężczyzny] na krześle'), nl, nl,
-    write('(TUTORIAL: możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w))'), nl,
-    write('(Możesz odpowiedzieć mężczyźnie za pomocą "odpowiedz(<cel>, <odpowiedź>))'), nl,
+    write('Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś.'), nl, nl,
+    write('\e[1;31m"Co tam tak sznupiesz, młody? Drewno wydaje się znajome?"\e[0m - słyszysz głos \e[1mmężczyzny\e[0m na krześle'), nl, nl,
+    write('\e[2mTUTORIAL: możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w)\e[0m'), nl,
+    write('\e[2mMożesz odpowiedzieć mężczyźnie za pomocą "odpowiedz(<cel>, <odpowiedź>)\e[0m'), nl,
     assert(can_answer(mezczyzna, sznupanie)), !, nl.
 
 % KOMINEK - NIC CIEKAWEGO
@@ -257,19 +257,19 @@ spojrz(mezczyzna) :-
 
 spojrz(mezczyzna) :-
     answered(mezczyzna, sznupanie, p),
-    write('"Warszawiak w górach? W taką pogodę? Zaskakjące... w każdym razie witoj w moim schronisku, jestem Baca.'), nl, fail.
+    write('\e[1;31m"Warszawiak w górach? W taką pogodę? Zaskakjące... w każdym razie witoj w moim schronisku, jestem Baca.\e[0m'), nl, fail.
 
 spojrz(mezczyzna) :-
     answered(mezczyzna, sznupanie, f),
-    write('"Na drzewach może się nie znosz, ale widzę, że dałeś radę nas ugościć.. i to w taką pogodę. Jestem Baca, witom."'), nl, fail.
+    write('\e[1;31m"Na drzewach może się nie znosz, ale widzę, że dałeś radę nas ugościć.. i to w taką pogodę. Jestem Baca, witom."\e[0m'), nl, fail.
 
 spojrz(mezczyzna) :-
     answered(mezczyzna, sznupanie, w),
-    write('"Witoj, jestem Baca. Rozgość się..."'), nl, fail.
+    write('\e[1;31m"Witoj, jestem Baca. Rozgość się...\e[0m"'), nl, fail.
 
 spojrz(mezczyzna) :-
     \+ answered(mezczyzna, sznupanie, _),
-    write('"Ło, prawie cię nie zauważyłem. Jestem Baca, witoj w moim schronisku"'), nl, fail.
+    write('\e[1;31m"Ło, prawie cię nie zauważyłem. Jestem Baca, witoj w moim schronisku"\e[0m'), nl, fail.
 
 spojrz(mezczyzna) :-
     nl,
@@ -282,7 +282,7 @@ spojrz(mezczyzna) :-
 
 spojrz(okienko) :-
     can_answer(karolina, pokoj),
-    write('"To jak? idziemy?" (odpowiedz na pytanie Karoliny za pomocą t lub n)'), !, nl.
+    write('\e[1;36m"To jak? idziemy?" \e[22;2;39m(odpowiedz na pytanie Karoliny za pomocą t lub n)\e[0m'), !, nl.
 
 spojrz(okienko) :-
     answered(karolina, pokoj, n),
@@ -328,14 +328,14 @@ spojrz(okienko) :-
     write('▒▒▓▒▒▒                                                      ░  ░  ░    ░░░░░░░░░░░░░░░░░░░▒█████████'), nl,
     write('▒▒▒▒▒                                                  ░ ░      ░░    ░░░ ░░░░░░░░░░░░░▒░░░▒████████'), nl,
     write('▒▒▒▒                                                      ░░ ░░ ░░░   ░░░░░░░░░░▒░░░░░░▒░░░▒████████'), nl, nl,
-    write('"Hej! Jestem Karolina!" - słyszysz głos zza okienka'), nl,
-    write('"Kuchnię niestety mamy już zamkniętą... ale pewnie chciałbyś wziąć pokój na noc?"'), nl,
-    write('"z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta..."'), nl, nl,
+    write('\e[1;36m"Hej! Jestem Karolina!"\e[22;39m - słyszysz głos zza okienka'), nl,
+    write('\e[1;36m"Kuchnię niestety mamy już zamkniętą... ale pewnie chciałbyś wziąć pokój na noc?"'), nl,
+    write('"z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta..."\e[0m'), nl, nl,
     write('Słyszysz brzdęk kluczy...'), nl,
-    write('"Proszę! numer 32!"'), nl,
-    write('"Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!"'), nl,
-    write('"Dziękuję" - odpowiadasz i zabierasz klucz'), nl,
-    write('"Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?" (t - skończ intro, n - zostań)'), nl,
+    write('\e[1;36m"Proszę! numer 32!"'), nl,
+    write('"Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!"\e[0m'), nl,
+    write('\e[1m"Dziękuję"\e[0m - odpowiadasz i zabierasz klucz'), nl,
+    write('\e[1;36m"Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?" \e[22;2;39m(t - skończ intro, n - zostań)\e[0m'), nl,
     assert(can_answer(karolina, pokoj)), !, nl.
 
 
@@ -357,33 +357,32 @@ odpowiedz(X, _) :-
 
 odpowiedz(mezczyzna, p) :-
     can_answer(mezczyzna, sznupanie),
-    write('"Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy" - odpowiadasz'), nl,
+    write('\e[1m"Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy" - odpowiadasz'), nl,
     write('Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok.'), nl,
     assert(baca_hates(player)),
-    retract(can_answer(mezczyzna, sznupanie)),
     finish_answer(mezczyzna, sznupanie, p), !, nl.
 
 odpowiedz(mezczyzna, f) :-
     can_answer(mezczyzna, sznupanie),
-    write('"Stolik jest niezwykle solidny, od razu widać że to dąb" - odpowiadasz z przekonaniem'), nl,
-    write('"Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna." - odpowiada mężczyzna i przewraca oczami'), nl,
+    write('\e[1m"Stolik jest niezwykle solidny, od razu widać że to dąb" - odpowiadasz z przekonaniem'), nl,
+    write('\e[1;31m"Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna." - odpowiada mężczyzna i przewraca oczami'), nl,
     finish_answer(mezczyzna, sznupanie, f), !, nl.
 
 odpowiedz(mezczyzna, w) :-
     can_answer(mezczyzna, sznupanie), nl,
-    write('"Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!"'), nl,
-    write('"Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata." - opowiada mężczyzna'), nl,
+    write('\e[1m"Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!"'), nl,
+    write('\e[1;31m"Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata." - opowiada mężczyzna'), nl,
     finish_answer(mezczyzna, sznupanie, w), !, nl.
 
 odpowiedz(karolina, t) :-
     can_answer(karolina, pokoj),
     finish_answer(karolina, pokoj, t),
-    write('"Chodź za mną."'), nl,
+    write('\e[1;36m"Chodź za mną."\e[0m'), nl,
     endintro, !, nl.
 
 odpowiedz(karolina, n) :-
     can_answer(karolina, pokoj),
-    write('"Spoko, podejdź do okienka jak będziesz gotowy"'), nl,
+    write('\e[1;36m"Spoko, podejdź do okienka jak będziesz gotowy"\e[0m'), nl,
     finish_answer(karolina, pokoj, t), !, nl.
 
 
@@ -399,7 +398,7 @@ endintro :-
     write('Karolina zaprowadziła cię do swojego pokoju.'), nl, nl,
     write('Rzuciłeś plecak na łóżko.'), nl,
     write('Padasz ze zmęczenia, kładziesz się w łóżku i natychmiast zasypiasz...'), nl, nl,
-    write('HINT: użyj słowa \e[1mstart_story\e[0m aby rozpocząć następny rozdział...'),
+    write('\e[2mHINT: użyj słowa \e[1mstart_story\e[0m\e[2m aby rozpocząć następny rozdział...\e[0m'),
     retract(at_introduction),
     !, nl.
 
@@ -513,7 +512,7 @@ spojrz(obiekt) :-
     write('▒▒▒▓▒ ▓▒▒▒▒▒░░░░░░ ░░  ░░░░░░░░░▒░ ░  ░░░░▓▒▒▒▒                             ░ ░        ░░  ▒░░░░░░░░'), nl,
     write('▒░▒░░░▒▒░░▒▒░░░░░░░░░ ░░░░░░░░▒░▒░░░ ░ ░░░▒▓▒▒░                                  ░░░ ░ ░░▒ ░░░░░░░░░'), nl,
     write('▒▒▒▒▒░▒▒░▒▒▒▒░░▒░ ░   ░░░░░░▒░░░▒░░░ ░░░ ░▒█▓▒               ░                 ░ ░░░░░ ░░░ ░░░░░░░░░'), nl, nl,
-    write('Zbliżasz się do dziwngo obiektu... teraz widzisz, że jest to... Karolina, która z zamkniętymi oczami leży na ziemi, otoczona jest plamą ciemnoczerwonego płynu... krew.'), nl,
+    write('Zbliżasz się do dziwngo obiektu... teraz widzisz, że jest to... \e[36mKarolina\e[0m, która z zamkniętymi oczami leży na ziemi, otoczona jest plamą ciemnoczerwonego płynu... krew.'), nl,
     write('Jesteś zszokowany. Mimowolnie zaczynasz wycofywać się, ale przypadkowo uderzasz w stół, strącając z niego szklankę...'), nl,
     write('Szklanka upada na ziemię natychmiast rozbijając się, przeszywając całe schronisko głośnym hukiem.'), nl, nl,
     write('Do pomieszczenia wbiega \e[1mbaca\e[0m oraz nieznana ci wcześniej \e[1mosoba\e[0m, pewnie to gość o którym wspominała żywa jeszcze Karolina.'), nl,
@@ -568,21 +567,21 @@ spojrz(baca) :-
     write('░░░░░▒█████████▓▓▓▓▓▓▓█▓▒▒▒▓▓▓██▓▓▒▒▓▒▓▓▒█████████▒▒█████████▓▒▓▓▓▓▓▓██▓██▓▓▓▓▓▒▒▒▒▒▒░░░▒▒░▓▒░░░░░▒▓'), nl,
     write('░▒░░░░▓████████▓▓▓▓▓▓▓▓███▓▓▓▓███▓▒▒▒▓▓▒▓▓███████▓░░▓█████████▒▓▓▓▓▓▓██████▓▓▓▓▒▒░░░▒▒░░░░░░░░░░░░░▓'), nl, nl,
     write('Baca przybiega ze złością w oczasch'), nl,
-    write('"KTO W MOJEJ IZBIE PO NOCY ŁOBUZI?!"'), nl,
+    write('\e[1;31m"KTO W MOJEJ IZBIE PO NOCY ŁOBUZI?!"\e[0m'), nl,
     write('Jego oczy od razu spadają z ciebie na leżącą obok Karolinę'), nl,
-    write('"Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać"'), nl,
+    write('\e[1;31m"Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać"\e[0m'), nl,
     write('Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie'), nl,
-    write('Co tu się wydarzyło?!'), nl,
-    write('(TIP: \e[1modpowiedz bacy p/f/w\e[0m) '), nl,
+    write('"\e[1;31mCo tu się wydarzyło?!"\e[0m'), nl,
+    write('\e[2m(TIP: \e[1modpowiedz bacy p/f/w\e[0m) '), nl,
     retract(can_see(baca)),
     assert(can_answer(baca, cialo)), !, nl.
 
 odpowiedz(baca, p) :-
     can_answer(baca, cialo),
-    write('"Zszedłem na dół bo chciałem się napić kompotu, Karolina już tu leżała" - odpowiadasz'), nl,
-    write('"Czyli byłeś z nią sam na sam..." - odpowiada pod nosem baca i wpatruje ci się głęboko w oczy'), nl,
+    write('\e[1m"Zszedłem na dół bo chciałem się napić kompotu, Karolina już tu leżała"\e[0m - odpowiadasz'), nl,
+    write('\e[1;31m"Czyli byłeś z nią sam na sam..." - odpowiada pod nosem baca i wpatruje ci się głęboko w oczy\e[0m'), nl,
     (   baca_hates(player) ->
-        write('"Warszawiaku...." - mówi baca z wyraźną niechęcią'), nl
+        write('\e[1;31m"Warszawiaku...."\e[0m - mówi baca z wyraźną niechęcią'), nl
     ;   true
     ),
     finish_answer(baca, cialo, p), !, nl,
@@ -595,10 +594,10 @@ odpowiedz(baca, p) :-
 
 odpowiedz(baca, f) :-
     can_answer(baca, cialo),
-    write('Obudził mnie huk, gdy zszedłem ten gość stał nad zwłokami Karoliny!'), nl,
+    write('\e[1m"Obudził mnie huk, gdy zszedłem ten gość stał nad zwłokami Karoliny!"\e[0m'), nl,
     (   baca_hates(player) ->
-        write('"Tyn z Warszawy i tyn z Warszawy, wszyscy siebie warci" - baca nie wydaje się przekonany twoim wytłumaczeniem'), nl
-    ;   write('"Ja slyszał że on ze stolycy, tym nigdy nie wolno ufać"'), nl,
+        write('\e[1;31m"Tyn z Warszawy i tyn z Warszawy, wszyscy siebie warci"\e[0m - Baca nie wydaje się przekonany twoim wytłumaczeniem'), nl
+    ;   write('\e[1;31m"Ja slyszał że on ze stolycy, tym nigdy nie wolno ufać"\e[0m'), nl,
         assert(baca_hates(kacper))
     ),
     finish_answer(baca, cialo, f), !, nl,
@@ -610,8 +609,8 @@ odpowiedz(baca, f) :-
 
 odpowiedz(baca, w) :-
     can_answer(baca, cialo),
-    write('Nie wiem, zbiegłem na dół razem z wami'), nl,
-    write('"Dziwne, nie widziałem cię. - odpowiedział baca z nutą niepewności'), nl,
+    write('\e[1m"Nie wiem, zbiegłem na dół razem z wami"\e[0m'), nl,
+    write('\e[1;31m"Dziwne, nie widziałem cię."\e[0m - odpowiedział baca z nutą niepewności'), nl,
     finish_answer(baca, cialo, w), !, nl,
     (   finish_answer(kacper, cialo, _) ->
         all_dialogued
@@ -685,10 +684,10 @@ spojrz(osoba) :-
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██▓▒░░░░▒▓███▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl, nl,
     write('Gość ślamazarnie zbiega ze schodów, przez mrok ciężko ci dostrzec jego sylwetknę oraz twarz'), nl, 
     write('Na pewno jest wysoki, wydaje się być chudy, a płomienie nadają jego twarzy lekki zarys... no i te okulary'), nl,
-    write('"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!" - wykrzyczał'), nl, nl, 
-    write("Student spojrzał na Karolinę"), nl, 
-    write('"AAAAAAAAAAAAAAAAAAAAAAAA, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!"'), nl, 
-    write('"Hej ty! Jestem Kacper, zadzwoń po pogotowie, ja zbadam miejsce zbrodni!" - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, nl,
+    write('\e[1;32m"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!"\e[0m - wykrzyczał'), nl, nl, 
+    write('Student spojrzał na Karolinę'), nl, 
+    write('\e[1;42m"AAAAAAAAAAAAAAAAAAAAAAAA\e[49;1;32m, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!"'), nl, 
+    write('"Hej ty! Jestem Kacper, zadzwoń po pogotowie, ja zbadam miejsce zbrodni!"\e[0m - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, nl,
     write('odpowiedz:'), nl, 
     write('t: Przecież tutaj nie ma zasięgu.'), nl, 
     write('n: O mój boże kocham prawo! Na jakim wydziale studiujesz?'), nl, 
@@ -696,31 +695,30 @@ spojrz(osoba) :-
 
 odpowiedz(kacper, t) :-
     can_answer(kacper, cialo), nl,
-    write('"Pff, mogłem się domyślić że ten stary dziad nie wie że telelinie można poprowadzić za pośrednictwem łącza bianalogowego" - powiedział nonszalandzko Kacper'), nl, nl,
+    write('\e[1;32m"Pff, mogłem się domyślić że ten stary dziad nie wie że telelinie można poprowadzić za pośrednictwem łącza bianalogowego"\e[0m - powiedział nonszalandzko Kacper'), nl, nl,
     write('Jako student informatyki dociera do ciebie, że Kacper nie ma pojęcia o czym mówi.'), nl, nl,
-    write('No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego'), nl, nl,
+    write('\e[1;32m"No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego"\e[0m'), nl, nl,
     write('Kacper zniknął w ciemności, usłyszałeś tylko że znowu potknął się o ten sam stolik'), nl,
     assert(kacper_hates(baca)),   
     retract(can_see(osoba)),
-    retract(can_answer(kacper, cialo)),
     finish_answer(kacper, cialo, t), !, nl,
     (   finish_answer(baca, cialo, _) ->
-        all_dialogued;   
+        !, all_dialogued;   
         true
     ), !, nl.
 
 odpowiedz(kacper, n) :-
     can_answer(kacper, cialo),
-    write("O proszę, miałem cię za prostaka jednak widzę, że napotkałem erudytę! Otóż mój drogi uczęszczam do Akademii Prawa i Filizofii w Warszawie."), nl,
-    write("Jestem niezmiernie ciekaw twojego miejsca pobierania nauk, może mamy wspólnych znajomych!"), nl, 
-    write('(TIP: \e[1modpowiedz Kacprowi p/f/w\e[0m) '), nl,
-    retract(can_answer(kacper, cialo)),
+    write("\e[1;32mO proszę, miałem cię za prostaka jednak widzę, że napotkałem erudytę! Otóż mój drogi uczęszczam do Akademii Prawa i Filizofii w Warszawie.\e[0m"), nl,
+    write('"\e[1;32mJestem niezmiernie ciekaw twojego miejsca pobierania nauk, może mamy wspólnych znajomych!\e[0m"'), nl, nl,
+    write('\e[2mTIP: \e[1modpowiedz Kacprowi p/f/w\e[0m'), nl,
+    finish_answer(kacper, cialo, n),
     assert(can_answer(kacper, uczelnia)), !, nl.
 
 odpowiedz(kacper, p) :-
     can_answer(kacper, uczelnia),
-    write('"W sumie to nie studiuję prawa, jestem studentem informatyki" - odpowiadasz'), nl,
-    write('"Ehhh... ścisłowiec, no nic kolego, nie twoja wina że jesteś ciemnotą" - odparł rozczarowany Kacper'), nl,
+    write('\e[1m"W sumie to nie studiuję prawa, jestem studentem informatyki"\e[0m - odpowiadasz'), nl,
+    write('\e[1;32m"Ehhh... ścisłowiec, no nic kolego, nie twoja wina że jesteś ciemnotą"\e[0m - odparł rozczarowany Kacper'), nl,
     finish_answer(kacper, uczelnia, p),
     (   finish_answer(baca, cialo, _) ->
         all_dialogued
@@ -730,14 +728,14 @@ odpowiedz(kacper, p) :-
 
 odpowiedz(kacper, f) :-
     can_answer(kacper, uczelnia),
-    retract(can_answer(kacper, uczelnia)), !, nl.   
+    finish_answer(kacper, uczelnia, f), !.
 
 odpowiedz(kacper, w) :-
     can_answer(kacper, uczelnia),
-    retract(can_answer(kacper, uczelnia)), !, nl.   
+    finish_answer(kacper, uczelnia, w), !.
 
 all_dialogued :-
-    write("end of dialogue"), nl.
+    write("end of dialogue"), !, nl.
 
 
 % ----------------------------------------------------------------------------- %
@@ -801,9 +799,9 @@ ending_kacper :-
     write('███████▓▒▒░░░░░▒▓▓█████▓▓▓▒▒▒▒▒▓▓███▓▒▒▓▒▓████▓███████▓▓▓▓▓█████▓████████████████████▓██████████████'), nl,
     write('████████▓▒░░▒▓███████▓▓▒▒▒▒▒▓▓████▓▒▒▒▒▓████████████████████████████████████████████████████████████'), nl, nl,
     write(''), nl,
-    write('"Nie mogę już tego słuchać! Przyjacielu to oczywiste, że ten warszawiak zabił Karolinkę!" - wykrzyczał patrząc na ciebie baca'), nl,
-    write('"C.Co.. TO OSZCZERSTWA, ARGUMENT AD PERSONAM! Nigdy bym jej nie zab..." - odparł szybko Kacper'), nl,
-    write('"Mam już tego dość! Albo ty albo on!" - przerwał mu rozwcieczony baca'), nl,
+    write('\e[1;31m"Nie mogę już tego słuchać! Przyjacielu to oczywiste, że ten warszawiak zabił Karolinkę!"\e[0m - wykrzyczał patrząc na ciebie baca'), nl,
+    write('\e[1;32m"C.Co.. TO OSZCZERSTWA, ARGUMENT AD PERSONAM! Nigdy bym jej nie zab..."\e[0m - odparł szybko Kacper'), nl,
+    write('\e[1;31m"Mam już tego dość! Albo ty albo on!"\e[0m - przerwał mu rozwcieczony baca'), nl,
     write('Niepewny sytuacji wolisz nie reagować, pozostaje ci tylko patrzeć jak baca wypycha kacpra na śnieg za izbą, a następnie siada przy \e[1mpiecyku\e[0m'), nl,
     assert(can_see(piecyk)), !, nl.
 
@@ -812,9 +810,9 @@ spojrz(piecyk) :-
     write('░█░█░█░█░█░█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█░░▀░'), nl,
     write('░▀▀▀░▀▀▀░▀▀▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░░▀░'), nl,
     write(''), nl,
-    write('"No młody... mamy go z głowy, teraz słuchaj mnie uważnie" - powiedział ze spokojem baca po czym usiadł przy piecyku'), nl,
-    write('"Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz" - powiedział patrząc ci w oczy baca'), nl,
-    write('"A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą" - mówiąc to wskazał na swoją ciupagę'), nl,
+    write('\e[1;31m"No młody... mamy go z głowy, teraz słuchaj mnie uważnie"\e[0m - powiedział ze spokojem baca po czym usiadł przy piecyku'), nl,
+    write('\e[1;31m"Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz" - powiedział patrząc ci w oczy baca\e[0m'), nl,
+    write('\e[1;31m"A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą"\e[0m - mówiąc to wskazał na swoją ciupagę'), nl,
     write('Słowa bacy z pewnością nie napawają cię optymizmem... No cóż, przynajmniej nie ma tu już Kacpra'), !, nl.
 
 ending_baca :-
@@ -874,21 +872,22 @@ ending_baca :-
     write('▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▓▓██████▓▓▓▒░░▒▒▒▓▓▒▓█▓█▓▒▓██████████▓▒▒▓█▓▓▓█▒▒▒████▓▓██████████▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒'), nl,
     write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓████▓▓▒▓▓▒░▒▓█▓█▓▒▒█▓▓▓░▓███████████▒▒▒▓▒▒▓▓▒▒▓█▓█▓▓▓██████████▓▓▓▓▓▓▓▒▓▒▒▒▒▒▒▒▒'), nl, nl,
     write(''), nl,
-    write('"Hmmmmm no nie wiem, kto to zrobił, musimy przeprowadzić głosowanie najlepiej metodą kontrpośrednich" - powiedział jak zwykle bez sensu niedoszły prawnik'), nl,
-    write('"Kacper to musiał zrobić baca!" - łapiesz warszawiaka za płaszcz i potrząsasz nim'), nl,
-    write('"Co! W mojej izbie dwóch mieszczuchów przeciwko mnie spiskuje?!" - wściekł się baca i złapał za ciupagę'), nl,
-    write('"W imię prawa nakazuję ci złożyć broń!" - wykrzyczał kacper potykając się o stół w salonie'), nl,
+    write('\e[1;32m"Hmmmmm no nie wiem, kto to zrobił, musimy przeprowadzić głosowanie najlepiej metodą kontrpośrednich" - powiedział jak zwykle bez sensu niedoszły prawnik\e[0m'), nl,
+    write('\e[1m"Kacper, to musiał zrobić baca!"\e[0m - łapiesz warszawiaka za płaszcz i potrząsasz nim'), nl,
+    write('\e[1;31m"Co! W mojej izbie dwóch mieszczuchów przeciwko mnie spiskuje?!"\e[0m - wściekł się baca i złapał za ciupagę'), nl,
+    write('\e[1;32m"W imię prawa nakazuję ci złożyć broń!"\e[0m - wykrzyczał kacper potykając się o stół w salonie'), nl,
     write('Kacper szczęśliwie wylądował prosto na bacy, zderzając się z nim głową. Baca oraz Kacper leżeli teraz wpółprzytomnie na \e[1mpodłodze\e[0m.'), nl,
     assert(can_see(podloga)), !, nl.
 
 spojrz(podloga) :-
+    write('\e[32m'),
     write('░█▀▀░█▀█░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀'), nl,
     write('░█░█░█░█░█░█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█'), nl,
     write('░▀▀▀░▀▀▀░▀▀▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀'), nl,
-    write(''), nl,
+    write('\e[0m'), nl,
     write('Podnosisz Kacpra z podłogi. Baca dalej leży nieprzytomny, stwierdziliście że musicie wezwać tu policję... lub przynajmniej GOPR.'), nl,
     write('Wybiegacie z izby i kierujecie się w stronę najbliżego szlaku.'), nl,
-    write('"Wspaniale, że udało nam się uciec od tego popaprańca... teraz mamy chwilę by porozmawiać o prawie cywilnym!" - rozpromieniał Kacper'), nl,
+    write('\e[1;32m"Wspaniale, że udało nam się uciec od tego popaprańca... teraz mamy chwilę by porozmawiać o prawie cywilnym!"\e[0m - rozpromieniał Kacper'), nl,
     write('Przez chwilę przyszło ci do głowy, że mogłeś jednak iść sam'), !, nl.
 
 ending_player:-
@@ -959,16 +958,18 @@ ending_player:-
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████████░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▓▓▒░░░░░░░░░░░░░░░░'), nl, nl,
     write(''), nl,
-    write('"Ja żem już wystarczająco widzoł, to ty zabiłeś dziołchę Warszawiaku" - powiedział baca z obrzydzeniem w oczach'), nl,
-    write('"Pan baca ma rację, nie ma jak wezwać organy ścigania, a ja nie będę tu siedział z mordercą" - dołączył się kacper'), nl,
-    write('"Nie próbuj uciekać" - odpowiedział baca chwytając cię za bark i wyrzucając na \e[1mdwór\e[0m'),
+    write('\e[1;31m"Ja żem już wystarczająco widzoł, to ty zabiłeś dziołchę Warszawiaku"\e[0m - powiedział baca z obrzydzeniem w oczach'), nl,
+    write('\e[1;32m"Pan baca ma rację, nie ma jak wezwać organy ścigania, a ja nie będę tu siedział z mordercą"\e[0m - dołączył się kacper'), nl,
+    write('\e[1;31m"Nie próbuj uciekać" - odpowiedział baca chwytając cię za bark i wyrzucając na \e[39;1mdwór\e[0m"'),
     assert(can_see(dwor)), !, nl.
 
 
 spojrz(dwor) :-
+    write('\e[31m'),
     write('░█▀▄░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀'), nl,
     write('░█▀▄░█▀█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█'), nl,
-    write('░▀▀░░▀░▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀'), nl, nl,
+    write('░▀▀░░▀░▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀'), nl,
+    write('\e[0m'), nl,
     write('Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia'), nl,
     write('Śpiesz się, robi się ciemno...'), !, nl.
 

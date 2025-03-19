@@ -27,15 +27,22 @@ introduction :-
         nl,
         write('Była to zimna grudniowa noc, wybrałeś się w Tatry...'), nl,
         write('Po 5 godzinach wchodzenia pod górę, wreszcie widzisz przed sobą \e[1mschronisko\e[0m'), nl, nl,
-        write('(TIP: Spróbuj \e[1mspojrzeć\e[0m na \e[1mschronisko\e[0m)'),
-        assert(can_see(schronisko)),
-        !, nl.
+        write('(TIP: Spróbuj \e[1mspojrzeć\e[0m na \e[1mschronisko\e[0m)'), nl, 
+        write('(TIP: aby wyświetlić wszystkie rzeczy na które możesz spojrzeć wpisz \e[1mlvo.\e[0m)'),
+        assert(can_see(schronisko)), !, nl.
 
 start :-
     instructions,
     introduction.
 
+
+% List visited Objects Function for debugging
+lvo :-
+    findall(Object, can_see(Object), Objects),
+    write('You can see: '), write(Objects), nl.
+
 % general see rule
+
 spojrz(X) :-
     tty_clear,
     \+ can_see(X),
@@ -84,10 +91,6 @@ spojrz(schronisko) :-
     write('Z komina schroniska wydobywa się ledwo widoczny dym.'),
     write('Baca chyba zainwestował w eko-drewno'), nl,
     write('...albo gmina go zmusiła. Uznajesz, że nie ma czasu do stracenia, ładujesz się do środka'), nl, nl,
-    retract(is_outside),
-    fail.
-
-spojrz(schronisko) :-
     write('Od razu po wejściu do schroniska czujesz silną woń kompotu, przed sobą dostrzegasz duży \e[1mstół\e[0m.'), nl,
     write('obok stołu znajduje się ceglany \e[1mkominek\e[0m. Przed kominkiem, na bujanym fotelu siedzi starszy \e[1mmężczyzna\e[0m'), nl,
     write('Po drugiej stronie stołu znajduje się \e[1mokienko\e[0m, które najpewniej jest recepcją oraz miejscem, z którego'), nl,
@@ -97,49 +100,160 @@ spojrz(schronisko) :-
     assert(can_see(kominek)),
     assert(can_see(okienko)),
     assert(can_see(mezczyzna)),
-    !, nl.
+    retract(can_see(schronisko)),
+    retract(is_outside), !, nl.
 
 % TUTORIAL ODPOWIADANIA
 spojrz(stol) :-
-    write('stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś.'), nl,
-    answered(mezczyzna, sznupanie, _), !, nl.
-
-spojrz(stol) :-
-    write('"co tam tak sznupiesz, mody?" - słyszysz głos [mężczyzny] na krześle'), nl, nl,
-    write('     (TUTORIAL: możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w))'), nl,
-    write('     (Możesz odpowiedzieć mężczyźnie za pomocą "odpowiedz(<cel>, <odpowiedź>))'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░░▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒▓▒▒▓▒▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓▒▒▓▒░░░░░▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░░▓▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓░░░░▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒░░▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓▒▓▓▓▒▒▒▒▒▒▒▒▓▒▒▓▓▒░░▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░░▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▒░▒▒▒▒▒▒▒▒'), nl,
+    write('░░░░░▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▓▓▒▓▓▓▒▒▒▒▒▒▓▒░▒▒▒▒▒▒'), nl,
+    write('░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▓▒▒▒▒▒▒▒▒▒'), nl,
+    write('░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▒▓▒▒▒▓▒▒▒▒▒▒▓▓▓▓▒▓▓▒▒▓▓▓▒▒░▒▒▒▒'), nl,
+    write('░░▓▓▓████▓█████████▓█████████████████▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓███████████████████████████████▒▒▒▒'), nl,
+    write('▒▒░░░█████████████████████████████████████████████████████████████████████████████████████████▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒█████████████████████████████████▓▓▓▓▓██▓▓▓█████████████████████████████████████████████▓▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▓███▓█▓▓▓▓▓█▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓████████████████▓█████▒▒▒▒▒'), nl,
+    write('▒▒▒▒░▒█████▓██░▒▒▒▒▓▓▓▓▓▓████████████████████████████████████████▓▓▓▓▓▓▓▓▓▒▒▒▓▒▓▓▒▒▒▒▓█████▓▓▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▓▓██▓▓▓▒▒▒▒▓▓▓▓▓▓█████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓▓▓███▓▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▓▓▓▓▓▓█▒▒▒▓▓▓▓▓▓████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▒▓▓▒▒▒▒▒▓▓▓██▓▓▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▓█▓██▒▒▒▓▓▓▓▓▓█████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒████▓▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▓▓▓▓█▒▒▓▓▓▓▓▓██████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓██▓▓▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▓▓█▓█▓▓▓▓▓▓▓██████████████████████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▒▓▓▓█▓█▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒░░░▒▒░▒▒▒▒▒▒▒▒▒░░▒▒░▒▒▒▒▒▒░▒▒░░░░░▒▒░▒░▒▒░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
+    write('▒░░░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl, nl,
+    write('Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś.'), nl,
+    write('"Co tam tak sznupiesz, młody? Drewno wydaje się znajome?" - słyszysz głos [mężczyzny] na krześle'), nl, nl,
+    write('(TUTORIAL: możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w))'), nl,
+    write('(Możesz odpowiedzieć mężczyźnie za pomocą "odpowiedz(<cel>, <odpowiedź>))'), nl,
     assert(can_answer(mezczyzna, sznupanie)), !, nl.
 
 % KOMINEK - NIC CIEKAWEGO
 spojrz(kominek) :-
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠹⣦⣀⠀⠀⠀⠀⠀⠀⢲⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡆⠀⠀⠀⠀⠀⠀⠀⠛⣦⣄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣿⣷⣤⠀⠀⠀⠀⠀⢻⣿⣷⣄⢀⠀⠀⠀⠀⠀⠀⢀⣴⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⢻⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣷⣄⠀⠀⠀⠀⣿⣿⣿⣷⠱⣆⠀⠀⠀⢀⣾⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣿⣽⣿⡆⠀⠀⠀⢸⣿⣞⣿⣧⢸⣷⣤⠀⢸⣿⣯⣿⠆⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡟⢰⣿⡷⣿⣿⡄⠀⠀⠀⠀⠀⠀⠀⠀⣿⣦⡄⠀⠀⠀⠀⢻⣿⣶⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣟⣾⣿⠀⠀⠀⣼⣿⡏⣿⣿⠀⣿⣿⣗⠺⣿⣳⣿⣧⠀⠀⠀⠀⠀⠀⠀⣴⣿⡟⠀⣸⣿⡟⣽⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣆⠀⠀⠀⠀⣿⣿⣿⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣦⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣯⢿⣿⡇⠀⣰⣿⡿⢸⣿⡿⠀⣼⣿⣻⡦⣿⣯⢿⣿⡆⠀⠀⠀⠀⢀⣾⣿⣿⠀⢠⣿⡿⢱⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⢯⣿⠀⠀⢠⠀⣼⣿⣻⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣷⡀⠀⠀⠀⠀⠀⣰⣿⣿⣞⣿⣿⠃⢀⣿⡿⣡⣿⡿⠃⢀⣿⣿⣽⣷⢹⣿⣻⢿⣿⡄⠀⠀⢀⣾⣿⢿⡇⠀⣾⣿⣱⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⠁⢀⡿⢰⣿⣣⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿⡄⠀⠀⠀⢰⣿⣿⣻⣼⣿⡿⠀⢸⣿⢣⣿⡿⠁⣠⣿⣿⡟⣾⣿⢈⣿⣯⣟⣿⣷⠀⠀⣸⣿⣟⣿⡇⠀⣿⣧⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣳⣿⡟⠀⣾⡇⢸⣷⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⡄⠀⢠⣿⣿⢯⣳⣿⣿⣦⣄⠘⣿⣿⡿⠁⣴⣿⣿⢯⣽⣿⡟⢀⣿⣷⢯⣿⣿⡇⠀⣿⣿⣽⣻⣿⠀⣿⣷⣿⠇⠀⠀⠀⠀⣀⠀⠀⢀⣼⣿⣿⣳⢿⣿⠁⣰⣿⣇⢸⣿⡟⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⠁⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⢠⣾⠇⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⢿⣷⠀⣿⣿⢯⣟⣼⣿⡇⢻⣿⣧⠘⣿⠃⣼⣿⡿⡽⣞⣿⣿⠁⢸⣿⣟⣮⢿⣿⡇⠀⣿⣿⢶⣻⣿⣇⠘⣿⣿⠀⠀⢀⣴⡿⠁⠀⣠⣿⢱⣿⣯⣽⣻⣿⠀⣿⡿⣿⡄⢻⣧⠀⠀⠀⠀⠀⠀⣴⣾⡟⠁⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⣰⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⢿⡇⢰⣿⣯⡟⣼⣿⣿⠁⠘⣿⣽⣧⠈⢰⣿⣯⡷⣛⣿⣿⠃⠀⣼⣿⣿⢼⣻⣿⡇⠀⢺⣿⡿⣼⣻⣿⣦⠘⠇⠀⣠⣿⡿⠁⠀⣰⣿⡟⢸⣿⣳⢾⡽⣿⣇⢸⣿⡿⣿⣆⠙⠀⠀⠀⠀⢀⣾⣿⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⢀⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⡿⣿⠃⣿⣟⣾⢡⡿⣿⡟⠀⠀⢿⣯⢿⡇⣼⣿⣞⡇⣿⣿⣯⠀⣼⣿⣿⠏⣾⣿⣟⣰⡇⠘⣿⣿⣳⣭⢿⣿⣧⠀⢠⣿⣿⡃⠀⢰⣿⡿⡇⠸⣿⣯⡇⢻⣿⣿⣯⣿⣿⣿⣿⣷⡀⠀⠀⢀⣿⣿⣻⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠐⣿⣯⣿⣇⠱⣆⡀⠀⠀⠀⣸⣿⡿⣽⡿⢸⣿⢯⡇⢸⣟⣯⣟⠀⠀⣻⣿⣻⣿⢼⣷⣻⠄⢸⣿⣿⣿⣿⡿⠏⣸⣿⣿⣷⣿⡅⠀⢸⣿⣷⣏⣾⣻⣿⡆⢸⣿⢿⡅⠀⣾⣿⣻⣿⠐⣿⣿⣻⡄⠻⣽⣿⣯⣿⣷⣻⢿⣿⡆⠀⢸⣿⣟⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠈⣧⡀⠀⢻⣿⣾⣿⣆⠹⣿⣆⠀⢠⣿⣿⡽⣿⡇⢸⣿⢯⡇⢸⣯⢿⣿⡀⣠⣿⣟⡷⣿⢸⣿⡽⣇⠀⡹⠾⠟⠋⢀⣾⣿⣿⣻⣿⢿⡆⠀⢈⣿⣿⢾⡘⣷⣻⣷⣸⣿⢿⣧⠀⣿⣿⣽⣿⡆⠘⣿⣿⣽⡀⢹⡾⣿⣯⢻⣿⣯⢿⣿⡄⢸⣿⣯⢿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
-    write('⠀⠀⠀⣿⣷⡀⠸⣿⣷⣻⣿⡀⣿⣿⡧⢼⣿⢷⣻⣿⡇⢹⣿⣟⡆⠈⣿⣻⢿⣷⣿⡿⣭⣿⡟⠘⣿⣟⣯⠀⠐⡀⢂⢠⣿⣿⣿⠍⣿⣿⢿⣿⣦⣼⣿⣟⣾⠇⢹⣯⢿⡏⣿⡿⣿⡀⢺⣿⣞⣿⣿⣦⣹⣿⣯⠇⠀⣿⣻⣿⠀⣿⣯⣟⣿⣷⠈⣿⣿⢯⡿⣿⣧⡀⠀⠀⠀⢀⣀⣤'), nl,
-    write('⠀⠀⠀⣿⣿⣇⠀⣿⣷⣻⣿⡇⢹⣯⣿⣼⣿⡇⣿⣿⡇⠘⣿⣯⡗⠀⢜⢯⡿⡽⣯⢷⣯⣿⡷⢨⣿⣟⣾⠀⡼⠁⡌⣾⣿⣿⡏⠀⣿⣿⢯⡿⣿⣟⣿⡽⣾⠀⠐⣯⣿⣟⢿⣿⢿⣷⡜⣿⣯⠺⣟⡿⣿⣟⡿⡀⠀⡿⣽⣿⠀⣿⣿⢞⣿⡟⣲⡿⢻⣿⣳⢟⣿⣿⡄⠀⣴⣿⣿⠃'), nl,
-    write('⠀⠀⣼⣿⣯⡇⣼⣿⢷⣻⣿⠀⣽⡿⣽⣿⣿⣽⢸⣿⣿⣤⣿⣯⡟⢧⠈⢢⡙⡿⠁⣾⢿⣿⡇⢸⣿⣟⣾⠰⡇⣸⠱⣟⣿⣷⡀⠀⣿⣿⣳⢻⡽⣿⡳⣽⢣⠇⢈⡷⣿⣏⠸⣿⣯⢿⣿⡹⣿⣷⡈⠙⠳⠟⠐⠀⠀⣿⣿⣇⣼⣿⣯⢿⣿⣷⣿⡇⠘⣿⣯⡛⣾⣿⣟⢰⣿⢿⡟⠀'), nl,
-    write('⠀⣼⣿⣿⣿⣽⣿⡿⣫⣿⡇⢰⣿⣟⣿⡏⣿⣿⣆⠹⢿⡿⣟⣷⡻⢸⡄⠀⢻⠃⠀⣿⣿⣿⣀⣾⣿⣽⡎⢸⠁⡏⠀⣿⣻⣿⣿⣾⣿⡿⣽⠃⢻⡷⣽⢋⡎⠀⣴⡿⣿⡿⢀⣿⣟⢺⣿⣧⠹⣿⣿⣄⠀⠙⡆⠀⠀⣿⣿⣿⣿⡟⣾⣿⣿⣿⡽⣇⠀⣹⣿⣽⠸⣿⣿⢨⣿⣿⣷⠀'), nl,
-    write('⣼⣿⣟⣿⣿⣿⣿⢃⣿⣿⣷⣿⣿⢞⣿⡇⢸⣿⣽⡄⠠⡙⢿⣯⡗⢨⠀⠀⡘⠰⡰⠘⣿⢿⣿⢿⣻⡞⠁⡾⠀⢱⡐⠈⠷⣯⣟⣯⣟⡽⢏⠀⢨⡿⢁⡞⠀⢰⣿⣿⣿⠃⢈⣿⣿⡃⣿⣿⠄⢻⣿⣽⠀⠀⢧⡀⡆⢹⣾⡽⠃⣾⣿⡿⢸⣿⣽⣿⣦⣿⣿⡏⢘⣷⣿⢸⣿⢿⣿⡄'), nl,
-    write('⣿⣿⢽⣿⣿⣿⢾⠀⢿⣻⢿⣯⠏⣾⣿⡇⠘⣿⣯⢿⠀⠙⣆⠹⠇⣤⠇⡄⡃⠀⡇⠀⢈⠙⠙⢋⡁⠀⠠⢹⠀⣄⠑⡌⠀⡀⠉⡈⢀⣰⡾⠀⣼⣣⠋⠇⡀⢺⣯⣿⡟⠀⢀⣿⣟⡇⣿⣿⡇⢸⣿⣾⠁⡆⢸⡇⢸⠈⡻⠀⢸⣟⣿⡇⠸⣿⣷⠻⣿⣿⠟⠀⣸⣿⣿⣾⣿⢯⣿⡧'), nl,
-    write('⣿⣿⢸⣿⣿⣿⣻⡇⠈⠻⣿⠁⠨⡷⣿⣷⣤⣽⣿⣻⠅⠀⠘⡆⣸⠏⡰⠀⡇⡄⠘⡄⠂⠈⢀⠀⠲⣀⠀⣽⠀⡈⡦⡈⠢⢑⠀⣴⠞⢁⡠⢀⡽⠁⢸⠀⠀⢹⣿⣿⡇⢀⣾⣿⣿⠁⢿⣽⣿⣿⣿⠟⢠⠃⡘⢧⠈⢫⠀⠀⠸⣯⣿⣷⣤⣿⣿⡇⠘⣋⠆⢠⣿⣿⣿⣿⠏⣾⣿⡇'), nl,
-    write('⠹⣿⣧⠻⣿⢿⣷⣻⣄⠘⣄⠀⢀⠿⣽⣻⢿⡿⣯⠟⠀⠀⠀⡼⠃⣴⠇⣸⠁⢸⢂⠘⢔⠀⡀⠀⡄⠻⣄⠘⣇⢡⠀⡉⠢⡀⠉⠁⡔⠋⠁⠨⠁⢀⢾⡀⠆⠘⣷⢿⣿⣿⣿⡿⠃⠀⢊⢉⡛⠋⠁⡠⠃⢠⠃⡘⠠⡀⢷⡀⡀⠻⢽⣿⣿⣿⠟⠀⠐⠁⣠⠿⠿⠛⠋⢁⣰⣿⣿⠁'), nl,
-    write('⠀⠹⣿⣷⣌⡙⠛⠽⠷⢧⡈⠢⣄⠲⢍⡛⠳⠛⠁⢊⣠⠞⠋⣰⡟⢁⣴⠇⢀⠂⣦⣉⠢⢄⡑⠄⠈⣶⢄⣁⠙⠤⡂⠹⢦⣈⠓⠈⢠⡶⣼⡄⡶⣹⣧⣳⡘⠰⢌⡛⠚⢓⢫⠴⠁⠀⠈⠁⠀⢐⡭⠔⢒⡇⢠⣇⢠⣆⠈⣷⣈⠢⢄⡠⢉⠀⠀⣀⠄⠘⠁⠀⠀⣠⣴⡿⣿⡿⠋⠀'), nl,
-    write('⠀⠀⠈⠙⠿⢽⣷⣶⣤⣤⣌⣦⣈⣳⣶⣤⣤⣴⣠⣭⣴⣶⣛⣧⣴⣾⣩⣴⣾⣧⣝⣯⣷⣶⣭⣗⣤⣈⣛⣶⣭⣝⣃⣂⣀⣉⣻⣦⣔⣿⣮⣅⣁⣻⣾⣽⣻⣧⣤⣥⣤⣠⣄⣤⣠⣤⣤⣴⣶⣯⣤⣶⣯⣴⣟⣿⣮⣟⣷⣮⣟⣿⣶⣶⣖⣶⣾⣥⣖⣶⣲⣮⣷⠿⠞⠋⠁⠀⠀⠀'), nl,
-    write('⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠁⠀⠁⠀⠀⠀⠀⠀⠁⠀⠀⠀⠁⠀⠀⠀⠁⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠁⠈⠀⠀⠀⠁⠈⠀⠁⠀⠀⠀⠀⠀⠈⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀'), nl,
+    write('       ░▓▓█████▓▓▓█▓▓█▓▓█████████▓█████████████▓▓███████████████████████████████████████████        '), nl,
+    write('        ▓▓█▓▓▓████▓███████▓█▓███▓▓▓█▓███████████▓█████████▓█████████████████████▓▓▓█████████░       '), nl,
+    write('        ████████████████████████████████████████████████████████████████████████████████████░       '), nl,
+    write('          ▓██████████████████████████████████████████████████████████████████████████████▓░         '), nl,
+    write('            ░▓▓███▓███████████▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓█████████████▓▓             '), nl,
+    write('             ▓▓▓▓▓▓▓▓▓▓▓█▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒░▒▒▒▒░▓▒▒▒▓░░▒▒▓▒▒▒▒▒▓▓▓█▓▓▓▓▓▓█▓▓▒▒░            '), nl,
+    write('             ▒▒███████████▓▓▓▒▒▓▒▒▒▓▒▓▓▒▒▒▒▒▒▓▒▒▒▓▓▒▓▒▒▒░▒▒▒░▒▒▒▒▒▒▒▒▒▒▓▒▓███████████▓▓░            '), nl,
+    write('            ▒▒▓██████████▓▓▒▒▒░▓▒▓░▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░░░▒░▒▒░░█▓░░░░▓▒▒▒▓▒██████████▓▓             '), nl,
+    write('             ████████████▓░░▒▒░░░▒▒░▒▒▒▒▒▒▒▒▒▒▒░▒░░▒░░░░▒▒▒▒░▒▒░▒░░▒▒▒░░▒▒▓██████████▒▒             '), nl,
+    write('             ▒▒▒█████████▓░▒▒▒▒▒▒░░▒▒░▒▒▒▒░▒░▒▒░▒░░░░░░░▒▒░░▒▒░▒▒░▒▒▒▒░░░▒▓█████████▓▒▒             '), nl,
+    write('             ▓▒▓█████████▒▓▒▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓░▒▓▒▒▒▒▓▒▒▒░▓▒▒▓▒▓▒▓▓▒▓▒▒▒▓█████████▓▒▓             '), nl,
+    write('             ▒░▓▓▓█▓▓▓▓▓▓▒▒░▒▒░░░▒▒░░░░░░░░▓▒▓▓▓▒▓▓▓▓▒▒▓▓█▓▒░░▒░░░░▒░░░░▒▒▓███████████▓             '), nl,
+    write('             ▓▒▒█████████▓▒▒▓▒██▓▓▓▒▒▓▓▓▒▓▒▒▒▒░▒▒▒▓▒▓█▓▓▒▒▓▓▒▒▓█▓▓▓▓░░▒░▓▒▓█████████▓▒▒             '), nl,
+    write('             ▒▒▒▒▒▒▒▒▒░▒░▒░▒░░░░░░▒▒▒▒░▒▒▒▒▒▒▒░░░▓▒▒▒▓▒▒░▒▒▒░▒▒▒░▒░░░▒░░░░░░░▒▒▒▒░▒▒░▒░             '), nl,
+    write('             ▓▒▒▒▓▒▒▓▓░▒░░▒░███░▒▒▒░▒▒░▒▒░░▒░▒▒▒░▒▒▒▒▒░░░░░░▒▒▒░▒▒▒▒▒▒░▒▒░░░░▒░░▒▒░░▒▒▒             '), nl,
+    write('             ░░░░▓░░░▒▒▒▓▒░░▒▒▒▒▒▒▒▒▒▓░░░░▒▒▒▒▓▒▒▓▒▓▓░▒░░▒▒▒▒▒▒▒▒▒▒░▒░░▒▒░▒░░░░▒░░▓▒▒░░             '), nl,
+    write('             ░░▒▒▓░░░▒▒▒▒▒░▒░▒▒▒▒▒▒▓▓▓░▒░▒░▒▒▒▒▒▒░▒▒▓░░░░▒▒▒█▒▓▓▒▒▒░░░░░░░▓░░▒▒░░░█░░▒░             '), nl,
+    write('              ▒░▒▒▒▒▒▒▒▒▒▒░░░▒▒▓▒▒▒▒▒▒▒░░▒▒▓▒▒▒▒▒▒▓▓▒░▒▒▒▒▒▒█▒▒▒▒░▒░░░░░▒▒▓░█▒░▒▒░▓▒▒▒░             '), nl,
+    write('             ░▒▓▒▓▒▓▓▓▓▓▓▓▒░▒▒▒▓▓███████████████████████████████████▒░▒▒▒▒▓░▒▒▒▒░░▒▒░▒▒             '), nl,
+    write('             ▒▒▒▒▒▒▒▒▓▓░▓░▓▒▒▒▓██████████████████████████████████████▒▒▒▒▒▒▒▒▒▓▒▒▒▓▒▒▒              '), nl,
+    write('             ▒▒░░▒▒░▒▒█▒▓░▓▒▒▓▓███████████████████████████▒░▓████████▒▓▓▓▓▒▓▒▒░▓▓▒▓▒▒▒              '), nl,
+    write('             ░▒▒░░▒▒▒▒▒▒▒░▓▓▓▓▓██████████████████████████████████████▒▓█▓▓▒▒▒▒▒▓▓▓▓▓▓▒              '), nl,
+    write('             ▒▒▒▒▒▒░░▒▒░▒▒▒▒▓▒▓██████████████████████████████████████▓▒▓▓▒▒▒░▒▓▓██▓▒▓▓              '), nl,
+    write('             ▒▒▒▒▒▒▒▒░▒▒▒▓▒▒▒▒▒██████████████████████████████████████░░░▒▒░▓▒▒▒▒▒▓▒▓▓▒              '), nl,
+    write('              ▓▓▓▓▓▒▓▒▓▓▓▓▒▒░▒▒██████████████████████████████████████░▒▒░░░▓▒▒░▒▒░▒▒▒▒              '), nl,
+    write('             ░▒▒▒▒▒▒▓▒▒▒▒▒░░░▒▒██████████████████████████████████████░░▒▒░█▒▒▒█▒▒▒▒▒▓▒░             '), nl,
+    write('             ░▒▒▒▒▒▒▒▒▓░▒▒░▒▒▒▒██████████████████████████████████████░░▒▒░▒▒▒▒░▒▒▒▒▒▒▒░             '), nl,
+    write('             ░▒▒▒▒▒▒▒▒░▒█▒▒▒▓▒▒██████████████████████████████▓███████░▒▒▒▒▒▓▒▒▒▓▒▒▒▒▒▒░             '), nl,
+    write('             ░▓▓▓▓▓░░▒░▒▒▒▓▒▒▒▒██████████████▓▓▓█████▓▓██████▓█▓█████▒▓▒▒▒▒▓▒▒▓▓▓▓▓█▓▓░             '), nl,
+    write('              ▓▓▒▓▓▒░░▒▒▓▒▒▓▒▒▒████████▓██▓▓█▓▓█▓▓███▓▒██▒████▓██████████▒▓▒▒░░░░░░▒▒▒▒             '), nl,
+    write('              ▒▒▒▒▒▒▒▒▒▒▓▓▒▒▒▒░████▒▒▒▒▒░▓▒▒▓▒▓▓▒░▒▓▒▒▒▒▒▒▓█▒▒▒▓█▓███▒▒▒▓▓▒▒░▒▒▒░░░░▒▒░             '), nl,
+    write('             ░▒▒▒░░▒▒▒▒▒▒▓▒▒▓▓▓████▓▓▓▓▓█▒▒░▓░▓█▒▒▒▓▒░▓▒▓▒▒▒░▒▒▓█████▓▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒░             '), nl,
+    write('              ▓▓▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓██████▓▓▓▓▒█▓░▓███▒▓▓▓█▒▓█▓▓▒░▓▓▓▓████▓▒▓▓▓▓▓▒▓▒▒▒▒▒▓▒▒░             '), nl,
+    write('              ▒▓▓▓▒▒▒▒▒▒▒▓█▓▓▒▓██████▓███▓▓█▓█▓▓█▒▓▓▓▒▒▒▓▓▓▒█▓▓█▓████▒▒▒▒▒▒▓▒▓██▓▓▒▒▒▒░             '), nl,
+    write('              ▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒██████████▓▒░▒░░▒████░░▒░░░▓██████████░▒▒▒▒▒▓▓▓▒▒▒▒▒▓▓▒░             '), nl,
+    write('              ▓▓▓▒▓▒▓██▓▓▓▒▒▒▒▒██████████████████████████████████████▒░▒▒▒▒▒▒▒▒▒▓▓▒▒▓▓              '), nl,
+    write('              ▒▒▒▒▒▒▒▒▒▒▒▓▓▒▒▒▒██████████████████████████████████████▒▒▒▒▒▓▓▓▓█▓▓▓▓█▓▓              '), nl,
+    write('              ▒▓▓▒▒▒▒▒▒▒▓▒▒▒▒▒░▒▒▒▒▓▒▓▓▒▒▒▒▓▒▒▓▒▒▒▒▒▓▒▒▒▒▒▒▒░▒▒░▒▒▒█▒▒░▒▒▒▒███▓▓▓▓▓█▓▒              '), nl,
+    write('              ▒▒▓▓▒▓▒▓▒▓▓▒▒▒▓▒▒▓▒▒▒▒▒▒▓▓█▓▓▓▒▓▓▓░▒▒▓▓▒▓▓▒▒▓▓▒▒▓▒▒▒░░▒▓▒▒▓▒▒▓▓▒▒▒▒▒▒▒▒▒░             '), nl,
+    write('            ░▓██▓█▓▓▓▓▓▓▓▓▓▓▓▒▓▒▓▒▓▒▓▓▒▓▓▓▓▓▓▒▓▓▓▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓██▓▒▓▓▒▓▒▓▓▓▓▓██▓▒▓█▓▓▓            '), nl,
+    write('           ▓▓▓▓█▓▓▓▓▓▓▓▓▓▓█▓▓▓▓███▓█████████████████████████████████████████████████████▓           '), nl,
+    write('          ▓██████████████████████████████████████████████████████████████████████████████▓          '), nl,
+    write('         ██████████████████████████████████████████████████████████████████████████████████         '), nl,
+    write('        ░██████████████████████████████████████████████████████████████████████████████████         '), nl,
+    write('                                                                                                    '), nl, nl,
     write('Ogień w kominku mocno się pali, drewno musiało być dodane niedawno, całkiem tu gorąco.'), !, nl, nl.
 
 % BACA - INTRODUCTION
+
+spojrz(mezczyzna) :-
+    write('███████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████████████████████▓▓█▓▓███████████████'), nl,
+    write('███████████████████████████████████████▓▓▓▓▓▒▓▒▓▒▒▓▓▒▓▓▓█████████████████████▓▓███▓▓▓████▓██████████'), nl,
+    write('██████████████████████████████████████▓▓▓▓▓▒▒▒▓▒▓▒▓▓▒▒▓▓▓███████████████████▓██▓▓▒▓▓▓███████████████'), nl,
+    write('███████████████████████████████████████▓▓▓▓▒▒▒▒▒▒▓▓▒▓▒▒▓▓▓████▓▒▓███████████▓█▓▒▒▓▓█▓███████████████'), nl,
+    write('███████████████▓▓█████▓▓███▓█████████▓▓▓▓▓▓▓▒▒▒▒▓▒▒▓▓▓▓▓▓▓██▓▓█▓▓▓██████████▓█▓▓▓▓██▓███████████████'), nl,
+    write('█████████████████████████████████████▓█▓▓▓▓▓███░▓▒▓▓▓▓░▓▓▓▓█▓▓░▓▓▓██████████▓█▓▓█▓▓███████████▓▓▓▓██'), nl,
+    write('██████████████████████████████▓▓██▓███▓▒░▒▓▓██░░░▒▒▓▓█▒▒░██░▒▒▒▒▒▒▓▓▓▓▓▓▓▒▒███▓▓▓▓▓█████████▓█▓▒░▒▓█'), nl,
+    write('█████████████████████████████████▓▒██▒█░▒▒█▓▓▓█▒░ ▓▓▓▓▓▒▓▓▓▓▓█████████▓▓▓▓▓▓▓██▓▓▓▓█████████▓█▓▓▒▓██'), nl,
+    write('██████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓█████▓▒████████▓█▓▒▒▒▓▓▓▓█████████████████████▓█▓██▓██████████████▓▒▒███'), nl,
+    write('████████████████████████████████▓███▓▒▒▒▒▒▓▓█████████████████████████████████▒███▓▓▓▓█████████▓▒░▒██'), nl,
+    write('█████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▒▒▓▓██████████████▓▓██████▓▓█████████████████▓▓███████████▓█▓▓▒░▒▓█'), nl,
+    write('████████▓▓▓▓▓▓▒▒▒▓▓▓▓▓▓▓▓▓▓▓███████████████████▓▓▒▒▒▒▒▒▒▓▓▓▒▒▒▒█████████████▓████████████████▓▓▒░▓▓█'), nl,
+    write('████████▓▓▓▓▓▓▓█████████████████████████▓▓▓▒▓▓▓▒▒▒▒▓▒▒▒▒▒▒▓░░░░▒███████████████████████████▓█▓▓▒░▒▓█'), nl,
+    write('▓███████▓▓▓██████████████████████▓█▓▓▓▓▒▓▓▓▓▒▓▓▓▓███▒▒▓▒▒░▒▒░░░▒█████████▓█████████▓▓▓▓▓▓▓█▒█▓▒░░▒▓█'), nl,
+    write(' ░█████▓▓▓▓████████████████████████████▓████▓░░▒▓███░█▒░░░░▒▒░░░███████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▒░░▒▓█'), nl,
+    write('▒▒▒▒▒▓▓▓▓▓▓▓▓██▓██████████████▓█████████▒███▒░░░░▒▒▒░░░▒░░▒▒░░░▒████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▓▓███▓▒░░▓▓█'), nl,
+    write('▒▒▒▒▒▒▓▓▓▓▓▒▒▓████████████████▓████▓▓▒░▒▒▓██▓▒░░░░░▒░░░░░░▒▒░░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓████▓▓▓█▓▓▓▓▓███▓▒░░▒██'), nl,
+    write('▓▓▓▓▓▓▓▓▓▓▓▒░▒███▓▓▓▓▓█████████▓███▓░░░░▒▓███▒░░░░░░░░░░░░▒▒░░▒█▓█▓▓▓▓▓▓█▓▓▓▓▓▓▓█▓██▓▓▓▓▓▓███▓▒░░▒██'), nl,
+    write('▓▓▒▒▒▒▓▓▓▓▓▒░▒███▓▓▓▓▓▓▓▒▒▒▒▒▒▒████▓▓▒░░▒▓██▓▒░░░░▒█▓▒▒░░▒▒▒░░░▓▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▓▓▓▓▓▓███▓▒░▒▒██'), nl,
+    write('██▓▓▓▓▓▓▓▓█▒░▒███▓▓▓▓▓▓▓▓▒▒▒▒▒▒█████▓▒▒▒█████▒▒▒█░░░▒▓█▓▓▓▓▒░▒█▓▓▓▓▓▓▓▓▓▓▓▓█████████████████▓▓▒░▒▓██'), nl,
+    write('████████▓██▒░▒███▓███▓▓▓▓▓▓▓▒▒▒█▓████▓██▓▓██▓█▓░▒░░░░░░░░░▒░░███████▓█████▒████▓▒█████▓▒█████▓▓░▒▒██'), nl,
+    write('████████▓██▒░▒███▓▓▓▓▓▓▓▓▓▓▒▒▒▒█▓▓███▓▒░▒░░░░░░▒▒▒▒░░░░░░░░░▒█░▓████░████▓░████▓░█████▒▒████▓▓▒░▒▓██'), nl,
+    write('███████████▒░▒███▓▓▓▓▓▓▓▓▓▓▓▓▓▓█▓▓▓▓▒▒░▒▓▒▒░▒▒▓▓▓▓▓▓▒▒▓▒▒░░░░▓█▓▓▓▓▓▒████▓░████▓░█████▒▓████▓▓▒░▒▓██'), nl,
+    write('███████████▒░▒███████▓▓▓▓▓▓▓▓████▓▒▒▒▓▓▓▒█▓▓▓▓▒▒░▒▒▒░▒▒░░░░░█▒██▓▓▓▓▓▓▓▓▓▓░████▒░████▓░▓████▓▓▒░▒▓██'), nl,
+    write('███████████▒░▒███████▓▓▓▓█████████████▓▓▒▒░▒░░░░░░░░░░░░░░░██▒▓█████▓█▓▓▓▓▓▓▒▓█▒▒████▓░▓█████▓▒░▒▓██'), nl,
+    write('███████████▒░▒███████▓███████████████▓▒░▒░░░░░░░░░░░░░░░░░▓██░▓████████▓█▓▓░░██▒▒████▓░█████▓▒▒▒▓▓██'), nl,
+    write('▓▒▓████████▒▒▓████████▓██▓████████████▓▒▓▒░▒░░░▒░░░░░░░░▒▒██▓░███████████▓░▒██░░░░░██▓▒██████▓▓█████'), nl,
+    write('█▓▓▒▒▒▓████▓▒▓███▓▒▓█▒▒██▒███████████████▓▓▒▒▒▒▒▒░░░░▒▒▒▒░██░▒████████████ ███░░░▒░░░▓▒█████▓▓░▒▓▓██'), nl,
+    write('██▓▓▓▓█████▓▒▓█▓█░░▒▓░██▓███████████████████▓▓▓▒▓██▒▒▒▒░░███░░███████████░░███░░▓░  ░░░█████▓▓▒▒▓▓██'), nl,
+    write('███████████▓▓█▒▒▒░░░▒░█▒▒██████████████████████▓███▒▒▓ ░███░░████████████▓░██░░▒░ ░░░▒░░████▓▓▒▒▓▓██'), nl,
+    write('███████████▓▓█░▓░░░░▒░█▒██████▓███████████████▓▓▓██▒░▒░▓███▒░████████████▒░██░▒░░ ░░▓░░░░███▓▓▒▓████'), nl,
+    write('█████████▓░▒▓▓█▓░░░░░░█▓███▓▒▒▒▒▓███████▓▓▓▒▓▒▒▒░▓░░░░▓███░▒████░▓▒█████░▒███▓░░░░░▓░░░░░░██▓▓░▒▓███'), nl,
+    write('███████▓░░░▒░▒█▒░░░░░░█▓███▒▒██▓▒▓██████░▒▒▓░▓░█▒░░░░▓▓██▓▒░███▒██▒░█████░███▓░░░░▓▒░░░░░░░░▓▓▒▒▓███'), nl,
+    write('███████▓▓░░░░░▓▓░░░░░░████▒█░░░░▓███████▒▒▒░▓  ░░░░░░▓███ ▒███▒▒██▒░█████▓███░░░▒▓▒░░░░░░░░░░▒▒▓▓███'), nl,
+    write('████▓▓▓▓█▓▓░░░░█░░░░░░██████▓██████▓████▓░▓▒▓░ ░░▓░▒▓▓███▒░████▒▒▓▓██████▓▓█░░▒▓▓▒░░░░░▒▓░▓░▓▓▓▓▓███'), nl,
+    write('██▓▓▓▒▒▒▒▓▓▒▒░░▓░░░░░░██▒████▓░▒███▓▓███▓░█▓░ █░░░░█▓███ ▒████░▓████▓▓███▒██░▒▓▓▓▓ ░▒▓█░░░░▒▓░▒▒▓███'), nl,
+    write('█▓▒▓▒▒█▒▒░▓▒▒░▒▒▒░░░░░▓██▓██████████████▓░▓▓░▒█░░░▓▓▓██▓░████▓▓██▓███████▒█▓▒██▓▓░▓▓▒█░░▓█▓▒░░▒▓▒▒██'), nl,
+    write('▒▒██▓▓▒▒▒▓▒░▒░▒▒█░░░░▒███████▓▓▓█████████▒██░░░░░░█▓███░██████████▓█▒▒▓████▓██▓▒██░░▓█░▓░░██▓██▓▓▓░█'), nl,
+    write('▓▓▓▒▒█▒█▓▒▓▒░░▒▓█░░░░▒█████████▒▓████████▒█▓░░░░▒█████░▒█████▓▒▓██▓█▒███▓████▓▓░█▓▒▒░░██▓█▓░█▒▓▒░░░░'), nl,
+    write('░░░░░▒▒▓▓▓▓▓▒░░▓█░░░░░███████▒▒▓█████████▓▓░░░░░███▓█░▒████▒▒███▓████▓▓███████▓██▓████▒███▒░▒▓▓▓▒▓▒▓'), nl,
+    write('░░░░░░░░░░▓█▓▒▒▒▓░░▒▓███████▓▓█▓▓████████▓▓▓▒▓█▓████░░████▒▓▒▓░████▓██▒▓██████▓██▓██▓▓▒▒▒▓▒▒█▒██▓█▒▒'), nl,
+    write('░░░░░░░░░░░░▒▒▒█▓▒░░▒██▓▓███▓▓▓▓███████████▒░▓▒█████░█████▒▒██▓▒███▓█▓████████▓█████▓██▓█▓▓▓▓▒▒▒░░▓▒'), nl,
+    write('░▒░░░░░░░░▒▒░▒░▓█▓▒▒▒▓▓▓▓████▓▓▓█████████▓▓░░▓███████▒█████▒░▒▒▒▓███████████████▓▓▒░░░░░▒▒▓▓░▒▓▒░░▒▒'), nl,
+    write('▒░░░░░░░▒▒▓▒░▒▒▒▒▒▓▓▓▓▓██████████████████▓▒░░████████▒▒███▒░██▒▒██████████▓▒░░▓▓██▓▓▒░░░░░░░▓▓▓▒░░░░'), nl,
+    write('▒▒░░░▓▓▒▒▒▒▒▒░░░░░▓█░░░████████▓▓▓▒▒▒▒▓██▓░▒▓████████░███████▓█████████████░░░░░░▓██▓▓░░░░░░░░▒▓▓▓▒░'), nl,
+    write('░░░░▓▒▒█▓▒▓▒░▓░▓▒█░░▒▓▓▓▓▓▓▓▓██▒▒▒▒░░▒▒▓▒▒░▒▒█████████▒████████▓▓▒▒█▓░▓▓▒██▒▒░░░░░░▓▓▓▓░░░░░░░░░▒▓▓▓'), nl,
+    write('░░░▓▓▓▓▒▒▒▒░░▓█▓▒░▒▓▓▓██▓▓▓██▓▒▒▒▒▒▒▒▒▒█▓▓▒░░░▒███████▒░░█▒█▒░░░░▒▒░█▓▓░███▓░▒▒░▒▒▓▒░▒▒▒░░░░░░░░░░▒▓'), nl,
+    write('░░░▓▓██▒▓▓░█▒▓▓▒░▓▒▓▓█▓▓████▓░▒░▒▒▓▓▓▓▒▒▒▒█▓▓▒▒░▒▓▓▓▓██░░▒▒▒░░░░░█▒▒▓█▓▒▒▒▓█▒░░░░░▒▒▓▓▓▓▒▒░░░░░░░░░░'), nl,
+    write('░▒░▓▓█▓█▒█▒▒▓██░▓▓▓▓██▓███▓▒▒▒▒▒▓▒▒▓██▓▒░░░░██▓▒░░░█▓▓█▒░▒▒█▓░░▓░▒▒▒▒██▓░▓███░░░░▒▒▒▒▒▓▓▓▓▓▒░░░░░░░░'), nl,
+    write('▓▒▒███████▓▓█▓▓▒▓▓████████▒▒▒▒▓▓█▓▒▒▓░▓█▓▒▒░░░██▒▒░▓▒▒▒█░░▓▒█▒░░░░▓▒▒▒▓▒▒▒▒██▓░░░░░░░▒▓▓▓█▓▓▓░░░░░░░'), nl,
+    write('█▓██████▓▓█▓██▓▓██████████▓▓▒▒▒████▒░░░░██▓▓▒░░▒▓▓▓▓▒▒▒▓░░▓▓▒▒░▒░░▓▒▒▒▓▓▓▒▓█▓█▓▒░░░░░░░▒▒▓███▓▒░░░░░'), nl,
+    write('▓▓██████████████▒████████████▓▒▒░███▓▒░░░▒██▓▒░░░▒▒▓▓▓▓▓░░▒░▒▓░░░░▒▓▓▒██▓▒▓▓▓██▒▒░░░░░░░░░▒▓███▓▒░░░'), nl,
+    write('██████████████████▓███████████▓▒▒░▒███▓▒░░░▒██▒▒░▓▓▓▓▓███░▒█▓█▓▒▓▒▒█▒▓█▓▒▓▓▓▓▓█▒▓██▒░░░░░░░░▒▓████▒░'), nl,
+    write('███████████████████████████████▓▓▒░░▒▓██▓▒░░▒▓▓▒▓▓▓█▓▓███▒▒████▒▒▒▓█▒███▓██████████████▓▒░░░░░▒▓███▓'), nl,
+    write('█████████████████████████████████▓▒▒░▒▒▓██▒▒░░▓▓▓█████████▓███████████████████▓█▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▓██'), nl, nl, fail.
 
 spojrz(mezczyzna) :-
     answered(mezczyzna, sznupanie, p),
@@ -216,9 +330,9 @@ spojrz(okienko) :-
     write('▒▒▒▒                                                      ░░ ░░ ░░░   ░░░░░░░░░░▒░░░░░░▒░░░▒████████'), nl, nl,
     write('"Hej! Jestem Karolina!" - słyszysz głos zza okienka'), nl,
     write('"Kuchnię niestety mamy już zamkniętą... ale pewnie chciałbyś wziąć pokój na noc?"'), nl,
-    write('"z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta...'), nl, nl,
+    write('"z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta..."'), nl, nl,
     write('Słyszysz brzdęk kluczy...'), nl,
-    write('"Proszę! numer 32! "'), nl,
+    write('"Proszę! numer 32!"'), nl,
     write('"Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!"'), nl,
     write('"Dziękuję" - odpowiadasz i zabierasz klucz'), nl,
     write('"Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?" (t - skończ intro, n - zostań)'), nl,
@@ -246,17 +360,19 @@ odpowiedz(mezczyzna, p) :-
     write('"Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy" - odpowiadasz'), nl,
     write('Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok.'), nl,
     assert(baca_hates(player)),
+    retract(can_answer(mezczyzna, sznupanie)),
     finish_answer(mezczyzna, sznupanie, p), !, nl.
 
 odpowiedz(mezczyzna, f) :-
     can_answer(mezczyzna, sznupanie),
-    write('"To dąb? - solidny."'), nl,
-    write('"Nie. to sosna" - odpowiada mężczyzna i przewraca oczami'), nl,
+    write('"Stolik jest niezwykle solidny, od razu widać że to dąb" - odpowiadasz z przekonaniem'), nl,
+    write('"Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna." - odpowiada mężczyzna i przewraca oczami'), nl,
     finish_answer(mezczyzna, sznupanie, f), !, nl.
 
 odpowiedz(mezczyzna, w) :-
-    can_answer(mezczyzna, sznupanie),
-    write('"yyy - ładny kominek."\n"dziękuję." - opowiada mężczyzna'), nl,
+    can_answer(mezczyzna, sznupanie), nl,
+    write('"Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!"'), nl,
+    write('"Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata." - opowiada mężczyzna'), nl,
     finish_answer(mezczyzna, sznupanie, w), !, nl.
 
 odpowiedz(karolina, t) :-
@@ -297,7 +413,7 @@ endintro :-
 start_story :-
     tty_clear,
      \+ at_introduction,
-    write('Budzisz się. Spoglądasz w zegarek. 1:12.'), nl,
+    write('Budzisz się. Spoglądasz na zegarek. 1:12.'), nl,
     write('Czujesz suchość w ustach, zmęczenie po przyjściu do schroniska spowodowało, że zapomniałeś, że od dawna nic już nie piłeś...'), nl,
     write('Przypominasz sobie, że na stole w holu schroniska stał \e[1mkompot\e[0m. Nie możesz przestać o nim myśleć.'), nl,
     write('Czujesz, że nie będzie to łatwa noc.'), nl,
@@ -346,7 +462,7 @@ spojrz(kompot) :-
     write('                             ░▒▒░░░░░░░░░░░░░░░░░░░▒░░░░░░░░░░░░░░░░░▒░                             '), nl,
     write('                               ░░░▒▓▓▒▒▒░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒░░                              '), nl,
     write('                                   ░░▒▒▓█████████████████████▓▓▒░░                                  '), nl,
-    write('                                          ░░░░░░░░░░░░░░░░░░                                        '), nl,
+    write('                                          ░░░░░░░░░░░░░░░░░░                                        '), nl, nl,
     write('Patrzysz na kompot oczami wyobraźni. Jest piekny, pachnacy owocami, ociekajacy zimnynmi kroplami. Po prostu musisz po niego pójść.'), nl,
     write('Powoli schodzisz schodami w dół... mimo to, słyszysz ciche skrzypienie'), nl,
     write('Wchodzisz do holu... kątem oka zauważasz dziwny, spory \e[1mobiekt\e[0m na ziemii. Byłby całkowicie niewidoczny, gdyby nie kominek'),
@@ -396,7 +512,7 @@ spojrz(obiekt) :-
     write('▒░▒▒   ▒▒▒░░░░░░░░░░░░ ░ ░░░░░░░▓░ ░░   ░▓▒▒▒░▒░ ░                ░                 ░ ░   ░░░░░░░░░░'), nl,
     write('▒▒▒▓▒ ▓▒▒▒▒▒░░░░░░ ░░  ░░░░░░░░░▒░ ░  ░░░░▓▒▒▒▒                             ░ ░        ░░  ▒░░░░░░░░'), nl,
     write('▒░▒░░░▒▒░░▒▒░░░░░░░░░ ░░░░░░░░▒░▒░░░ ░ ░░░▒▓▒▒░                                  ░░░ ░ ░░▒ ░░░░░░░░░'), nl,
-    write('▒▒▒▒▒░▒▒░▒▒▒▒░░▒░ ░   ░░░░░░▒░░░▒░░░ ░░░ ░▒█▓▒               ░                 ░ ░░░░░ ░░░ ░░░░░░░░░'), nl,
+    write('▒▒▒▒▒░▒▒░▒▒▒▒░░▒░ ░   ░░░░░░▒░░░▒░░░ ░░░ ░▒█▓▒               ░                 ░ ░░░░░ ░░░ ░░░░░░░░░'), nl, nl,
     write('Zbliżasz się do dziwngo obiektu... teraz widzisz, że jest to... Karolina, która z zamkniętymi oczami leży na ziemi, otoczona jest plamą ciemnoczerwonego płynu... krew.'), nl,
     write('Jesteś zszokowany. Mimowolnie zaczynasz wycofywać się, ale przypadkowo uderzasz w stół, strącając z niego szklankę...'), nl,
     write('Szklanka upada na ziemię natychmiast rozbijając się, przeszywając całe schronisko głośnym hukiem.'), nl, nl,
@@ -450,7 +566,7 @@ spojrz(baca) :-
     write('░░░▒▓█████████▓▓▓▓▓▓▓▓████▓▓▓▓▓▒▒▒▒▓▓▓▓█▓▓████▓▓▓▓▓▓█████████▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒░░░▓▒░░░░▒▒▒'), nl,
     write('░░░░▒█████████▓▓▓▓▓▓▓██▓▒▒▒▓▓██▓▓▒▒▒▒▒▓▓▓▓████████▒▓█████████▓▒▓▓▓▓▓▓▓█▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░▒▒▒░▓▒░░░░░▒▓'), nl,
     write('░░░░░▒█████████▓▓▓▓▓▓▓█▓▒▒▒▓▓▓██▓▓▒▒▓▒▓▓▒█████████▒▒█████████▓▒▓▓▓▓▓▓██▓██▓▓▓▓▓▒▒▒▒▒▒░░░▒▒░▓▒░░░░░▒▓'), nl,
-    write('░▒░░░░▓████████▓▓▓▓▓▓▓▓███▓▓▓▓███▓▒▒▒▓▓▒▓▓███████▓░░▓█████████▒▓▓▓▓▓▓██████▓▓▓▓▒▒░░░▒▒░░░░░░░░░░░░░▓'), nl,
+    write('░▒░░░░▓████████▓▓▓▓▓▓▓▓███▓▓▓▓███▓▒▒▒▓▓▒▓▓███████▓░░▓█████████▒▓▓▓▓▓▓██████▓▓▓▓▒▒░░░▒▒░░░░░░░░░░░░░▓'), nl, nl,
     write('Baca przybiega ze złością w oczasch'), nl,
     write('"KTO W MOJEJ IZBIE PO NOCY ŁOBUZI?!"'), nl,
     write('Jego oczy od razu spadają z ciebie na leżącą obok Karolinę'), nl,
@@ -458,6 +574,7 @@ spojrz(baca) :-
     write('Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie'), nl,
     write('Co tu się wydarzyło?!'), nl,
     write('(TIP: \e[1modpowiedz bacy p/f/w\e[0m) '), nl,
+    retract(can_see(baca)),
     assert(can_answer(baca, cialo)), !, nl.
 
 odpowiedz(baca, p) :-
@@ -469,11 +586,10 @@ odpowiedz(baca, p) :-
     ;   true
     ),
     finish_answer(baca, cialo, p), !, nl,
-    (   finish_answer(kacper, cialo, _) ->
-        all_dialogued
-    ;   true
+    (   \+ can_see(kacper) ->
+        all_dialogued;
+        true
     ),
-    retract(can_see(baca)),
     retract(can_answer(baca, cialo)), !, nl.
 
 
@@ -490,7 +606,6 @@ odpowiedz(baca, f) :-
         all_dialogued
     ;   true
     ),
-    retract(can_see(baca)),
     retract(can_answer(baca, cialo)), !, nl.
 
 odpowiedz(baca, w) :-
@@ -502,7 +617,6 @@ odpowiedz(baca, w) :-
         all_dialogued
     ;   true
     ),
-    retract(can_see(baca)),
     retract(can_answer(baca, cialo)), !, nl.
 
 
@@ -568,32 +682,32 @@ spojrz(osoba) :-
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░░░░░░░░░░█▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█▒░░░░░░░░░░░░░░░░░░░░▒█▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█▓░░░░░░░░░░░░░░░▓█░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl,
-    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██▓▒░░░░▒▓███▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██▓▒░░░░▒▓███▓░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl, nl,
     write('Gość ślamazarnie zbiega ze schodów, przez mrok ciężko ci dostrzec jego sylwetknę oraz twarz'), nl, 
     write('Na pewno jest wysoki, wydaje się być chudy, a płomienie nadają jego twarzy lekki zarys... no i te okulary'), nl,
-    write('"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!" - wykrzyczał'), nl, 
+    write('"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!" - wykrzyczał'), nl, nl, 
     write("Student spojrzał na Karolinę"), nl, 
-    write("AAAAAAAAAAAAAAAAAAAAAAAA, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!"), nl, 
-    write('"Hej ty! Jestem Kacper, zadzwoń po pogotowie, ja zbadam miejsce zbrodni!" - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, 
+    write('"AAAAAAAAAAAAAAAAAAAAAAAA, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!"'), nl, 
+    write('"Hej ty! Jestem Kacper, zadzwoń po pogotowie, ja zbadam miejsce zbrodni!" - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, nl,
     write('odpowiedz:'), nl, 
     write('t: Przecież tutaj nie ma zasięgu.'), nl, 
     write('n: O mój boże kocham prawo! Na jakim wydziale studiujesz?'), nl, 
     assert(can_answer(kacper, cialo)), !, nl.
 
 odpowiedz(kacper, t) :-
-    can_answer(kacper, cialo),
-    write('"Pff, mogłem się domyślić że ten stary dziad nie wie że telelinie można poprowadzić za pośrednictwem łącza bianalogowego" - powiedział nonszalandzko Kacper'), nl,
-    write('Jako student informatyki dociera do ciebie, że Kacper nie ma pojęcia o czym mówi.'), nl,
-    write('No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego'), nl,
+    can_answer(kacper, cialo), nl,
+    write('"Pff, mogłem się domyślić że ten stary dziad nie wie że telelinie można poprowadzić za pośrednictwem łącza bianalogowego" - powiedział nonszalandzko Kacper'), nl, nl,
+    write('Jako student informatyki dociera do ciebie, że Kacper nie ma pojęcia o czym mówi.'), nl, nl,
+    write('No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego'), nl, nl,
     write('Kacper zniknął w ciemności, usłyszałeś tylko że znowu potknął się o ten sam stolik'), nl,
     assert(kacper_hates(baca)),   
+    retract(can_see(osoba)),
+    retract(can_answer(kacper, cialo)),
     finish_answer(kacper, cialo, t), !, nl,
     (   finish_answer(baca, cialo, _) ->
-        all_dialogued
-    ;   true
-    ),
-    retract(can_see(osoba)),
-    retract(can_answer(kacper, cialo)), !, nl.
+        all_dialogued;   
+        true
+    ), !, nl.
 
 odpowiedz(kacper, n) :-
     can_answer(kacper, cialo),
@@ -685,22 +799,22 @@ ending_kacper :-
     write('████▓▓▒▒▓▒▒▒░░░░░░░░░▒▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▓▓▒▓████▓▓████████▓▓▓▓██████▓███████▓▓▓▓████▓▓▓▓██████████████'), nl,
     write('██████▓▒▒▒░░░░░░░▒▒▓▓▓▓██▓▓▓▒▒▒▒▒▒▒▓██▓▒▒▒▓████████████▓▓▓▓████████████████████████▓▓▓██████████████'), nl,
     write('███████▓▒▒░░░░░▒▓▓█████▓▓▓▒▒▒▒▒▓▓███▓▒▒▓▒▓████▓███████▓▓▓▓▓█████▓████████████████████▓██████████████'), nl,
-    write('████████▓▒░░▒▓███████▓▓▒▒▒▒▒▓▓████▓▒▒▒▒▓████████████████████████████████████████████████████████████'), nl,
+    write('████████▓▒░░▒▓███████▓▓▒▒▒▒▒▓▓████▓▒▒▒▒▓████████████████████████████████████████████████████████████'), nl, nl,
     write(''), nl,
     write('"Nie mogę już tego słuchać! Przyjacielu to oczywiste, że ten warszawiak zabił Karolinkę!" - wykrzyczał patrząc na ciebie baca'), nl,
     write('"C.Co.. TO OSZCZERSTWA, ARGUMENT AD PERSONAM! Nigdy bym jej nie zab..." - odparł szybko Kacper'), nl,
     write('"Mam już tego dość! Albo ty albo on!" - przerwał mu rozwcieczony baca'), nl,
-    write('Niepewny sytuacji wolisz nie reagować, pozostaje ci tylko patrzeć jak baca wypycha kacpra na śnieg za izbą, a następnie siada przy \e[piecyku\e[0m'), nl,
+    write('Niepewny sytuacji wolisz nie reagować, pozostaje ci tylko patrzeć jak baca wypycha kacpra na śnieg za izbą, a następnie siada przy \e[1mpiecyku\e[0m'), nl,
     assert(can_see(piecyk)), !, nl.
 
 spojrz(piecyk) :-
     write('░█▀▀░█▀█░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀░▀▀█'), nl,
     write('░█░█░█░█░█░█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█░░▀░'), nl,
     write('░▀▀▀░▀▀▀░▀▀▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░░▀░'), nl,
-    write(), nl,
-    write('"No młody... mamy go z głowy, teraz słuchaj mnie uważnie" - powiedział ze spokojem baca po czym usiadł przy piecyku'),
-    write('"Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz" - powiedział patrząc ci w oczy baca'),
-    write('"A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą" - mówiąc to wskazał na swoją ciupagę'), 
+    write(''), nl,
+    write('"No młody... mamy go z głowy, teraz słuchaj mnie uważnie" - powiedział ze spokojem baca po czym usiadł przy piecyku'), nl,
+    write('"Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz" - powiedział patrząc ci w oczy baca'), nl,
+    write('"A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą" - mówiąc to wskazał na swoją ciupagę'), nl,
     write('Słowa bacy z pewnością nie napawają cię optymizmem... No cóż, przynajmniej nie ma tu już Kacpra'), !, nl.
 
 ending_baca :-
@@ -758,7 +872,7 @@ ending_baca :-
     write('█▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▓█████▓▓█▒▒▓███▓▒▒▒▓▒▓▒▒▒██████████▓▒▒▒▓▓▓▓▓▒░░▒▒▓▓▓▓██████████▓▓▓▓▓▓▒▒▒▒▒▒▒▒▓▓█'), nl,
     write('▓▓▓▒▓▒▒▒▒▒▒▒▒▒▒▒▓▓▒▓▓█████▓▓█▓▒▒▓▓▒▒░░▒▓▓▓▓▒▓██████████▓▒▒▓▓▓▓▓█▒▒▒▓▒▒▓▒▓██████████▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▓'), nl,
     write('▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▓▒▒▓▓██████▓▓▓▒░░▒▒▒▓▓▒▓█▓█▓▒▓██████████▓▒▒▓█▓▓▓█▒▒▒████▓▓██████████▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒'), nl,
-    write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓████▓▓▒▓▓▒░▒▓█▓█▓▒▒█▓▓▓░▓███████████▒▒▒▓▒▒▓▓▒▒▓█▓█▓▓▓██████████▓▓▓▓▓▓▓▒▓▒▒▒▒▒▒▒▒'), nl,
+    write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓████▓▓▒▓▓▒░▒▓█▓█▓▒▒█▓▓▓░▓███████████▒▒▒▓▒▒▓▓▒▒▓█▓█▓▓▓██████████▓▓▓▓▓▓▓▒▓▒▒▒▒▒▒▒▒'), nl, nl,
     write(''), nl,
     write('"Hmmmmm no nie wiem, kto to zrobił, musimy przeprowadzić głosowanie najlepiej metodą kontrpośrednich" - powiedział jak zwykle bez sensu niedoszły prawnik'), nl,
     write('"Kacper to musiał zrobić baca!" - łapiesz warszawiaka za płaszcz i potrząsasz nim'), nl,
@@ -771,7 +885,7 @@ spojrz(podloga) :-
     write('░█▀▀░█▀█░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀'), nl,
     write('░█░█░█░█░█░█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█'), nl,
     write('░▀▀▀░▀▀▀░▀▀▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀'), nl,
-    write(), nl,
+    write(''), nl,
     write('Podnosisz Kacpra z podłogi. Baca dalej leży nieprzytomny, stwierdziliście że musicie wezwać tu policję... lub przynajmniej GOPR.'), nl,
     write('Wybiegacie z izby i kierujecie się w stronę najbliżego szlaku.'), nl,
     write('"Wspaniale, że udało nam się uciec od tego popaprańca... teraz mamy chwilę by porozmawiać o prawie cywilnym!" - rozpromieniał Kacper'), nl,
@@ -843,7 +957,7 @@ ending_player:-
     write('░░░░░░░░░░░░░░░▓██████▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░██████▓░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░▒██████▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒██████▓░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░████████░░░░░░░░░░░░░░░'), nl,
-    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▓▓▒░░░░░░░░░░░░░░░░'), nl,
+    write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▓▓▒░░░░░░░░░░░░░░░░'), nl, nl,
     write(''), nl,
     write('"Ja żem już wystarczająco widzoł, to ty zabiłeś dziołchę Warszawiaku" - powiedział baca z obrzydzeniem w oczach'), nl,
     write('"Pan baca ma rację, nie ma jak wezwać organy ścigania, a ja nie będę tu siedział z mordercą" - dołączył się kacper'), nl,
@@ -854,9 +968,8 @@ ending_player:-
 spojrz(dwor) :-
     write('░█▀▄░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀'), nl,
     write('░█▀▄░█▀█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█'), nl,
-    write('░▀▀░░▀░▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀'), nl,
-    write(), nl,
-    write('Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia'),
+    write('░▀▀░░▀░▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀'), nl, nl,
+    write('Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia'), nl,
     write('Śpiesz się, robi się ciemno...'), !, nl.
 
 % ----------------------------------------------------------------------------- %

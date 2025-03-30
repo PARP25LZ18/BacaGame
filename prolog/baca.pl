@@ -16,10 +16,10 @@ introduction :-
         assert(is_outside),
         assert(can_look),
         nl,
-        write('Była to zimna grudniowa noc, wybrałeś się w Tatry...'), nl,
-        write('Po 5 godzinach wchodzenia pod górę, wreszcie widzisz przed sobą \e[1mschronisko\e[0m'), nl, nl,
-        write('\e[2mTIP: Spróbuj \e[1mspojrzeć\e[0m\e[2m na \e[1mschronisko\e[0m'), nl, 
-        write('\e[2mTIP: aby wyświetlić wszystkie rzeczy na które możesz spojrzeć wpisz \e[1mlvo.\e[0m'),
+        narrate('Była to zimna grudniowa noc, wybrałeś się w Tatry...'),
+        narrate('Po 5 godzinach wchodzenia pod górę, wreszcie widzisz przed sobą \e[1mschronisko\e[0m'), nl,
+        write_tip('Spróbuj \e[1mspojrzeć\e[0m\e[2m na \e[1mschronisko'), 
+        write_tip('Aby wyświetlić wszystkie rzeczy na które możesz spojrzeć wpisz \e[1mlvo.'),
         assert(can_see(schronisko)), !, nl.
 
 start :-
@@ -30,7 +30,7 @@ start :-
 % List visited Objects Function for debugging
 lvo :-
     findall(Object, can_see(Object), Objects),
-    write('Mozesz spojrzec na: '), write(Objects), nl.
+    narrate('Mozesz spojrzec na: '), write(Objects).
 
 
 % user interface to spojrz command
@@ -44,21 +44,21 @@ spojrz(X) :-
 spojrz_specific(X) :-
     tty_clear,
     \+ can_see(X),
-    write('Nie masz możliwości teraz tego zobaczyć.'), nl,
-    write('Hint: pamiętaj, żeby nazwy obiektów wpisywać bez polskich znaków'), !, nl.
+    narrate('Nie masz możliwości teraz tego zobaczyć.'),
+    write_tip('Pamiętaj, żeby nazwy obiektów wpisywać bez polskich znaków'), !, nl.
 
 % POCZĄTEK GRY
 spojrz_specific(schronisko) :-
     is_outside,
     display_hut,
-    write('Z komina schroniska wydobywa się ledwo widoczny dym.'),
-    write('Baca chyba zainwestował w eko-drewno'), nl,
-    write('...albo gmina go zmusiła. Uznajesz, że nie ma czasu do stracenia, ładujesz się do środka'), nl, nl,
-    write('Od razu po wejściu do schroniska czujesz silną woń kompotu, przed sobą dostrzegasz duży \e[1mstół\e[0m.'), nl,
-    write('obok stołu znajduje się ceglany \e[1mkominek\e[0m. Przed kominkiem, na bujanym fotelu siedzi starszy \e[1mmężczyzna\e[0m'), nl,
-    write('Po drugiej stronie stołu znajduje się \e[1mokienko\e[0m, które najpewniej jest recepcją oraz miejscem, z którego'), nl,
-    write('przez cały dzień można pobierać ciepłe posiłki.'), nl, nl,
-    write('\e[2mTIP: Możesz \e[1mspojrzeć\e[22m\e[2m na pogrubione obiekty.\e[0m'),
+    narrate('Z komina schroniska wydobywa się ledwo widoczny dym.'),
+    narrate('Baca chyba zainwestował w eko-drewno'),
+    narrate('...albo gmina go zmusiła. Uznajesz, że nie ma czasu do stracenia, ładujesz się do środka'), nl,
+    narrate('Od razu po wejściu do schroniska czujesz silną woń kompotu, przed sobą dostrzegasz duży \e[1mstół\e[0m.'),
+    narrate('obok stołu znajduje się ceglany \e[1mkominek\e[0m. Przed kominkiem, na bujanym fotelu siedzi starszy \e[1mmężczyzna\e[0m'),
+    narrate('Po drugiej stronie stołu znajduje się \e[1mokienko\e[0m, które najpewniej jest recepcją oraz miejscem, z którego'),
+    narrate('przez cały dzień można pobierać ciepłe posiłki.'), nl,
+    write_tip('Możesz \e[1mspojrzeć\e[22m\e[2m na pogrubione obiekty.\e'),
     assert(can_see(stol)),
     assert(can_see(kominek)),
     assert(can_see(okienko)),
@@ -70,17 +70,18 @@ spojrz_specific(schronisko) :-
 spojrz_specific(stol) :-
     at_introduction,
     display_table,
-    write('Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś.'), nl, nl,
-    write('\e[1;31m"Co tam tak sznupiesz, młody? Drewno wydaje się znajome?"\e[0m - słyszysz głos '),
+    narrate('Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś.'), nl,
+    First_part = 'słyszysz głos ',
     (   looked(mezczyzna) -> 
-        write('\e[1mbacy\e[0m siędzącego na krześle.'),
+        atom_concat(First_part, '\e[1mbacy\e[0m siędzącego na krześle.', Result),
         assert(can_answer(baca, sznupanie))
-    ;   write('\e[1mmężczyzny\e[0m na krześle.'),
+    ;   atom_concat(First_part, '\e[1mmężczyzny\e[0m na krześle.', Result),
         assert(can_answer(mezczyzna, sznupanie))
     ),
-    nl, nl,
-    write('\e[2mTUTORIAL: możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w)\e[0m'), nl,
-    write('\e[2mMożesz odpowiedzieć za pomocą "odpowiedz(<cel>, <odpowiedź>)\e[0m'), nl,
+    baca_say('Co tam tak sznupiesz, młody? Drewno wydaje się znajome?', Result),
+    narrate('Nie masz pojęcia co to może być za drewno. Zastanawiasz się co odpowiedzieć.'),
+    write_tip('Możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w)'),
+    write_tip('Możesz odpowiedzieć za pomocą "odpowiedz(<cel>, <odpowiedź>)'),
     assert(looking(stol)),
     retract(can_see(stol)), !, nl.
 
@@ -89,7 +90,7 @@ spojrz_specific(stol) :-
 % KOMINEK - NIC CIEKAWEGO
 spojrz_specific(kominek) :-
     display_fireplace,
-    write('Ogień w kominku mocno się pali, drewno musiało być dodane niedawno, całkiem tu gorąco.'), !, nl, nl.
+    narrate('Ogień w kominku mocno się pali, drewno musiało być dodane niedawno, całkiem tu gorąco.'), !, nl.
 
 % BACA - INTRODUCTION
 
@@ -100,23 +101,23 @@ spojrz_specific(mezczyzna) :-
 
 spojrz_specific(mezczyzna) :-
     answered(baca, sznupanie, p),
-    write('\e[1;31m"Warszawiak w górach? W taką pogodę? Zaskakjące... w każdym razie witoj w moim schronisku, jestem Baca.\e[0m'), nl, fail.
+    baca_say('\e[1;31m"Warszawiak w górach? W taką pogodę? Zaskakjące... w każdym razie witoj w moim schronisku, jestem Baca.'), fail.
 
 spojrz_specific(mezczyzna) :-
     answered(baca, sznupanie, f),
-    write('\e[1;31m"Na drzewach może się nie znosz, ale widzę, że dałeś radę nas ugościć.. i to w taką pogodę. Jestem Baca, witom."\e[0m'), nl, fail.
+    baca_say('Na drzewach może się nie znosz, ale widzę, że dałeś radę nas ugościć.. i to w taką pogodę. Jestem Baca, witom.'), fail.
 
 spojrz_specific(mezczyzna) :-
     answered(baca, sznupanie, w),
-    write('\e[1;31m"Witoj, jestem Baca. Rozgość się...\e[0m"'), nl, fail.
+    baca_say('Witoj, jestem Baca. Rozgość się...'), fail.
 
 spojrz_specific(mezczyzna) :-
     \+ answered(baca, sznupanie, _),
-    write('\e[1;31m"Ło, prawie cię nie zauważyłem. Jestem Baca, witoj w moim schronisku"\e[0m'), nl, fail.
+    baca_say('Ło, prawie cię nie zauważyłem. Jestem Baca, witoj w moim schronisku'), fail.
 
 spojrz_specific(mezczyzna) :-
     assert(looked(mezczyzna)),
-    write('Baca jest starszym mężczyzną o długich, ciemnych włosach, jego sylwetka jest wyjątkowo muskularna jak na jego wiek. Musi tu ciężko pracować.'),
+    narrate('Baca jest starszym mężczyzną o długich, ciemnych włosach, jego sylwetka jest wyjątkowo muskularna jak na jego wiek. Musi tu ciężko pracować.'),
     !, nl.
 
 % RECEPCJA - ZAKOŃCZENIE WSTĘPU (+ tutorial odpowiadania tak/nie)
@@ -128,21 +129,22 @@ spojrz_specific(mezczyzna) :-
 spojrz_specific(okienko) :-
     \+ answered(karolina, pokoj, n),
     display_karolina,
-    karolina_say('"Hej! Jestem Karolina!"', 'słyszysz głos zza okienka'),
-    karolina_say('"Kuchnię niestety mamy już zamkniętą... ale pewnie chciałbyś wziąć pokój na noc?"'),
-    karolina_say('"z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta..."'), nl,
-    write('Słyszysz brzdęk kluczy...'), nl,
-    karolina_say('"Proszę! numer 32!"'),
-    karolina_say('"Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!"'),
-    write('\e[1m"Dziękuję"\e[0m - odpowiadasz i zabierasz klucz'), nl,
-    karolina_say('"Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?"'),
-    write('(t - skończ intro, n - zostań)\e[0m'), nl,
+    karolina_say('Hej! Jestem Karolina!', 'słyszysz głos zza okienka'),
+    karolina_say('Kuchnię niestety mamy już zamkniętą... ale pewnie chciałbyś wziąć pokój na noc?'),
+    karolina_say('z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta...'), nl,
+    narrate('Słyszysz brzdęk kluczy...'), nl,
+    karolina_say('Proszę! numer 32!'),
+    karolina_say('Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!'),
+    player_say('Dziękuję', 'odpowiadasz i zabierasz klucz'),
+    karolina_say('Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?'),
+    write_info('(t - skończ intro, n - zostań)'),
     assert(can_answer(karolina, pokoj)), !, nl.
 
 
 spojrz_specific(okienko) :-
     assert(can_answer(karolina, pokoj)),
-    write('\e[1;36m"To jak? idziemy?" \e[22;2;39m(odpowiedz na pytanie Karoliny za pomocą t lub n)\e[0m'), !, nl.
+    karolina_say('To jak? idziemy?'),
+    write_tip('Odpowiedz na pytanie Karoliny za pomocą t lub n)'), !, nl.
 
 
 % answer shortcuts
@@ -155,7 +157,7 @@ n :- odpowiedz(_, n).  % nie
 % general answer rules, !!! MUST BE BEFORE OTHER ANSWER RULES
 odpowiedz(X, _) :-
     \+ can_answer(X, _),
-    write('Pytanie nie zostało do ciebie zadane przez '),
+    write_info('Pytanie nie zostało do ciebie zadane przez '),
     write(X), write("."), !, nl.
 
 % KONWERSACJA Z BACA PO INSPEKCJI STOŁU - ODPOWIEDZI
@@ -170,7 +172,7 @@ odpowiedz(mezczyzna, X) :-
 
 odpowiedz(baca, p) :-
     can_answer(baca, sznupanie),
-    write('\e[1m"Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy"\e[0m - odpowiadasz'), nl,
+    player_say('Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy', 'odpowiadasz'), nl,
     write('Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok.'), nl,
     assert(baca_hates(player)),
     finish_answer(baca, sznupanie, p), !, nl.
@@ -202,11 +204,8 @@ odpowiedz(karolina, n) :-
 
 
 finish_answer(Who, Question, Answer) :-
-    write("in finish answer"), nl,
     retract(can_answer(Who, Question)),
-    write("in between"), nl,
     assert(answered(Who, Question, Answer)),
-    write("after"), nl,
     !, nl.
 
 endintro :-
@@ -214,10 +213,15 @@ endintro :-
     retractall(can_see(_)),
     retractall(can_answer(_)),
     retractall(answered(_)),
-    write('Karolina zaprowadziła cię do twojego pokoju.'), nl, nl,
-    write('Rzuciłeś plecak na łóżko.'), nl,
-    write('Padasz ze zmęczenia, kładziesz się w łóżku i natychmiast zasypiasz...'), nl, nl,
-    write('\e[2mHINT: użyj słowa \e[1mstart_story\e[0m\e[2m aby rozpocząć następny rozdział...\e[0m'),
+    narrate('Karolina zaprowadziła cię do twojego pokoju.'), nl,
+    narrate('Rozglądasz się po pokoju - obdrapane ściany, stare drewniane meble, słabe światło pojedynczej żarówki.'),
+    narrate('Nie wygląda najlepiej, ale luksusów nie oczekiwałeś. Wyboru dużego nie miałeś - Właściwie to nie miałeś go wcale.'),
+    player_say('Przynajminej na głowe nie sypie...', 'mruczysz pod nosem'),
+    narrate('Pojechałeś w góry, licząc, że na szlaku znajdziesz trochę spokoju - ucieczkę od obowiązków i niekończących się myśli o przyszłości.'),
+    narrate('Studia powoli dobiegają końca. Jeszcze kilka miesięcy i zostaniesz rzucony w dorosłość.'),
+    narrate('Pracy jest więcej niż kiedykolwiek, a odpowiedzialność zaczyna ciążyć jak plecak, który niosłeś przez całą drogę tutaj.'),
+    narrate('Zrzucasz go z siebie... Wzdychasz ciężko i padasz na materac. Niemal natychmiast zasypiasz'), nl,
+    write_tip('Użyj słowa \e[1mstart_story\e[0m\e[2m aby rozpocząć następny rozdział.'),
     retract(at_introduction),
     !, nl.
 
@@ -231,50 +235,49 @@ endintro :-
 start_story :-
     tty_clear,
      \+ at_introduction,
-    write('Budzisz się. Spoglądasz na zegarek. 1:12.'), nl,
-    write('Czujesz suchość w ustach, zmęczenie po przyjściu do schroniska spowodowało, że zapomniałeś, że od dawna nic już nie piłeś...'), nl,
-    write('Przypominasz sobie, że na stole w holu schroniska stał \e[1mkompot\e[0m. Nie możesz przestać o nim myśleć.'), nl,
-    write('Czujesz, że nie będzie to łatwa noc.'), nl,
+    narrate('Budzisz się. Spoglądasz na zegarek. 1:12.'),
+    narrate('Czujesz suchość w ustach, zmęczenie po przyjściu do schroniska spowodowało, że zapomniałeś, że od dawna nic już nie piłeś...'),
+    narrate('Przypominasz sobie, że na stole w holu schroniska stał \e[1mkompot\e[0m. Nie możesz przestać o nim myśleć.'),
+    narrate('Czujesz, że nie będzie to łatwa noc.'),
     assert(can_see(kompot)), !, nl.
 
 spojrz_specific(kompot) :-
     display_compote,
-    write('Patrzysz na kompot oczami wyobraźni. Jest piekny, pachnacy owocami, ociekajacy zimnynmi kroplami. Po prostu musisz po niego pójść.'), nl,
-    write('Powoli schodzisz schodami w dół... mimo to, słyszysz ciche skrzypienie'), nl,
-    write('Wchodzisz do holu... kątem oka zauważasz dziwny, spory \e[1mobiekt\e[0m na ziemii. Byłby całkowicie niewidoczny, gdyby nie kominek'),
-    write(', który, dopalając się, lekko go oświetlał') , nl,
-    write('Zauważasz też, że podłoga, po której chodzisz lekko się lepi... "i tyle zostało z kompotu..." - pomyślałeś'), nl,
+    narrate('Patrzysz na kompot oczami wyobraźni. Jest piekny, pachnacy owocami, ociekajacy zimnynmi kroplami. Po prostu musisz po niego pójść.'),
+    narrate('Powoli schodzisz schodami w dół... mimo to, słyszysz ciche skrzypienie'),
+    narrate('Wchodzisz do holu... kątem oka zauważasz dziwny, spory \e[1mobiekt\e[0m na ziemii. Byłby całkowicie niewidoczny, gdyby nie kominek, który, dopalając się, lekko go oświetlał'),
+    narrate('Zauważasz też, że podłoga, po której chodzisz lekko się lepi... "i tyle zostało z kompotu..." - pomyślałeś'),
     retract(can_see(kompot)), nl,
     assert(can_see(obiekt)), !, nl.
 
 spojrz_specific(obiekt) :-
     display_dead_body,
-    write('Zbliżasz się do dziwngo obiektu... teraz widzisz, że jest to... \e[36mKarolina\e[0m, która z zamkniętymi oczami leży na ziemi, otoczona jest plamą ciemnoczerwonego płynu... krew.'), nl,
-    write('Jesteś zszokowany. Mimowolnie zaczynasz wycofywać się, ale przypadkowo uderzasz w stół, strącając z niego szklankę...'), nl,
-    write('Szklanka upada na ziemię natychmiast rozbijając się, przeszywając całe schronisko głośnym hukiem.'), nl, nl,
-    write('Do pomieszczenia wbiega \e[1mbaca\e[0m oraz nieznana ci wcześniej \e[1mosoba\e[0m, pewnie to gość o którym wspominała żywa jeszcze Karolina.'), nl,
+    narrate('Zbliżasz się do dziwngo obiektu... teraz widzisz, że jest to... \e[36mKarolina\e[0m, która z zamkniętymi oczami leży na ziemi, otoczona jest plamą ciemnoczerwonego płynu... krew.'),
+    narrate('Jesteś zszokowany. Mimowolnie zaczynasz wycofywać się, ale przypadkowo uderzasz w stół, strącając z niego szklankę...'),
+    narrate('Szklanka upada na ziemię natychmiast rozbijając się, przeszywając całe schronisko głośnym hukiem.'), nl,
+    narrate('Do pomieszczenia wbiega \e[1mbaca\e[0m oraz nieznana ci wcześniej \e[1mosoba\e[0m, pewnie to gość o którym wspominała żywa jeszcze Karolina.'),
     retract(can_see(obiekt)),
     assert(can_see(baca)),
     assert(can_see(osoba)), !, nl.
 
 spojrz_specific(baca) :-
     display_baca2,
-    write('Baca przybiega ze złością w oczasch'), nl,
-    write('\e[1;31m"KTO W MOJEJ IZBIE PO NOCY ŁOBUZI?!"\e[0m'), nl,
-    write('Jego oczy od razu spadają z ciebie na leżącą obok Karolinę'), nl,
-    write('\e[1;31m"Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać"\e[0m'), nl,
-    write('Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie'), nl,
-    write('"\e[1;31mCo tu się wydarzyło?!"\e[0m'), nl,
-    write('\e[2m(TIP: \e[1modpowiedz bacy p/f/w\e[0m) '), nl,
+    narrate('Baca przybiega ze złością w oczasch'),
+    baca_say('KTO W MOJEJ IZBIE PO NOCY ŁOBUZI?!'),
+    narrate('Jego oczy od razu spadają z ciebie na leżącą obok Karolinę'),
+    baca_say('Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać!'),
+    narrate('Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie.'),
+    baca_say('Łoo pierunie! A coz to sie tu porobiło?!'),
+    write_tip('Odpowiedz bacy p/f/w) '),
     retract(can_see(baca)),
     assert(can_answer(baca, cialo)), !, nl.
 
 odpowiedz(baca, p) :-
     can_answer(baca, cialo),
-    write('\e[1m"Zszedłem na dół bo chciałem się napić kompotu, Karolina już tu leżała"\e[0m - odpowiadasz'), nl,
-    write('\e[1;31m"Czyli byłeś z nią sam na sam..." - odpowiada pod nosem baca i wpatruje ci się głęboko w oczy\e[0m'), nl,
+    player_say('Zszedłem na dół bo chciałem się napić kompotu, Karolina już tu leżała', 'odpowiadasz'),
+    baca_say('Czyli byłeś z nią sam na sam...', 'odpowiada pod nosem baca i wpatruje ci się głęboko w oczy'),
     (   baca_hates(player) ->
-        write('\e[1;31m"Warszawiaku...."\e[0m - mówi baca z wyraźną niechęcią'), nl
+        baca_say('Warszawiaku....', 'mówi baca z wyraźną niechęcią')
     ;   true
     ),
     finish_answer(baca, cialo, p), !, nl,
@@ -287,10 +290,10 @@ odpowiedz(baca, p) :-
 
 odpowiedz(baca, f) :-
     can_answer(baca, cialo),
-    write('\e[1m"Obudził mnie huk, gdy zszedłem ten gość stał nad zwłokami Karoliny!"\e[0m'), nl,
+    player_say('Obudził mnie huk, gdy zszedłem ten gość stał nad zwłokami Karoliny!'),
     (   baca_hates(player) ->
-        write('\e[1;31m"Tyn z Warszawy i tyn z Warszawy, wszyscy siebie warci"\e[0m - Baca nie wydaje się przekonany twoim wytłumaczeniem'), nl
-    ;   write('\e[1;31m"Ja slyszał że on ze stolycy, tym nigdy nie wolno ufać"\e[0m'), nl,
+        baca_say('Tyn z Warszawy i tyn z Warszawy, wszyscy siebie warci', 'Baca nie wydaje się przekonany twoim wytłumaczeniem')
+    ;   baca_say('Ja slyszał że on ze stolycy, tym nigdy nie wolno ufać'),
         assert(baca_hates(kacper))
     ),
     finish_answer(baca, cialo, f), !, nl,
@@ -302,8 +305,8 @@ odpowiedz(baca, f) :-
 
 odpowiedz(baca, w) :-
     can_answer(baca, cialo),
-    write('\e[1m"Nie wiem, zbiegłem na dół razem z wami"\e[0m'), nl,
-    write('\e[1;31m"Dziwne, nie widziałem cię."\e[0m - odpowiedział baca z nutą niepewności'), nl,
+    player_say('Nie wiem, zbiegłem na dół razem z wami'),
+    baca_say('Dziwne, nie widziałem cię.', 'odpowiedział baca z nutą niepewności'),
     finish_answer(baca, cialo, w), !, nl,
     (   answered(kacper, cialo, _) ->
         all_dialogued
@@ -314,9 +317,9 @@ odpowiedz(baca, w) :-
 
 spojrz_specific(osoba) :-
     display_kacper1,
-    write('Gość ślamazarnie zbiega ze schodów, przez mrok ciężko ci dostrzec jego sylwetknę oraz twarz'), nl, 
-    write('Na pewno jest wysoki, wydaje się być chudy, a płomienie nadają jego twarzy lekki zarys... no i te okulary'), nl,
-    write('\e[1;32m"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!"\e[0m - wykrzyczał'), nl, nl, 
+    narrate('Gość ślamazarnie zbiega ze schodów, przez mrok ciężko ci dostrzec jego sylwetknę oraz twarz'),
+    narrate('Na pewno jest wysoki, wydaje się być chudy, a płomienie nadają jego twarzy lekki zarys... no i te okulary'),
+    write('\e[1;32m"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!"\e[0m - wykrzyczał'), nl, 
     write('Student spojrzał na Karolinę'), nl, 
     write('\e[1;42m"AAAAAAAAAAAAAAAAAAAAAAAA\e[49;1;32m, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!"'), nl, 
     write('"Hej ty! Jestem Kacper. Zadzwoń po pogotowie, ja zbadam miejsce zbrodni!"\e[0m - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, nl,

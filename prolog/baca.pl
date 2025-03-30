@@ -1,7 +1,7 @@
 % instructions for `start`
 
-:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1, kacper_hates/1, oskarz/1, can_accuse/0.
-:- discontiguous spojrz/1, odpowiedz/2.
+:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1, kacper_hates/1, oskarz/1, can_accuse/0, can_look/0, looked/1.
+:- discontiguous spojrz/1, spojrz_specific/1, odpowiedz/2.
 
 instructions :-
     tty_clear,
@@ -23,6 +23,7 @@ instructions :-
 introduction :-
         assert(at_introduction),
         assert(is_outside),
+        assert(can_look),
         nl,
         write('Była to zimna grudniowa noc, wybrałeś się w Tatry...'), nl,
         write('Po 5 godzinach wchodzenia pod górę, wreszcie widzisz przed sobą \e[1mschronisko\e[0m'), nl, nl,
@@ -38,18 +39,25 @@ start :-
 % List visited Objects Function for debugging
 lvo :-
     findall(Object, can_see(Object), Objects),
-    write('You can see: '), write(Objects), nl.
+    write('Mozesz spojrzec na: '), write(Objects), nl.
+
+
+% user interface to spojrz command
+spojrz(X) :-
+    \+ can_answer(_, _), 
+    !,
+    spojrz_specific(X).
+
 
 % general see rule
-
-spojrz(X) :-
+spojrz_specific(X) :-
     tty_clear,
     \+ can_see(X),
     write('Nie masz możliwości teraz tego zobaczyć.'), nl,
     write('Hint: pamiętaj, żeby nazwy obiektów wpisywać bez polskich znaków'), !, nl.
 
 % POCZĄTEK GRY
-spojrz(schronisko) :-
+spojrz_specific(schronisko) :-
     is_outside,
     write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░'), nl,
     write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
@@ -103,7 +111,7 @@ spojrz(schronisko) :-
     retract(is_outside), !, nl.
 
 % TUTORIAL ODPOWIADANIA
-spojrz(stol) :-
+spojrz_specific(stol) :-
     at_introduction,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒'), nl,
@@ -142,13 +150,23 @@ spojrz(stol) :-
     write('▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
     write('▒░░░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl, nl,
     write('Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś.'), nl, nl,
-    write('\e[1;31m"Co tam tak sznupiesz, młody? Drewno wydaje się znajome?"\e[0m - słyszysz głos \e[1mmężczyzny\e[0m na krześle'), nl, nl,
+    write('\e[1;31m"Co tam tak sznupiesz, młody? Drewno wydaje się znajome?"\e[0m - słyszysz głos '),
+    (   looked(mezczyzna) -> 
+        write('\e[1mbacy\e[0m siędzącego na krześle.'),
+        assert(can_answer(baca, sznupanie))
+    ;   write('\e[1mmężczyzny\e[0m na krześle.'),
+        assert(can_answer(mezczyzna, sznupanie))
+    ),
+    nl, nl,
     write('\e[2mTUTORIAL: możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w)\e[0m'), nl,
-    write('\e[2mMożesz odpowiedzieć mężczyźnie za pomocą "odpowiedz(<cel>, <odpowiedź>)\e[0m'), nl,
-    assert(can_answer(mezczyzna, sznupanie)), !, nl.
+    write('\e[2mMożesz odpowiedzieć za pomocą "odpowiedz(<cel>, <odpowiedź>)\e[0m'), nl,
+    assert(looked(stol)),
+    retract(can_see(stol)), !, nl.
+
+    
 
 % KOMINEK - NIC CIEKAWEGO
-spojrz(kominek) :-
+spojrz_specific(kominek) :-
     write('       ░▓▓█████▓▓▓█▓▓█▓▓█████████▓█████████████▓▓███████████████████████████████████████████        '), nl,
     write('        ▓▓█▓▓▓████▓███████▓█▓███▓▓▓█▓███████████▓█████████▓█████████████████████▓▓▓█████████░       '), nl,
     write('        ████████████████████████████████████████████████████████████████████████████████████░       '), nl,
@@ -198,7 +216,7 @@ spojrz(kominek) :-
 
 % BACA - INTRODUCTION
 
-spojrz(mezczyzna) :-
+spojrz_specific(mezczyzna) :-
     write('███████████████████████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████████████████████████▓▓█▓▓███████████████'), nl,
     write('███████████████████████████████████████▓▓▓▓▓▒▓▒▓▒▒▓▓▒▓▓▓█████████████████████▓▓███▓▓▓████▓██████████'), nl,
     write('██████████████████████████████████████▓▓▓▓▓▒▒▒▓▒▓▒▓▓▒▒▓▓▓███████████████████▓██▓▓▒▓▓▓███████████████'), nl,
@@ -253,26 +271,28 @@ spojrz(mezczyzna) :-
     write('▓▓██████████████▒████████████▓▒▒░███▓▒░░░▒██▓▒░░░▒▒▓▓▓▓▓░░▒░▒▓░░░░▒▓▓▒██▓▒▓▓▓██▒▒░░░░░░░░░▒▓███▓▒░░░'), nl,
     write('██████████████████▓███████████▓▒▒░▒███▓▒░░░▒██▒▒░▓▓▓▓▓███░▒█▓█▓▒▓▒▒█▒▓█▓▒▓▓▓▓▓█▒▓██▒░░░░░░░░▒▓████▒░'), nl,
     write('███████████████████████████████▓▓▒░░▒▓██▓▒░░▒▓▓▒▓▓▓█▓▓███▒▒████▒▒▒▓█▒███▓██████████████▓▒░░░░░▒▓███▓'), nl,
-    write('█████████████████████████████████▓▒▒░▒▒▓██▒▒░░▓▓▓█████████▓███████████████████▓█▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▓██'), nl, nl, fail.
+    write('█████████████████████████████████▓▒▒░▒▒▓██▒▒░░▓▓▓█████████▓███████████████████▓█▓▓▓▓▓▓▓▓▓▓███▒▒▒▒▓██'), nl, nl,
+    retract(can_see(mezczyzna)), fail.
+    
 
-spojrz(mezczyzna) :-
-    answered(mezczyzna, sznupanie, p),
+spojrz_specific(mezczyzna) :-
+    answered(baca, sznupanie, p),
     write('\e[1;31m"Warszawiak w górach? W taką pogodę? Zaskakjące... w każdym razie witoj w moim schronisku, jestem Baca.\e[0m'), nl, fail.
 
-spojrz(mezczyzna) :-
-    answered(mezczyzna, sznupanie, f),
+spojrz_specific(mezczyzna) :-
+    answered(baca, sznupanie, f),
     write('\e[1;31m"Na drzewach może się nie znosz, ale widzę, że dałeś radę nas ugościć.. i to w taką pogodę. Jestem Baca, witom."\e[0m'), nl, fail.
 
-spojrz(mezczyzna) :-
-    answered(mezczyzna, sznupanie, w),
+spojrz_specific(mezczyzna) :-
+    answered(baca, sznupanie, w),
     write('\e[1;31m"Witoj, jestem Baca. Rozgość się...\e[0m"'), nl, fail.
 
-spojrz(mezczyzna) :-
-    \+ answered(mezczyzna, sznupanie, _),
+spojrz_specific(mezczyzna) :-
+    \+ answered(baca, sznupanie, _),
     write('\e[1;31m"Ło, prawie cię nie zauważyłem. Jestem Baca, witoj w moim schronisku"\e[0m'), nl, fail.
 
-spojrz(mezczyzna) :-
-    nl,
+spojrz_specific(mezczyzna) :-
+    assert(looked(mezczyzna)),
     write('Baca jest starszym mężczyzną o długich, ciemnych włosach, jego sylwetka jest wyjątkowo muskularna jak na jego wiek. Musi tu ciężko pracować.'),
     !, nl.
 
@@ -280,16 +300,10 @@ spojrz(mezczyzna) :-
 
 % Odpowiedzieliśmy nie - teraz możemy wrócić do karoliny i natychmiast skończyć intro
 
-spojrz(okienko) :-
-    can_answer(karolina, pokoj),
-    write('\e[1;36m"To jak? idziemy?" \e[22;2;39m(odpowiedz na pytanie Karoliny za pomocą t lub n)\e[0m'), !, nl.
-
-spojrz(okienko) :-
-    answered(karolina, pokoj, n),
-    endintro, !, nl.
 
 % Karolina introduction
-spojrz(okienko) :-
+spojrz_specific(okienko) :-
+    \+ answered(karolina, pokoj, n),
     write('▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▓▒▒▓▓▓▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▒▒▓▓▓█████████████████████████████████████'), nl,
     write('▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▒▒░▒▒▒▓▒▓░▒▒▒▒▒▒▒▒▓▒▓▓▓▓▓▓▓▓▓▓▒▓█▓▓▓▓████████████████████████████████'), nl,
     write('▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▒▓▓█▓▓▓███████████████████████████████'), nl,
@@ -328,6 +342,7 @@ spojrz(okienko) :-
     write('▒▒▓▒▒▒                                                      ░  ░  ░    ░░░░░░░░░░░░░░░░░░░▒█████████'), nl,
     write('▒▒▒▒▒                                                  ░ ░      ░░    ░░░ ░░░░░░░░░░░░░▒░░░▒████████'), nl,
     write('▒▒▒▒                                                      ░░ ░░ ░░░   ░░░░░░░░░░▒░░░░░░▒░░░▒████████'), nl, nl,
+
     write('\e[1;36m"Hej! Jestem Karolina!"\e[22;39m - słyszysz głos zza okienka'), nl,
     write('\e[1;36m"Kuchnię niestety mamy już zamkniętą... ale pewnie chciałbyś wziąć pokój na noc?"'), nl,
     write('"z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta..."\e[0m'), nl, nl,
@@ -339,6 +354,9 @@ spojrz(okienko) :-
     assert(can_answer(karolina, pokoj)), !, nl.
 
 
+spojrz_specific(okienko) :-
+    assert(can_answer(karolina, pokoj)),
+    write('\e[1;36m"To jak? idziemy?" \e[22;2;39m(odpowiedz na pytanie Karoliny za pomocą t lub n)\e[0m'), !, nl.
 
 
 % answer shortcuts
@@ -351,51 +369,65 @@ n :- odpowiedz(_, n).  % nie
 % general answer rules, !!! MUST BE BEFORE OTHER ANSWER RULES
 odpowiedz(X, _) :-
     \+ can_answer(X, _),
-    write('nie zostało ci zadane pytanie'), !, nl.
+    write('Pytanie nie zostało do ciebie zadane przez '),
+    write(X), write("."), !, nl.
 
 % KONWERSACJA Z BACA PO INSPEKCJI STOŁU - ODPOWIEDZI
 
-odpowiedz(mezczyzna, p) :-
-    can_answer(mezczyzna, sznupanie),
-    write('\e[1m"Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy" - odpowiadasz'), nl,
+odpowiedz(mezczyzna, X) :-
+    \+ looked(mezczyzna),
+    looked(stol),
+    assert(can_answer(baca, sznupanie)),
+    odpowiedz(baca, X),
+    retract(can_answer(mezczyzna, sznupanie)), !.
+
+odpowiedz(baca, p) :-
+    can_answer(baca, sznupanie),
+    write('\e[1m"Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy"\e[0m - odpowiadasz'), nl,
     write('Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok.'), nl,
     assert(baca_hates(player)),
-    finish_answer(mezczyzna, sznupanie, p), !, nl.
+    finish_answer(baca, sznupanie, p), !, nl.
 
-odpowiedz(mezczyzna, f) :-
-    can_answer(mezczyzna, sznupanie),
-    write('\e[1m"Stolik jest niezwykle solidny, od razu widać że to dąb" - odpowiadasz z przekonaniem'), nl,
-    write('\e[1;31m"Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna." - odpowiada mężczyzna i przewraca oczami'), nl,
-    finish_answer(mezczyzna, sznupanie, f), !, nl.
+odpowiedz(baca, f) :-
+    can_answer(baca, sznupanie),
+    write('\e[1m"Stolik jest niezwykle solidny, od razu widać że to dąb"\e[0m - odpowiadasz z przekonaniem'), nl,
+    write('\e[1;31m"Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna."\e[0m - odpowiada mężczyzna i przewraca oczami'), nl,
+    finish_answer(baca, sznupanie, f), !, nl.
 
-odpowiedz(mezczyzna, w) :-
-    can_answer(mezczyzna, sznupanie), nl,
-    write('\e[1m"Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!"'), nl,
-    write('\e[1;31m"Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata." - opowiada mężczyzna'), nl,
-    finish_answer(mezczyzna, sznupanie, w), !, nl.
+odpowiedz(baca, w) :-
+    can_answer(baca, sznupanie),
+    write('\e[1m"Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!"\e[0m - odpowiadasz'), nl,
+    write('\e[1;31m"Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata."\e[0m - opowiada mężczyzna'), nl,
+    finish_answer(baca, sznupanie, w), !, nl.
+
 
 odpowiedz(karolina, t) :-
     can_answer(karolina, pokoj),
     finish_answer(karolina, pokoj, t),
     write('\e[1;36m"Chodź za mną."\e[0m'), nl,
+    sleep(3),
     endintro, !, nl.
 
 odpowiedz(karolina, n) :-
     can_answer(karolina, pokoj),
     write('\e[1;36m"Spoko, podejdź do okienka jak będziesz gotowy"\e[0m'), nl,
-    finish_answer(karolina, pokoj, t), !, nl.
+    finish_answer(karolina, pokoj, n), !, nl.
 
 
 finish_answer(Who, Question, Answer) :-
+    write("in finish answer"), nl,
     retract(can_answer(Who, Question)),
-    assert(answered(Who, Question, Answer)), !, nl.
+    write("in between"), nl,
+    assert(answered(Who, Question, Answer)),
+    write("after"), nl,
+    !, nl.
 
 endintro :-
-    tty_clear,
+    % tty_clear,
     retractall(can_see(_)),
     retractall(can_answer(_)),
     retractall(answered(_)),
-    write('Karolina zaprowadziła cię do swojego pokoju.'), nl, nl,
+    write('Karolina zaprowadziła cię do twojego pokoju.'), nl, nl,
     write('Rzuciłeś plecak na łóżko.'), nl,
     write('Padasz ze zmęczenia, kładziesz się w łóżku i natychmiast zasypiasz...'), nl, nl,
     write('\e[2mHINT: użyj słowa \e[1mstart_story\e[0m\e[2m aby rozpocząć następny rozdział...\e[0m'),
@@ -418,7 +450,7 @@ start_story :-
     write('Czujesz, że nie będzie to łatwa noc.'), nl,
     assert(can_see(kompot)), !, nl.
 
-spojrz(kompot) :-
+spojrz_specific(kompot) :-
     write('                               ░ ░░░░░░░░░░░░░░░░░░░░░░░░░ ░                                        '), nl,
     write('                        ░         ░░░░░░░░░░░░ ░░░░░░░░░ ░░░░░░░░  ░ ░░░░░░                         '), nl,
     write('                 ░░░░               ░ ░ ░ ░ ░░░░  ░ ░ ░░░░ ░ ░░░░     ░░░░░░░░░░░░░                 '), nl,
@@ -470,7 +502,7 @@ spojrz(kompot) :-
     retract(can_see(kompot)), nl,
     assert(can_see(obiekt)), !, nl.
 
-spojrz(obiekt) :-
+spojrz_specific(obiekt) :-
     write('▓▓█▓  █▓▓▓█ ▓▒▒▒  ▓█▓▓▓▓▓░░░░░▒▒▒▒▒▒▒▒░▒▒▒▒░░░▒▒▒░▒▒▒▒▒▒░▒▒░░░░ ░░░▒▒▒▒▒░░▒▒░▒▒▒▒▒░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒'), nl,
     write('▓██▓█ ▒▓▓░░    ▓▒░█▓█▒░░▒░░▒░░░░░░░░░▒▒▒▒▒▒░░░▒░░█░░▓▓▒░░░░░░░░░░░░░░▒▒▒░░░░░░░░▒▓░░░░░░░░░░░░░░▒░░░'), nl,
     write('▒░██ ░     ▓▓▓▓▓▓▒ ▒░░░░░░░░░░░░░░░░░░░▒▒▒▒░░██████░░░▒░░░░░░░░░░░░░░  ░░░░░░░▒▒▒░░▒▒▒░░▒▒░▒░░░░░░░░'), nl,
@@ -520,7 +552,7 @@ spojrz(obiekt) :-
     assert(can_see(baca)),
     assert(can_see(osoba)), !, nl.
 
-spojrz(baca) :-
+spojrz_specific(baca) :-
     write('█▓▓▓████████████████████████████▓▓▓▓▓▓▒▒▓▓███████████▓██████████████████████████████████████████████'), nl,
     write('█▓▓▓█████████████████████████▓▓▓▒▓▒▒▒▒▒▒▒▒▓▒▒▓█▓█████▓████████████████████████████████████▓▓████████'), nl,
     write('█▓▓████████████████████▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▓▒▓███▓███████████████████████████████████████████████'), nl,
@@ -619,7 +651,7 @@ odpowiedz(baca, w) :-
     retract(can_answer(baca, cialo)), !, nl.
 
 
-spojrz(osoba) :-
+spojrz_specific(osoba) :-
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░░░░░░░░▓██████████████████████████████▓▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl,
     write('░░░░░░░░░░░░░░░░░░░░░███████████████████████████████████████████████████▓▒░░░░░░░░░░░░░░░░░░░░░░░░░░'), nl,
@@ -687,10 +719,11 @@ spojrz(osoba) :-
     write('\e[1;32m"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!"\e[0m - wykrzyczał'), nl, nl, 
     write('Student spojrzał na Karolinę'), nl, 
     write('\e[1;42m"AAAAAAAAAAAAAAAAAAAAAAAA\e[49;1;32m, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!"'), nl, 
-    write('"Hej ty! Jestem Kacper, zadzwoń po pogotowie, ja zbadam miejsce zbrodni!"\e[0m - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, nl,
+    write('"Hej ty! Jestem Kacper. Zadzwoń po pogotowie, ja zbadam miejsce zbrodni!"\e[0m - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, nl,
     write('odpowiedz:'), nl, 
     write('t: Przecież tutaj nie ma zasięgu.'), nl, 
     write('n: O mój boże kocham prawo! Na jakim wydziale studiujesz?'), nl, 
+    retract(can_see(osoba)),
     assert(can_answer(kacper, cialo)), !, nl.
 
 odpowiedz(kacper, t) :-
@@ -700,7 +733,7 @@ odpowiedz(kacper, t) :-
     write('\e[1;32m"No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego"\e[0m'), nl, nl,
     write('Kacper zniknął w ciemności, usłyszałeś tylko że znowu potknął się o ten sam stolik'), nl,
     assert(kacper_hates(baca)),   
-    retract(can_see(osoba)),
+    retract(can_see(kacper)),
     finish_answer(kacper, cialo, t), !, nl,
     (   answered(baca, cialo, _) ->
         !, all_dialogued;   
@@ -760,7 +793,7 @@ all_dialogued :-
 % ----------------------------------------------------------------------------- %
 % Rozmowy przy stole z Bacą i Kacprem, ogarnianie kto zabił Karolinę.
 
-spojrz(stol) :-
+spojrz_specific(stol) :-
     \+ at_introduction,
     write('Zasiadasz do stołu z Bacą i Kacprem. Ogień w \e[1mkominku\e[0m już się dopala...'), nl,
     write('Przed tobą stoi najprawdopodobniej ostatnia \e[1mszklanka\e[0m słynnego kompotu \e[36mKaroliny.\e[39m'), nl,
@@ -867,7 +900,7 @@ ending_kacper :-
     write('Niepewny sytuacji wolisz nie reagować, pozostaje ci tylko patrzeć jak baca wypycha kacpra na śnieg za izbą, a następnie siada przy \e[1mpiecyku\e[0m'), nl,
     assert(can_see(piecyk)), !, nl.
 
-spojrz(piecyk) :-
+spojrz_specific(piecyk) :-
     write('░█▀▀░█▀█░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀░▀▀█'), nl,
     write('░█░█░█░█░█░█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█░░▀░'), nl,
     write('░▀▀▀░▀▀▀░▀▀▀░▀▀░░░░▀▀▀░▀░▀░▀▀░░▀▀▀░▀░▀░▀▀▀░░▀░'), nl,
@@ -941,7 +974,7 @@ ending_baca :-
     write('Kacper szczęśliwie wylądował prosto na bacy, zderzając się z nim głową. Baca oraz Kacper leżeli teraz wpółprzytomnie na \e[1mpodłodze\e[0m.'), nl,
     assert(can_see(podloga)), !, nl.
 
-spojrz(podloga) :-
+spojrz_specific(podloga) :-
     write('\e[32m'),
     write('░█▀▀░█▀█░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀'), nl,
     write('░█░█░█░█░█░█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█'), nl,
@@ -1028,7 +1061,7 @@ ending_player:-
     assert(can_see(dwor)), !, nl.
 
 
-spojrz(dwor) :-
+spojrz_specific(dwor) :-
     write('\e[31m'),
     write('░█▀▄░█▀█░█▀▄░░░█▀▀░█▀█░█▀▄░▀█▀░█▀█░█▀▀'), nl,
     write('░█▀▄░█▀█░█░█░░░█▀▀░█░█░█░█░░█░░█░█░█░█'), nl,
@@ -1037,14 +1070,21 @@ spojrz(dwor) :-
     write('Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia'), nl,
     write('Śpiesz się, robi się ciemno...'), !, nl.
 
+
+
+
+
 % ----------------------------------------------------------------------------- %
 %                                    CLEAN UP                                   %
 % ----------------------------------------------------------------------------- %
 
 % !!! UNMATCHED LOOK RULE, MUST BE AFTER OTHER SEE RULES
-spojrz(_) :-
+spojrz_specific(_) :-
     write('Patrzysz się w otchłań marząc o Warszawie'), !, nl.
     
 % !!! GENERAL ANSWER RULE, MUST BE AFTER OTHER ANSWER RULES
 odpowiedz(_, _) :-
     write('nie możesz tak odpowiedzieć!'), !, nl.
+
+spojrz(_) :-
+    write('Nie możesz teraz tego zrobić - jesteś w trakcie rozmowy.'), nl.

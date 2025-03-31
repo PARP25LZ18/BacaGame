@@ -6,6 +6,8 @@
 :- use_module(conv).
 :- use_module(img).
 
+:- initialization(instructions).
+
 instructions :-
     display_instructions.
     % ...
@@ -23,7 +25,6 @@ introduction :-
         assert(can_see(schronisko)), !, nl.
 
 start :-
-    instructions,
     introduction.
 
 
@@ -234,7 +235,7 @@ endintro :-
 
 start_story :-
     tty_clear,
-     \+ at_introduction,
+    \+ at_introduction,
     narrate('Budzisz się. Spoglądasz na zegarek. 1:12.'),
     narrate('Czujesz suchość w ustach, zmęczenie po przyjściu do schroniska spowodowało, że zapomniałeś, że od dawna nic już nie piłeś...'),
     narrate('Przypominasz sobie, że na stole w holu schroniska stał \e[1mkompot\e[0m. Nie możesz przestać o nim myśleć.'),
@@ -371,7 +372,7 @@ odpowiedz(kacper, w) :-
     finish_answer(kacper, uczelnia, w), !.
 
 all_dialogued :-
-    write('\e[1;31m"Dobra, siadojcie do \e[1mstołu\e[0m. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy."\e[0m'),
+    baca_say('Dobra, siadojcie do \e[1mstołu\e[0m. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy.'),
     write('- powiedział Baca i postawił na \e[1mstole\e[0m wielki dzban kompotu'), nl,
     write('\e[1;32m"Tak!! Czekałem na ten moment całe życie! Moje umiejętności społecznej dedukcji zakończą tą sprawę w sekundę!"\e[0m'),
     write('- wtrąca Kacper i siadając do stołu potyka się o jego nogę.'), nl,

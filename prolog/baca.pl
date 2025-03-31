@@ -172,34 +172,34 @@ odpowiedz(mezczyzna, X) :-
 
 odpowiedz(baca, p) :-
     can_answer(baca, sznupanie),
-    player_say('Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy', 'odpowiadasz'), nl,
-    write('Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok.'), nl,
+    player_say('Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy', 'odpowiadasz'),
+    narrate('Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok.'),
     assert(baca_hates(player)),
     finish_answer(baca, sznupanie, p), !, nl.
 
 odpowiedz(baca, f) :-
     can_answer(baca, sznupanie),
-    write('\e[1m"Stolik jest niezwykle solidny, od razu widać że to dąb"\e[0m - odpowiadasz z przekonaniem'), nl,
-    write('\e[1;31m"Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna."\e[0m - odpowiada mężczyzna i przewraca oczami'), nl,
+    player_say('Stolik jest niezwykle solidny, od razu widać że to dąb', 'odpowiadasz z przekonaniem'),
+    baca_say('Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna.', 'odpowiada mężczyzna i przewraca oczami'),
     finish_answer(baca, sznupanie, f), !, nl.
 
 odpowiedz(baca, w) :-
     can_answer(baca, sznupanie),
-    write('\e[1m"Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!"\e[0m - odpowiadasz'), nl,
-    write('\e[1;31m"Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata."\e[0m - opowiada mężczyzna'), nl,
+    player_say('Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!', 'odpowiadasz'),
+    baca_say('Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata.', 'opowiada mężczyzna'),
     finish_answer(baca, sznupanie, w), !, nl.
 
 
 odpowiedz(karolina, t) :-
     can_answer(karolina, pokoj),
     finish_answer(karolina, pokoj, t),
-    write('\e[1;36m"Chodź za mną."\e[0m'), nl,
-    sleep(3),
+    karolina_say('Chodź za mną.'),
+    write_waiting,
     endintro, !, nl.
 
 odpowiedz(karolina, n) :-
     can_answer(karolina, pokoj),
-    write('\e[1;36m"Spoko, podejdź do okienka jak będziesz gotowy"\e[0m'), nl,
+    karolina_say('Spoko, podejdź do okienka jak będziesz gotowy', 'powiedziała z miłym wyrazem na twarzy'),
     finish_answer(karolina, pokoj, n), !, nl.
 
 
@@ -220,7 +220,7 @@ endintro :-
     narrate('Pojechałeś w góry, licząc, że na szlaku znajdziesz trochę spokoju - ucieczkę od obowiązków i niekończących się myśli o przyszłości.'),
     narrate('Studia powoli dobiegają końca. Jeszcze kilka miesięcy i zostaniesz rzucony w dorosłość.'),
     narrate('Pracy jest więcej niż kiedykolwiek, a odpowiedzialność zaczyna ciążyć jak plecak, który niosłeś przez całą drogę tutaj.'),
-    narrate('Zrzucasz go z siebie... Wzdychasz ciężko i padasz na materac. Niemal natychmiast zasypiasz'), nl,
+    narrate('Zrzucasz go z siebie... Wzdychasz ciężko i padasz na materac. Niemal natychmiast zasypiasz...'),
     write_tip('Użyj słowa \e[1mstart_story\e[0m\e[2m aby rozpocząć następny rozdział.'),
     retract(at_introduction),
     !, nl.
@@ -319,11 +319,11 @@ spojrz_specific(osoba) :-
     display_kacper1,
     narrate('Gość ślamazarnie zbiega ze schodów, przez mrok ciężko ci dostrzec jego sylwetknę oraz twarz'),
     narrate('Na pewno jest wysoki, wydaje się być chudy, a płomienie nadają jego twarzy lekki zarys... no i te okulary'),
-    write('\e[1;32m"Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!"\e[0m - wykrzyczał'), nl, 
-    write('Student spojrzał na Karolinę'), nl, 
-    write('\e[1;42m"AAAAAAAAAAAAAAAAAAAAAAAA\e[49;1;32m, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!"'), nl, 
-    write('"Hej ty! Jestem Kacper. Zadzwoń po pogotowie, ja zbadam miejsce zbrodni!"\e[0m - powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl, nl,
-    write('odpowiedz:'), nl, 
+    kacper_say('Jako student prawa nie godzę się na takie warunki. Ustawowo cisza nocna obowiązuje od godziny 22:00 do 6:00!', 'wykrzyczał'),
+    narrate('Student spojrzał na Karolinę'),
+    kacper_say('AAAAAAAAAAAAAAAAAAAAAAAA, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!'),
+    kacper_say('Hej ty! Jestem Kacper. Zadzwoń po pogotowie, ja zbadam miejsce zbrodni!', 'powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl,
+    narrate('odpowiedz:'), 
     write('t: Przecież tutaj nie ma zasięgu.'), nl, 
     write('n: O mój boże kocham prawo! Na jakim wydziale studiujesz?'), nl, 
     retract(can_see(osoba)),
@@ -331,10 +331,10 @@ spojrz_specific(osoba) :-
 
 odpowiedz(kacper, t) :-
     can_answer(kacper, cialo), nl,
-    write('\e[1;32m"Pff, mogłem się domyślić że ten stary dziad nie wie że telelinie można poprowadzić za pośrednictwem łącza bianalogowego"\e[0m - powiedział nonszalandzko Kacper'), nl, nl,
-    write('Jako student informatyki dociera do ciebie, że Kacper nie ma pojęcia o czym mówi.'), nl, nl,
-    write('\e[1;32m"No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego"\e[0m'), nl, nl,
-    write('Kacper zniknął w ciemności, usłyszałeś tylko że znowu potknął się o ten sam stolik'), nl,
+    kacper_say('Pff, mogłem się domyślić że ten stary dziad nie wie że telelinie można poprowadzić za pośrednictwem łącza bianalogowego.', 'powiedział nonszalandzko Kacper'), nl,
+    narrate('Jako student informatyki dociera do ciebie, że Kacper nie ma pojęcia o czym mówi.'),
+    kacper_say('No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego'), nl,
+    narrate('Kacper zniknął w ciemności, usłyszałeś tylko że znowu potknął się o ten sam stolik'),
     assert(kacper_hates(baca)),   
     retract(can_see(kacper)),
     finish_answer(kacper, cialo, t), !, nl,
@@ -345,16 +345,16 @@ odpowiedz(kacper, t) :-
 
 odpowiedz(kacper, n) :-
     can_answer(kacper, cialo),
-    write("\e[1;32mO proszę, miałem cię za prostaka jednak widzę, że napotkałem erudytę! Otóż mój drogi uczęszczam do Akademii Prawa i Filizofii w Warszawie.\e[0m"), nl,
-    write('"\e[1;32mJestem niezmiernie ciekaw twojego miejsca pobierania nauk, może mamy wspólnych znajomych!\e[0m"'), nl, nl,
-    write('\e[2mTIP: \e[1modpowiedz Kacprowi p/f/w\e[0m'), nl,
+    kacper_say('Proszę, proszę. Miałem cię za prostaka jednak widzę, że napotkałem erudytę! Otóż mój drogi uczęszczam do Akademii Prawa i Filizofii w Warszawie.'),
+    kacper_say('Jestem niezmiernie ciekaw twojego miejsca pobierania nauk, może mamy wspólnych znajomych!'), nl,
+    write_tip('Odpowiedz Kacprowi p/f/w\e'), nl,
     finish_answer(kacper, cialo, n),
     assert(can_answer(kacper, uczelnia)), !, nl.
 
 odpowiedz(kacper, p) :-
     can_answer(kacper, uczelnia),
-    write('\e[1m"W sumie to nie studiuję prawa, jestem studentem informatyki"\e[0m - odpowiadasz'), nl,
-    write('\e[1;32m"Ehhh... ścisłowiec, no nic kolego, nie twoja wina że jesteś ciemnotą"\e[0m - odparł rozczarowany Kacper'), nl,
+    player_say('W sumie to nie studiuję prawa, jestem studentem informatyki', 'odpowiadasz'),
+    kacper_say('Ehhh... ścisłowiec, no nic kolego, nie twoja wina że jesteś ciemnotą', 'odparł rozczarowany Kacper'),
     finish_answer(kacper, uczelnia, p),
     (   answered(baca, cialo, _) ->
         all_dialogued

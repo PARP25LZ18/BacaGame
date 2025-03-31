@@ -7,7 +7,8 @@
     narrate/1,
     write_info/1,
     player_say/1,
-    player_say/2
+    player_say/2,
+    write_waiting/0
 ]).
 
 
@@ -74,6 +75,13 @@ write_info(Message) :-
     typewriter_write(Message),
     write('\e[0m'), nl.
 
+write_waiting :-
+    typewriter_write('.'),
+    sleep(0.18),
+    typewriter_write('.'),
+    sleep(0.18),
+    typewriter_write('.'),
+    sleep(0.18), nl.
 
 typewriter_write(Text) :-
     string_chars(Text, Chars),

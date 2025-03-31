@@ -52,10 +52,10 @@ spojrz_specific(schronisko) :-
     is_outside,
     display_hut,
     narrate('Z komina schroniska wydobywa się ledwo widoczny dym.'),
-    narrate('Baca chyba zainwestował w eko-drewno'),
-    narrate('...albo gmina go zmusiła. Uznajesz, że nie ma czasu do stracenia, ładujesz się do środka'), nl,
-    narrate('Od razu po wejściu do schroniska czujesz silną woń kompotu, przed sobą dostrzegasz duży \e[1mstół\e[0m.'),
-    narrate('obok stołu znajduje się ceglany \e[1mkominek\e[0m. Przed kominkiem, na bujanym fotelu siedzi starszy \e[1mmężczyzna\e[0m'),
+    narrate('Baca chyba zainwestował w eko-drewno.'),
+    narrate('...albo gmina go zmusiła. Uznajesz, że nie ma czasu do stracenia, ładujesz się do środka.'), nl,
+    narrate('Od razu po wejściu do schroniska czujesz silną woń kompotu, przed sobą dostrzegasz duży \e[1mstół.'),
+    narrate('Obok stołu znajduje się ceglany \e[1mkominek\e[0m. Przed kominkiem, na bujanym fotelu siedzi starszy \e[1mmężczyzna.'),
     narrate('Po drugiej stronie stołu znajduje się \e[1mokienko\e[0m, które najpewniej jest recepcją oraz miejscem, z którego'),
     narrate('przez cały dzień można pobierać ciepłe posiłki.'), nl,
     write_tip('Możesz \e[1mspojrzeć\e[22m\e[2m na pogrubione obiekty.\e'),
@@ -199,7 +199,7 @@ odpowiedz(karolina, t) :-
 
 odpowiedz(karolina, n) :-
     can_answer(karolina, pokoj),
-    karolina_say('Spoko, podejdź do okienka jak będziesz gotowy', 'powiedziała z miłym wyrazem na twarzy'),
+    karolina_say('Spoko, podejdź do okienka jak będziesz gotowy', 'powiedziała z miłym wyrazem twarzy'),
     finish_answer(karolina, pokoj, n), !, nl.
 
 

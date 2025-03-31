@@ -1,6 +1,6 @@
 % instructions for `start`
 
-:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1, kacper_hates/1, kacper_likes/1, oskarz/1, can_accuse/0, can_look/0, looked/1, looking/1.
+:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1, kacper_hates/1, kacper_likes/1, oskarz/1, can_accuse/0, can_look/0, looked/1, looking/1, exploring/0.
 :- discontiguous spojrz/1, spojrz_specific/1, odpowiedz/2.
 
 :- use_module(conv).
@@ -349,8 +349,8 @@ odpowiedz(kacper, t) :-
     kacper_say('No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego'), nl,
     narrate('Kacper zniknął w ciemności, usłyszałeś tylko że znowu potknął się o ten sam stolik'),
     assert(kacper_hates(baca)),   
-    retract(can_see(kacper)),
-    finish_answer(kacper, cialo, t).
+    finish_answer(kacper, cialo, t), !,
+    finish_kacper_body_question.
 
 odpowiedz(kacper, n) :-
     can_answer(kacper, cialo),
@@ -400,7 +400,7 @@ finish_kacper_body_question :-
     ).
 
 all_dialogued :-
-    baca_say('Dobra, siadojcie do \e[1mstołu\e[0m. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy.', 'powiedział Baca i postawił na \e[1mstole\e[0m wielki dzban kompotu'),
+    baca_say('Dobra, siadojcie do stołu. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy.', 'powiedział Baca i postawił na \e[1mstole\e[0m wielki dzban kompotu'),
     kacper_say('Tak!! Czekałem na ten moment całe życie! Moje umiejętności społecznej dedukcji zakończą tą sprawę w sekundę!', 'wtrąca Kacper i siadając do stołu potyka się o jego nogę.'),
     (   baca_hates(kacper) ->
         narrate('Baca spogląda na Kacpra z zażenowaniem')
@@ -425,11 +425,45 @@ all_dialogued :-
 
 spojrz_specific(stol) :-
     \+ at_introduction,
-    write('Zasiadasz do stołu z Bacą i Kacprem. Ogień w \e[1mkominku\e[0m już się dopala...'), nl,
-    write('Przed tobą stoi najprawdopodobniej ostatnia \e[1mszklanka\e[0m słynnego kompotu \e[36mKaroliny.\e[39m'), nl,
-    write('Zauważasz, że Kacper trzyma \e[1mręce\e[0m pod stołem i nerwowo spogląda naprzemiennie na ciebie i na Bacę.'), nl,
-    write('Baca z kolei, wydaje się spokojny, spogląda na Ciebie oraz Kacpra z wyższością... do tego stopnia, że zaczynasz '),
-    write('drugi raz zastanawiać się, czy to nie ty zabiłeś Karolinę...'), !, nl.
+    narrate('Zasiadasz do stołu z Bacą i Kacprem. Ogień w \e[1mkominku\e[0m już się dopala...'),
+    narrate('Przed tobą stoi najprawdopodobniej ostatnia \e[1mszklanka\e[0m słynnego kompotu \e[36mKaroliny.\e[39m'),
+    narrate('Zauważasz, że Kacper trzyma \e[1mręce\e[0m pod stołem i nerwowo spogląda naprzemiennie na ciebie i na Bacę.'),
+    narrate('Baca z kolei, wydaje się spokojny, spogląda na Ciebie oraz Kacpra z wyższością... do tego stopnia, że zaczynasz drugi raz zastanawiać się, czy to nie ty zabiłeś Karolinę...'),
+    write_waiting,
+    narrate('Mija dłuższa chwila milcznia - dociera do ciebie, że musisz ją przełamać - inaczej nigdy nie poznacie prawdy'),
+    narrate('Nalewasz kompot do szklanki i szybko pochłaniasz jej zawartość.'),
+    write_waiting,
+    write_info('Za chwilę przejdziesz do kolejnej fazy gry, w której będziesz rozglądał się za poszlakami'),
+    write_tip('Możesz do niej przejść poleceniem \e[1mnext_stage\e[0m.'), !, true.
+
+next_stage :-
+    \+ at_introduction,
+    display_player_talking,
+    player_say('Posłuchajcie. To nie ja zabiłem Karolinę. Wczoraj, kiedy tu przyjechałem, byłem padnięty.'),
+    player_say('Zameldowałem się tu i od razu położyłem się spać. Poza tym... Mój boże! Zabić człowieka??!'),
+    player_say('I to taką miłą osobę, w życiu bym tego nie zrobił!", "przerywasz na moment aby złapać oddech'),
+    player_say('I szczerze mówiąc nie wyobrażam sobie, żeby to był ktoś z was...'),
+    player_say('Nie mówie, że na pewno, ale możliwe, że był to ktoś z zewnątrz...'),
+    player_say('Tylko kurde... W taką zamieć? Musiał to być jakiś miejscowy.'),
+    narrate('Tak na prawdę wcale tak nie uważasz, po prostu chcesz się rozejrzeć.'),
+    player_think('Wśród nich jest morderca. Muszę dowiedzieć się kto nim jest. No i zdobyć na to jakiś dowód...', 'myślisz sobie'),
+    baca_say('Uj ci zaraz miejscowy! Pewno jaki mieszczuch sie przypałętał i łokraść mnie chciał!', 'wykrzyknął baca'),
+    baca_say('Tera to te mieszczuchy szczwańsze niż kiedyś...'),
+    baca_say('A Karolina, że dobra dziołcha, bronić chciała mojego schroniska, to jeno ją załatwił.'),
+    player_say('W każdym razie, jak na mój gust to musimy się rozejrzeć za znakami włamania.', 'dodajesz'),
+    narrate('Kacper widocznie lekko się uspokoił. Entuzjazmi i podekscytowanie zastąpiło niepokój na jego twarzy.'),
+    kacper_say('Świetnie prawisz! Poszukam monochlorku sodu i zdobędę odcisk palca złoczyńcy!', 'powiedział dumnie'),
+    narrate('Kacper żywo wstał od stołu i ruszył szukać nieisniejącego monochlorku sodu'),
+    narrate('Iiiiiiii potknął się o stolik w salonie. Znowu...'),
+    baca_say('Jo też sie rozejrzu.', 'powiedział baca podnosząc się z krzesła'),
+    baca_say('Ahhhh', 'westchnął'),
+    baca_say('Coś mnie w krzyżu łupi. Zacznijcie sami, jo do was dołączę późnij.'),
+    write_info('Możesz teraz eksplorować schronisko, aby zakończyć eksploracje i skonfrontować znaleziska spojrz na stol.'),
+    write_info('Przejdziesz wtedy do finalnej rozmowy z Bacą i Kacprem rzucając swoje oskarżenie i argumentując je.'),
+    assert(exploring), !.
+
+
+
 
 
 

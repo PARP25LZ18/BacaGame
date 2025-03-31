@@ -10,6 +10,7 @@
     write_info/1,
     player_say/1,
     player_say/2,
+    player_think/2,
     write_waiting/0,
     write_dialog_option/2
 ]).
@@ -49,6 +50,11 @@ player_say(Message) :-
 
 player_say(Message, Description) :-
     say_with_color('\e[1m', Message),
+    add_description(Description),
+    nl.
+
+player_think(Message, Description) :-
+    say_with_color('\e[90m', Message),
     add_description(Description),
     nl.
 

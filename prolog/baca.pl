@@ -1,6 +1,6 @@
 % instructions for `start`
 
-:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1, kacper_hates/1, oskarz/1, can_accuse/0, can_look/0, looked/1, looking/1.
+:- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2, baca_hates/1, kacper_hates/1, kacper_likes/1, oskarz/1, can_accuse/0, can_look/0, looked/1, looking/1.
 :- discontiguous spojrz/1, spojrz_specific/1, odpowiedz/2.
 
 :- use_module(conv).
@@ -81,6 +81,10 @@ spojrz_specific(stol) :-
     ),
     baca_say('Co tam tak sznupiesz, młody? Drewno wydaje się znajome?', Result),
     narrate('Nie masz pojęcia co to może być za drewno. Zastanawiasz się co odpowiedzieć.'),
+    write_tip('Odpowiedz mężczyźnie p/f/w'),
+    write_dialog_option('p', 'Nie wiem, jestem z warszawy.'),
+    write_dialog_option('f', 'Od razu widać, że drzewo dębowe.(wymyślasz)'),
+    write_dialog_option('w', 'A co tam drewno, ważne, że stolik ładny.'),
     write_tip('Możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w)'),
     write_tip('Możesz odpowiedzieć za pomocą "odpowiedz(<cel>, <odpowiedź>)'),
     assert(looking(stol)),
@@ -138,6 +142,7 @@ spojrz_specific(okienko) :-
     karolina_say('Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!'),
     player_say('Dziękuję', 'odpowiadasz i zabierasz klucz'),
     karolina_say('Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?'),
+    karolina_continue_dialog_options,
     write_info('(t - skończ intro, n - zostań)'),
     assert(can_answer(karolina, pokoj)), !, nl.
 
@@ -145,8 +150,12 @@ spojrz_specific(okienko) :-
 spojrz_specific(okienko) :-
     assert(can_answer(karolina, pokoj)),
     karolina_say('To jak? idziemy?'),
+    karolina_continue_dialog_options,
     write_tip('Odpowiedz na pytanie Karoliny za pomocą t lub n)'), !, nl.
 
+karolina_continue_dialog_options :-
+    write_dialog_option('t', 'Tak - już się rozejrzałem.'),
+    write_dialog_option('n', 'Chcę się jeszcze rozejrzeć.').
 
 % answer shortcuts
 p :- odpowiedz(_, p).  % prawda
@@ -164,6 +173,7 @@ odpowiedz(X, _) :-
 % KONWERSACJA Z BACA PO INSPEKCJI STOŁU - ODPOWIEDZI
 
 odpowiedz(mezczyzna, X) :-
+    at_introduction,
     \+ looked(mezczyzna),
     looking(stol),
     assert(can_answer(baca, sznupanie)),
@@ -176,30 +186,32 @@ odpowiedz(baca, p) :-
     player_say('Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy', 'odpowiadasz'),
     narrate('Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok.'),
     assert(baca_hates(player)),
-    finish_answer(baca, sznupanie, p), !, nl.
+    finish_answer(baca, sznupanie, p), !.
 
 odpowiedz(baca, f) :-
     can_answer(baca, sznupanie),
     player_say('Stolik jest niezwykle solidny, od razu widać że to dąb', 'odpowiadasz z przekonaniem'),
     baca_say('Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna.', 'odpowiada mężczyzna i przewraca oczami'),
-    finish_answer(baca, sznupanie, f), !, nl.
+    finish_answer(baca, sznupanie, f), !.
 
 odpowiedz(baca, w) :-
     can_answer(baca, sznupanie),
     player_say('Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!', 'odpowiadasz'),
     baca_say('Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata.', 'opowiada mężczyzna'),
-    finish_answer(baca, sznupanie, w), !, nl.
+    finish_answer(baca, sznupanie, w), !.
 
 
 odpowiedz(karolina, t) :-
     can_answer(karolina, pokoj),
     finish_answer(karolina, pokoj, t),
+    player_say('Tak, już się rozejrzałem', 'mówisz'),
     karolina_say('Chodź za mną.'),
     write_waiting,
     endintro, !, nl.
 
 odpowiedz(karolina, n) :-
     can_answer(karolina, pokoj),
+    player_say('Chcę się jeszcze rozejrzeć.'),
     karolina_say('Spoko, podejdź do okienka jak będziesz gotowy', 'powiedziała z miłym wyrazem twarzy'),
     finish_answer(karolina, pokoj, n), !, nl.
 
@@ -268,8 +280,11 @@ spojrz_specific(baca) :-
     narrate('Jego oczy od razu spadają z ciebie na leżącą obok Karolinę'),
     baca_say('Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać!'),
     narrate('Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie.'),
-    baca_say('Łoo pierunie! A coz to sie tu porobiło?!'),
+    baca_say('Łoo pierunie! A cóż to sie tu porobiło?!'),
     write_tip('Odpowiedz bacy p/f/w) '),
+    write_dialog_option('p', 'Zszedłem i Karolina już tu leżała'),
+    write_dialog_option('f', 'To on już tu był (wskazujesz na gościa stojącego obok).'),
+    write_dialog_option('w', 'Przecież zbiegłem razem z wami.'),
     retract(can_see(baca)),
     assert(can_answer(baca, cialo)), !, nl.
 
@@ -277,43 +292,39 @@ odpowiedz(baca, p) :-
     can_answer(baca, cialo),
     player_say('Zszedłem na dół bo chciałem się napić kompotu, Karolina już tu leżała', 'odpowiadasz'),
     baca_say('Czyli byłeś z nią sam na sam...', 'odpowiada pod nosem baca i wpatruje ci się głęboko w oczy'),
+    finish_answer(baca, cialo, p),
+    finish_baca_body_question, !,
     (   baca_hates(player) ->
         baca_say('Warszawiaku....', 'mówi baca z wyraźną niechęcią')
-    ;   true
-    ),
-    finish_answer(baca, cialo, p), !, nl,
-    (   answered(kacper, cialo, _) ->
-        all_dialogued;
-        true
-    ),
-    retract(can_answer(baca, cialo)), !, nl.
+    ; true
+    ).
 
 
 odpowiedz(baca, f) :-
     can_answer(baca, cialo),
     player_say('Obudził mnie huk, gdy zszedłem ten gość stał nad zwłokami Karoliny!'),
+    kacper_say('Oszczerstwo!!!'),
+    finish_answer(baca, cialo, f),
+    finish_baca_body_question, !,
     (   baca_hates(player) ->
         baca_say('Tyn z Warszawy i tyn z Warszawy, wszyscy siebie warci', 'Baca nie wydaje się przekonany twoim wytłumaczeniem')
     ;   baca_say('Ja slyszał że on ze stolycy, tym nigdy nie wolno ufać'),
         assert(baca_hates(kacper))
-    ),
-    finish_answer(baca, cialo, f), !, nl,
-    (   answered(kacper, cialo, _) ->
-        all_dialogued
-    ;   true
-    ),
-    retract(can_answer(baca, cialo)), !, nl.
+    ).
 
 odpowiedz(baca, w) :-
     can_answer(baca, cialo),
     player_say('Nie wiem, zbiegłem na dół razem z wami'),
     baca_say('Dziwne, nie widziałem cię.', 'odpowiedział baca z nutą niepewności'),
-    finish_answer(baca, cialo, w), !, nl,
+    finish_answer(baca, cialo, w),
+    finish_baca_body_question, !.
+
+finish_baca_body_question :-
+    answered(baca, cialo, _), nl, !,
     (   answered(kacper, cialo, _) ->
         all_dialogued
-    ;   true
-    ),
-    retract(can_answer(baca, cialo)), !, nl.
+    ; true
+    ).
 
 
 spojrz_specific(osoba) :-
@@ -325,70 +336,85 @@ spojrz_specific(osoba) :-
     kacper_say('AAAAAAAAAAAAAAAAAAAAAAAA, toż to pogwałcenie artykułu 148! Musimy zawiadomić organy ścigania!!!'),
     kacper_say('Hej ty! Jestem Kacper. Zadzwoń po pogotowie, ja zbadam miejsce zbrodni!', 'powiedział Kacper po czym potknął się o stolik znajdujący się w salonie'), nl,
     narrate('odpowiedz:'), 
-    write('t: Przecież tutaj nie ma zasięgu.'), nl, 
-    write('n: O mój boże kocham prawo! Na jakim wydziale studiujesz?'), nl, 
+    write_dialog_option('t', 'Tu nie ma zasięgu.'),
+    write_dialog_option('n', 'Kocham prawo!'),
     retract(can_see(osoba)),
     assert(can_answer(kacper, cialo)), !, nl.
 
 odpowiedz(kacper, t) :-
-    can_answer(kacper, cialo), nl,
+    can_answer(kacper, cialo),
+    player_say('Przecież tutaj nie ma zasięgu.', 'odpowiadasz'),
     kacper_say('Pff, mogłem się domyślić że ten stary dziad nie wie że telelinie można poprowadzić za pośrednictwem łącza bianalogowego.', 'powiedział nonszalandzko Kacper'), nl,
     narrate('Jako student informatyki dociera do ciebie, że Kacper nie ma pojęcia o czym mówi.'),
     kacper_say('No nic w takim razie będziemy musieli przepowadzić resustytacje krążeniowo oddechową, ty zacznij ja poszukam gazy oraz opatrunku uciskowego'), nl,
     narrate('Kacper zniknął w ciemności, usłyszałeś tylko że znowu potknął się o ten sam stolik'),
     assert(kacper_hates(baca)),   
     retract(can_see(kacper)),
-    finish_answer(kacper, cialo, t), !, nl,
-    (   answered(baca, cialo, _) ->
-        !, all_dialogued;   
-        true
-    ), !, nl.
+    finish_answer(kacper, cialo, t).
 
 odpowiedz(kacper, n) :-
     can_answer(kacper, cialo),
+    player_say('O mój boże kocham prawo! Na jakim uniwersytecie studiujesz?', 'mówisz entuzjastycznie'),
     kacper_say('Proszę, proszę. Miałem cię za prostaka jednak widzę, że napotkałem erudytę! Otóż mój drogi uczęszczam do Akademii Prawa i Filizofii w Warszawie.'),
     kacper_say('Jestem niezmiernie ciekaw twojego miejsca pobierania nauk, może mamy wspólnych znajomych!'), nl,
-    write_tip('Odpowiedz Kacprowi p/f/w\e'), nl,
+    write_tip('Odpowiedz Kacprowi p/f/w'),
+    write_dialog_option('p', 'Właściwie to studiuje informatykę.'),
+    write_dialog_option('f', 'Eeee... Jestem na SWPSie.'),
+    write_dialog_option('w', 'Jeszcze będzie czas na takie rozmowy, skupmy się na problemie.'),
     finish_answer(kacper, cialo, n),
-    assert(can_answer(kacper, uczelnia)), !, nl.
+    assert(kacper_likes(player)),
+    assert(can_answer(kacper, uczelnia)), !.
 
 odpowiedz(kacper, p) :-
+    write('kacper uczelnia p'), nl,
     can_answer(kacper, uczelnia),
     player_say('W sumie to nie studiuję prawa, jestem studentem informatyki', 'odpowiadasz'),
     kacper_say('Ehhh... ścisłowiec, no nic kolego, nie twoja wina że jesteś ciemnotą', 'odparł rozczarowany Kacper'),
     finish_answer(kacper, uczelnia, p),
-    (   answered(baca, cialo, _) ->
-        all_dialogued
-    ;   true
-    ), 
-    retract(can_answer(kacper, uczelnia)), !, nl.   
+    retract(can_answer(kacper, uczelnia)), !,
+    finish_kacper_body_question.
 
 odpowiedz(kacper, f) :-
+    write('kacper uczelnia f'), nl,
     can_answer(kacper, uczelnia),
-    finish_answer(kacper, uczelnia, f), !.
+    player_say('Eeee... Jestem na SWPSie.', 'mówisz niepewnie'),
+    kacper_say('O super, moja przyjaciółka tam studiuje, podobno jest całkiem w porządku, ale do mojej uczelni się nie umywa.', 'powiedział dumnie'),
+    narrate('Kacper wyraźnie lubi się dzielić własnymi opiniami. Nawet mu przez myśl nie przeszło, żeby zapytać, czy znasz jego koleżankę...'),
+    finish_answer(kacper, uczelnia, f), !,
+    finish_baca_body_question.
 
 odpowiedz(kacper, w) :-
+    write('kacper uczelnia w'), nl,
     can_answer(kacper, uczelnia),
-    finish_answer(kacper, uczelnia, w), !.
+    player_say('Jeszcze będzie czas na takie rozmowy. Na razie skupmy się na problemie.'),
+    kacper_say("Co racja, to racja! Musimy rozwikłać zagadkę morderstwa!"),
+    finish_answer(kacper, uczelnia, w), !,
+    finish_kacper_body_question.
+
+finish_kacper_body_question :-
+    write('kacper general'), nl,
+    answered(kacper, cialo, _), !,
+    (   answered(baca, cialo, _) ->
+        all_dialogued
+    ; true
+    ).
 
 all_dialogued :-
-    baca_say('Dobra, siadojcie do \e[1mstołu\e[0m. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy.'),
-    write('- powiedział Baca i postawił na \e[1mstole\e[0m wielki dzban kompotu'), nl,
-    write('\e[1;32m"Tak!! Czekałem na ten moment całe życie! Moje umiejętności społecznej dedukcji zakończą tą sprawę w sekundę!"\e[0m'),
-    write('- wtrąca Kacper i siadając do stołu potyka się o jego nogę.'), nl,
+    baca_say('Dobra, siadojcie do \e[1mstołu\e[0m. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy.', 'powiedział Baca i postawił na \e[1mstole\e[0m wielki dzban kompotu'),
+    kacper_say('Tak!! Czekałem na ten moment całe życie! Moje umiejętności społecznej dedukcji zakończą tą sprawę w sekundę!', 'wtrąca Kacper i siadając do stołu potyka się o jego nogę.'),
     (   baca_hates(kacper) ->
-        write('Baca spogląda na Kacpra z zażenowaniem'), nl
-    ;   write('Ukradkiem spoglądasz na Bacę próbując zauważyć gniew w jego oczach...'), nl, true
+        narrate('Baca spogląda na Kacpra z zażenowaniem')
+    ; narrate('Ukradkiem spoglądasz na Bacę próbując zauważyć gniew w jego oczach...')
     ),
+    narrate('Baca zauważa, że się mu przyglądasz'),
     (   baca_hates(player) ->
-        write('Baca zauważa, że się mu przyglądasz'), nl,
-        write('\e[1;31m"A ty czego się patrzysz!?"\e[0m'), nl
-    ;   true
-    ), !,
-    nl, nl,
-    write('\e[2mOd teraz masz dostęp do polecenia: \e[1moskarz(baca/kacper)\e[0m'), nl,
-    write('\e[2mWywołanie polecenia spowoduje oskarżenie postaci o morderstwo i natychmiastowy koniec gry.'), nl,
-    write('\e[2mW zależności od twoich relacji z postaciami, oskarżenie może mieć różny wynik'), nl,
+        baca_say('A ty czego się patrzysz!?')
+    ;   narrate('Baca patrzy ci prosto w oczy.')
+    ),
+    narrate('Odwracasz spojrzenie.'), nl,
+    write_info('Od teraz masz dostęp do polecenia: \e[1moskarz(baca/kacper)\e[0m'),
+    write_info('Wywołanie polecenia spowoduje oskarżenie postaci o morderstwo i natychmiastowy koniec gry.'),
+    write_info('W zależności od twoich relacji z postaciami, oskarżenie może mieć różny wynik'),
     assert(can_accuse),
     assert(can_see(stol)), !.
 
@@ -505,7 +531,7 @@ spojrz_specific(_) :-
     
 % !!! GENERAL ANSWER RULE, MUST BE AFTER OTHER ANSWER RULES
 odpowiedz(_, _) :-
-    write('nie możesz tak odpowiedzieć!'), !, nl.
+    write('nie możesz tak odpowiedzieć!'), nl.
 
 spojrz(_) :-
     write('Nie możesz teraz tego zrobić - jesteś w trakcie rozmowy.'), nl.

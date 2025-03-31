@@ -5,10 +5,12 @@
 ]).
 
 write_img_line(Text) :-
-    typewriter_write(Text, 0.0005), nl.
+%    typewriter_write(Text, 0.0005), nl. - UNCOMMENT IN RELEASE
+    typewriter_write(Text, 0.00000001), nl. % FOR DEV
 
 typewriter_write_text(Text) :-
-    typewriter_write(Text, 0.02).
+%    typewriter_write(Text, 0.02). - UNCOMMENT IN RELEASE
+    typewriter_write(Text, 0.00000001). % FOR DEV
 
 typewriter_write(Text, Sleep) :-
     string_chars(Text, Chars),

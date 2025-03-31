@@ -3,12 +3,15 @@
     karolina_say/2,
     baca_say/1,
     baca_say/2,
+    kacper_say/1,
+    kacper_say/2,
     write_tip/1,
     narrate/1,
     write_info/1,
     player_say/1,
     player_say/2,
-    write_waiting/0
+    write_waiting/0,
+    write_dialog_option/2
 ]).
 
 :- use_module(rendering).
@@ -75,6 +78,16 @@ write_tip(Tip) :-
 write_info(Message) :-
     typewriter_write_text('\e[2mINFO: '),
     typewriter_write_text(Message),
+    write('\e[0m'), nl.
+
+write_dialog_option(Option, Short_description) :-
+    write('\e[1m'),
+    typewriter_write_text(Option),
+    write('\e[0m'),
+    typewriter_write_text(': '),
+    write('\e[4m'),
+    write('\e[50m'),
+    typewriter_write_text(Short_description),
     write('\e[0m'), nl.
 
 write_waiting :-

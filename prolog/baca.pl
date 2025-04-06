@@ -166,6 +166,10 @@ f :- odpowiedz(_, f).  % fałsz
 w :- odpowiedz(_, w).  % wymijająco
 t :- odpowiedz(_, t).  % tak
 n :- odpowiedz(_, n).  % nie
+a :- odpowiedz(_, a).
+b :- odpowiedz(_, b).
+c :- odpowiedz(_, c).
+d :- odpowiedz(_, d).
 
 % general answer rules, !!! MUST BE BEFORE OTHER ANSWER RULES
 odpowiedz(X, _) :-

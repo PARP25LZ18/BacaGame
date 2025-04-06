@@ -393,7 +393,7 @@ odpowiedz(kacper, w) :-
 finish_kacper_body_question :-
     answered(kacper, cialo, _), !,
     (   answered(baca, cialo, _) ->
-        all_dialogued_
+        all_dialogued
     ; true
     ).
 

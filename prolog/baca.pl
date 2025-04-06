@@ -522,7 +522,7 @@ spojrz_specific(stol) :-
 
 
 odpowiedz(game, t) :-
-    can_answer(game, final_stage),_
+    can_answer(game, final_stage),
     narrate('Nothing there yet'), !.
 
 odpowiedz(game, n) :-
@@ -539,7 +539,7 @@ spojrz_specific(salon) :-
     assert(can_see(pokoj_bacy)),
     assert(can_see(kacper)),
     assert(can_see(cialo)),
-    narrate('Wchodzisz do salonu, największego pomieszczenia w schronisku. Drewniane ściany są ozdobione starymi fotografiami i myśliwskimi trofeami.'),_
+    narrate('Wchodzisz do salonu, największego pomieszczenia w schronisku. Drewniane ściany są ozdobione starymi fotografiami i myśliwskimi trofeami.'),
     narrate('Po środku pokoju leży martwe \e[1mciało\e[0m Karoliny i kałużę krwi. Obok przy ścianie, \e[1mKacper\e[0m stoi przy kominku.'),
     narrate('Z prawej strony są drzwi do \e[1mprzedsionka\e[0m. Na wprost widzisz schody prowadzące na \e[1mgórę\e[0m, oraz do \e[1mpiwnicy\e[0m.'),
     narrate('Zaraz obok schodów znajduje się \e[1mpokój Bacy\e[0m.'), !,
@@ -867,9 +867,9 @@ oskarz(baca) :- % kacper nie lubi bacy
     ending_baca, !.
 
 oskarz(baca) :-  % kacper lubi bace
-    write('"\e[1mpsst... Kacper... myślę, że to Baca zabił Karolinę"'), nl,
-    write('"\e[1;32mEKHM..! Czy masz jakieś oficjalne dowody podtrzymujące twoją tezę? Jeżeli nie prosiłbym o milczenie!"\e[0m'), nl, nl,
-    write('Czujesz, że Kacprowi nie spodobało się twoje oskarżenie, dodatkowo zaczął on nerwowo na ciebie spoglądać...'), nl,
+    player_say('psst... Kacper... myślę, że to Baca zabił Karolinę'),
+    kacper_say('EKHM..! Czy masz jakieś oficjalne dowody podtrzymujące twoją tezę? Jeżeli nie prosiłbym o milczenie!'),
+    narrate('Czujesz, że Kacprowi nie spodobało się twoje oskarżenie, dodatkowo zaczął on nerwowo na ciebie spoglądać...'),
     assert(kacper_hates(player)), !, nl.
 
 oskarz(kacper) :- % baca nie lubi gracza, bad ending
@@ -881,63 +881,59 @@ oskarz(kacper) :- % baca nie lubi kacpra
     ending_kacper, !.
 
 oskarz(kacper) :- % baca lubi kacpra (czy to mozliwe?)
-    write('\e[1m"Baca... słuchaj... myślę, że to ten Warszawiak zabił-"'), nl,
-    write('\e[1;31m"Odezwoł się! A ty niby skąd jesteś? Pomyśl trochę zanim zaczniesz takie głupstwa paplać,'),
-    write('bo wezmę ciupogę i obu was stąd na zbity pysk wyrzucę!"\e[0m'),
+    player_say('Baca... słuchaj... myślę, że to ten Warszawiak zabił-"'),
+    baca_say('Odezwoł się! A ty niby skąd jesteś? Pomyśl trochę zanim zaczniesz takie głupstwa paplać,'),
+    baca_say('bo wezmę ciupogę i obu was stąd na zbity pysk wyrzucę!"\e[0m'),
     assert(baca_hates(player)), !.
 
 
 ending_kacper :-
     display_ending_kacper,
-    write(''), nl,
-    write('\e[1;31m"Nie mogę już tego słuchać! Przyjacielu to oczywiste, że ten warszawiak zabił Karolinkę!"\e[0m - wykrzyczał patrząc na ciebie baca'), nl,
-    write('\e[1;32m"C.Co.. TO OSZCZERSTWA, ARGUMENT AD PERSONAM! Nigdy bym jej nie zab..."\e[0m - odparł szybko Kacper'), nl,
-    write('\e[1;31m"Mam już tego dość! Albo ty albo on!"\e[0m - przerwał mu rozwcieczony baca'), nl,
-    write('Niepewny sytuacji wolisz nie reagować, pozostaje ci tylko patrzeć jak baca wypycha kacpra na śnieg za izbą, a następnie siada przy \e[1mpiecyku\e[0m'), nl,
+    baca_say('Nie mogę już tego słuchać! Przyjacielu to oczywiste, że ten warszawiak zabił Karolinkę!', 'wykrzyczał patrząc na ciebie baca'),
+    kacper_say('C.Co.. TO OSZCZERSTWA, ARGUMENT AD PERSONAM! Nigdy bym jej nie zab...', 'odparł szybko Kacper'),
+    baca_say('Mam już tego dość! Albo ty albo on!', 'przerwał mu rozwcieczony baca'),
+    narrate('Niepewny sytuacji wolisz nie reagować, pozostaje ci tylko patrzeć jak baca wypycha kacpra na śnieg za izbą, a następnie siada przy \e[1mpiecyku\e[0m'),
     assert(can_see(piecyk)), !, nl.
 
 spojrz_specific(piecyk) :-
     display_shady_ending,
-    write(''), nl,
-    write('\e[1;31m"No młody... mamy go z głowy, teraz słuchaj mnie uważnie"\e[0m - powiedział ze spokojem baca po czym usiadł przy piecyku'), nl,
-    write('\e[1;31m"Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz" - powiedział patrząc ci w oczy baca\e[0m'), nl,
-    write('\e[1;31m"A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą"\e[0m - mówiąc to wskazał na ciebie swoją ciupagę'), nl,
-    write('Słowa bacy z pewnością nie napawają cię optymizmem... No cóż, przynajmniej nie ma tu już Kacpra'), !, nl,
+    baca_say('No młody... mamy go z głowy, teraz słuchaj mnie uważnie', 'powiedział ze spokojem baca po czym usiadł przy piecyku'),
+    baca_say('Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz', 'powiedział patrząc ci w oczy baca\e[0m'),
+    baca_say('A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą', 'mówiąc to wskazał na ciebie swoją ciupagę'),
+    narrate('Słowa bacy z pewnością nie napawają cię optymizmem... No cóż, przynajmniej nie ma tu już Kacpra'), !,
     outro.
 
 ending_baca :-
     display_ending_baca,
-    write(''), nl,
-    write('\e[1;32m"Hmmmmm no nie wiem, kto to zrobił, musimy przeprowadzić głosowanie najlepiej metodą kontrpośrednich" - powiedział jak zwykle bez sensu niedoszły prawnik\e[0m'), nl,
-    write('\e[1m"Kacper, to musiał zrobić baca!"\e[0m - łapiesz warszawiaka za płaszcz i potrząsasz nim'), nl,
-    write('\e[1;31m"Co! W mojej izbie dwóch mieszczuchów przeciwko mnie spiskuje?!"\e[0m - wściekł się baca i złapał za ciupagę'), nl,
-    write('\e[1;32m"W imię prawa nakazuję ci złożyć broń!"\e[0m - wykrzyczał kacper potykając się o stół w salonie'), nl,
-    write('Kacper szczęśliwie wylądował prosto na bacy, zderzając się z nim głową. Baca oraz Kacper leżeli teraz wpółprzytomnie na \e[1mpodłodze\e[0m.'), nl,
+    kacper_say('Hmmmmm no nie wiem, kto to zrobił, musimy przeprowadzić głosowanie najlepiej metodą kontrpośrednich', 'powiedział jak zwykle bez sensu niedoszły prawnik'),
+    player_say('Kacper, to musiał zrobić baca!', 'łapiesz warszawiaka za płaszcz i potrząsasz nim'),
+    baca_say('Co?! W mojej izbie dwóch mieszczuchów przeciwko mnie spiskuje?!', 'wściekł się baca i złapał za ciupagę'),
+    kacper_say('W imię prawa nakazuję ci złożyć broń!', 'wykrzyczał kacper potykając się o stół w salonie'),
+    narrate('Kacper szczęśliwie wylądował prosto na bacy, zderzając się z nim głową. Baca oraz Kacper leżeli teraz wpółprzytomnie na \e[1mpodłodze\e[0m.'),
     assert(can_see(podloga)), !, nl.
 
 spojrz_specific(podloga) :-
     display_good_ending,
-    write('Podnosisz Kacpra z podłogi. Baca dalej leży nieprzytomny, stwierdziliście że musicie wezwać tu policję... lub przynajmniej GOPR.'), nl,
-    write('Wybiegacie z izby i kierujecie się w stronę najbliżego szlaku.'), nl,
-    write('\e[1;32m"Wspaniale, że udało nam się uciec od tego popaprańca... teraz mamy chwilę by porozmawiać o prawie cywilnym!"\e[0m - rozpromieniał Kacper'), nl,
-    write('Przez chwilę przyszło ci do głowy, że mogłeś jednak iść sam'), !, nl,
+    narrate('Podnosisz Kacpra z podłogi. Baca dalej leży nieprzytomny, stwierdziliście że musicie wezwać tu policję... lub przynajmniej GOPR.'),
+    narrate('Wybiegacie z izby i kierujecie się w stronę najbliżego szlaku.'),
+    kacper_say('Wspaniale, że udało nam się uciec od tego popaprańca... teraz mamy chwilę by porozmawiać o prawie cywilnym!', 'rozpromieniał Kacper'),
+    narrate('Przez chwilę przyszło ci do głowy, że mogłeś jednak iść sam'), !,
     outro.
 
 ending_player:-
     display_ending_player,
-    write(''), nl,
-    write('\e[1m"Ja wiem! wiem kto zabi-"\e[0m'), nl,
-    write('\e[1;31m"CICHO!"\e[0m'), nl,
-    write('\e[1;31m"Ja żem już wystarczająco widzoł! To ty zabiłeś dziołchę Warszawiaku"\e[0m - powiedział baca z obrzydzeniem w oczach'), nl,
-    write('\e[1;32m"Pan baca ma rację, nie ma jak wezwać organy ścigania, a ja nie będę tu siedział z mordercą"\e[0m - dołączył się kacper'), nl,
-    write('\e[1;31m"Nie próbuj uciekać" - odpowiedział baca chwytając cię za bark i wyrzucając na \e[39;1mdwór\e[0m"'),
-    assert(can_see(dwor)), !, nl.
+    player_say('Ja wiem! wiem kto zabi-'),
+    baca_say('CICHO!', 'krzyczy baca nie dając ci skończyć zdania'),
+    baca_say('Ja żem już wystarczająco widzoł! To ty zabiłeś dziołchę Warszawiaku', 'powiedział baca z obrzydzeniem w oczach'),
+    kacper_say('Pan baca ma rację, nie ma jak wezwać organy ścigania, a ja nie będę tu siedział z mordercą', 'dołączył się kacper'),
+    baca_say('Nie próbuj uciekać', 'odpowiedział baca chwytając cię za bark i wyrzucając na \e[39;1mdwór\e[0m"'),
+    assert(can_see(dwor)), !.
 
 
 spojrz_specific(dwor) :-
     display_bad_ending,
-    write('Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia'), nl,
-    write('Śpiesz się, robi się ciemno...'), !, nl,
+    narrate('Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia'),
+    narrate('Śpiesz się, robi się ciemno...'), !,
     outro.
 
 
@@ -950,11 +946,11 @@ spojrz_specific(dwor) :-
 
 % !!! UNMATCHED LOOK RULE, MUST BE AFTER OTHER SEE RULES
 spojrz_specific(_) :-
-    write('Patrzysz się w otchłań marząc o Warszawie'), !, nl.
+    narrate('Patrzysz się w otchłań marząc o Warszawie'), !.
     
 % !!! GENERAL ANSWER RULE, MUST BE AFTER OTHER ANSWER RULES
 odpowiedz(_, _) :-
-    write('nie możesz tak odpowiedzieć!'), nl.
+    narrate('nie możesz tak odpowiedzieć!').
 
 spojrz(_) :-
-    write('Nie możesz teraz tego zrobić - jesteś w trakcie rozmowy.'), nl.
+    narrate('Nie możesz teraz tego zrobić - jesteś w trakcie rozmowy.').

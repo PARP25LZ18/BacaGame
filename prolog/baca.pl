@@ -3,7 +3,7 @@
 :- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2,
     baca_hates/1, kacper_hates/1, kacper_likes/1, oskarz/1, can_accuse/0, can_look/0, looked/1, looking/1,
     exploration_stage/0, player_location/1.
-:- discontiguous spojrz/1, spojrz_specific/1, odpowiedz/2.
+:- discontiguous spojrz/1, spojrz_specific/1, odpowiedz/2, last_stage/0.
 
 :- use_module(conv).
 :- use_module(img).
@@ -794,7 +794,7 @@ last_stage :-
     player_think('O co mu właściwie chodzi? Przecież nawet nie ma opcji, że wydaje mu- ', 'nie zdążyłeś skończyć myśli'),
     narrate('Słyszysz, że za twoimi plecami Kacper zbiega ze schodów'),
     kacper_say('ZNALAZŁEM! ZNALAZŁEM! WIEM KTO ZABIŁ KAROLI-'),
-    narrate('... Nagle słyszysz głośny huk. Kacper spada ze schodów i rzuca przed siebie swoje \e[1mznalezisko\e[0m]'), nl,
+    narrate('... Nagle słyszysz głośny huk. Kacper spada ze schodów i rzuca przed siebie swoje znalezisko'), nl,
     baca_say('No no, mody... teraz to się wkopałeś...'),
     narrate('Powiedział Baca, ciągle nie odrywając od ciebie wzroku... Kacper wciąż leży na ziemii...'),
     baca_say('Myślałeś, że nie poznamy prawdy, warszawski morderco!?'), nl,
@@ -806,12 +806,52 @@ last_stage :-
     assert(can_see(dwor)), !.
 
 last_stage :-
-    false, !.
-
+    \+ looked(twoj_plecak),
+    narrate('Powoli odsuwasz krzesło, siadając do stołu zauważasz, że Baca ciągle patrzy na schody... jakby czegoś oczekując'), nl,
+    narrate('Słyszysz, że za twoimi plecami Kacper zbiega ze schodów'),
+    kacper_say('ZNALAZŁEM! ZNALAZŁEM! WIEM KTO ZABIŁ KAROLI-'),
+    narrate('... Nagle słyszysz głośny huk. Kacper spada ze schodów i rzuca przed siebie swoje \e[1mznalezisko\e[0m'), nl,
+    baca_say('No no... co my tutaj mamy...'),
+    narrate('Kacper szybko wstaje z ziemii...'),
+    kacper_say('TO ON ZABIŁ KAROLINĘ!!!'),
+    narrate('Kacper pokazuje na ciebie...'),
+    assert(can_see(znalezisko)), !.
 
 spojrz_specific(znalezisko) :-
-    narrate(""), !.
+    narrate('Przyglądasz się znalezisku Kacpra... zauważasz, że jest to twój plecak...'),
+    kacper_say('A teraz.. Panie i Panowie.. hehe.. a raczej panowie.. przejdźmy do meritum!'),
+    narrate('Kacper wyciąga z głównej kieszeni plecaka foliową torebkę, ale upuszcza ją na stół...'),
+    narrate('Z torebki wypada nóż... jest cały pokryty krwią...'), nl,
+    player_think('Ten głupi student mnie wrobił...', pomyślałeś),
+    player_say('Baca! To nie tak jak myślisz... Kacper ewidentnie mnie wrobił! Nie miałbym powodu zabijać Karoliny!'),
+    baca_say('Mhmmm.. Kacprze.. myślę, że twoje dowody stanowią.. em.. Absolutum tej sprawy.. tak.. mhm..'),
+    kacper_say('TAK! PANIE BACO! WIEDZIAŁEM, ŻE W KOŃCU SIĘ ZROZUMIEMY!'),
+    baca_say('To co, młody, wyjdziesz stąd sam, czy mam cię zmusić!?'),
+    kacper_say('Panie Baco! Powinniśmy najpierw zebrać dowody... na pewno GOPR jest w okolicy!'),
+    baca_say('Nie, Warszawiaku, załatwimy to po góralsku...'), nl,
+    player_think('Muszę teraz ostrożnie dobierać słowa...', ''),
+    assert(can_answer(baca, wypad)),
+    write_tip('Odpowiedz Bacy'),
+    write_dialog_option('t', 'Tym razem wygrałeś... Kacper... już wychodzę... ale wiedz, że to nie ja ją zabiłem, Baco.'),
+    write_dialog_option('n', 'Nie wyjdę z tego pomieszczenia dopóki nie udowodnię wam swoją niewinność!'), !.
 
+odpowiedz(baca, t) :-
+    can_answer(baca, wypad),
+    narrate('Powoli zakładasz buty... Ostatni raz patrzysz na schronisko...'),
+    narrate('Może gdybyś dokładniej je przeszukał, udałoby ci się znaleźć mordercę...'), nl,
+    narrate('Otwierasz drzwi i wychodzisz na \e[1mdwór\e[0m'),
+    assert(can_see(dwor)),
+    finish_answer(baca, wypad, t), !.
+
+odpowiedz(baca, n) :-
+    baca_say('sam się o to prosiłeś, młody...'),
+    narrate('Baca chwyta za ciupagę. Widzisz tylko jak w mgnieniu oka się nią zamachuje i... padasz na ziemię.'), nl, nl,
+    narrate('Budzi cię krzyk kacpra...'),
+    kacper_say('TAK PANIE BACO!!! MAMY GO!!!'),
+    narrate('Chcesz wyjaśnić Bacy co się wydarzyło... ale przez ból nie jesteś w stanie wydobyć z siebie ani słowa...'),
+    narrate('Baca zauważa, że zaczynasz odzyskiwać przytomność... pewnym ruchem łapie za twoją koszulę i wyrzuca cię na \e[1mdwór\e[0m'),
+    assert(can_see(dwor)),
+    finish_answer(baca, wypad, t), !.
 
 
 % ----------------------------------------------------------------------------- %

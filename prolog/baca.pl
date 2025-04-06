@@ -31,7 +31,7 @@ start :-
     introduction.
 
 
-% List visited Objects Function for debugging
+% List Visible Objects Function 
 lvo :-
     findall(Object, can_see(Object), Objects),
     narrate('Mozesz spojrzec na: '), write(Objects).
@@ -523,11 +523,13 @@ spojrz_specific(stol) :-
 
 odpowiedz(game, t) :-
     can_answer(game, final_stage),
-    narrate('Nothing there yet'), !.
+    last_stage, !.
 
 odpowiedz(game, n) :-
     narrate('Wróć tu, gdy będziesz gotowy przejść do następnego etapu. Powodzenia!'),
     retract(can_answer(game, final_stage)), !.
+
+% SALON
 
 spojrz_specific(salon) :- 
     exploration_stage,
@@ -688,13 +690,13 @@ spojrz_specific(zeszyt) :-
     narrate('"ten inteligenty" - najgorsze, że to co mówi praktycznie nigdy nie ma sensu.'),
     narrate('W każdym razie, po tym zaczął zachowywać się dziwnie. To znaczy nie zrobił'),
     narrate('nic strasznego, ale mam wrażenie, że zaczął być inny. Boje się, że jest'),
-    narrate('jakimś psycholem i coś mi zrobi - tak przynajmniej podpowiada mi intuicja'),
+    narrate('jakimś psycholem i coś mi zrobi - tak przynajmniej podpowiada mi intuicja.'),
     narrate('Ahhhh... Mam nadzieję, że jutro będzie milszy dzień.'),
     assert(looked(zeszyt)),
     !.
 
 
-% POKÓJ Bacy
+% POKÓJ BACY
 
 spojrz_specific(pokoj_bacy) :-
     exploration_stage,
@@ -786,6 +788,10 @@ show_map :-
     exploration_stage,
     display_ground_floor_map, !, true.
 
+% ----------------------------------------------------------------------------- %
+%                                  LAST STAGE                                   %
+% ----------------------------------------------------------------------------- %
+
 
 last_stage :-
     baca_hates(player),
@@ -816,6 +822,105 @@ last_stage :-
     kacper_say('TO ON ZABIŁ KAROLINĘ!!!'),
     narrate('Kacper pokazuje na ciebie...'),
     assert(can_see(znalezisko)), !.
+
+last_stage :-
+    looked(twoj_plecak),
+    (   answered(kacper, kominek, t) ->
+        baca_reavealing_bloodstain
+    ;   baca_say('I jak młodzi? Znaleźiśta coś?')
+    ),
+    assert(can_accuse),
+    assert(can_answer(baca, odkryte_informacje)),
+    write_info('Jesteś w ostatniej fazie gry. Możesz skonfrontować informacje odkryte w fazie eksploracji.'),
+    write_info('Dostajesz również dostęp do komendy oskarż, która spowoduje wyprowadzenie oskarżenia w stronę bacy lub kacpra'),
+    write_info('Sukces twojego oskarżenia zależy od odkrytych informacji, ale też od relacji ustanowionych z innymi osobami.'),
+    finale_display_possible_options, !.
+
+
+finale_display_possible_options :-
+    (   looked(laptop), \+ answered(baca, odkryte_informacje, a) ->
+        write_dialog_option('a', 'Baca nie płacił Karolinie i miała to z nim skonfronotwać.')
+    ;   write_dialog_option('-', 'OPCJA NIEDOSTĘPNA')
+    ),
+    (   looked(papiery), \+ answered(baca, odkryte_informacje, b) ->
+        write_dialog_option('b', 'Baca tonie w długach.')
+    ;   write_dialog_option('-', 'OPCJA NIEDOSTĘPNA')
+    ),
+    (   looked(zeszyt), \+ answered(baca, odkryte_informacje, c) ->
+        write_dialog_option('c', 'Karolina odrzuciła Kacpra. Kobieca intuicja mówiła jej, że jest groźny')
+    ;   write_dialog_option('-', 'OPCJA NIEDOSTĘPNA')
+    ),
+    (   looked(aktowka_kacpra), \+ answered(baca, odkryte_informacje, d) ->
+        write_dialog_option('d', 'Kacper ma w zeszycie wiersz, który sugeruje, że mógł zabić Karolinę.')
+    ;   write_dialog_option('-', 'OPCJA NIEDOSTĘPNA')
+    ), !.
+
+last_stage_more_clues :-
+    baca_say('Coś jeszcze?'),
+    finale_display_possible_options, !.
+
+odpowiedz(baca, a) :-
+    can_accuse,
+    \+ answered(baca, odkryte_informacje, a),
+    assert(answered(baca, odkryte_informacje, a)),
+    player_say('Baca nie płacił Karolinie, wczoraj miała z nim to skonfrontować i już chciała się z nim sądzić'),
+    baca_say('Tak, skonfrontowała to ze mną i właśnie jej zapłaciłem'),
+    (   answered(baca, odkryte_informacje, b) ->
+        kacper_say('Ciekawe z czego! Przecież toniesz w długach'),
+        last_stage_more_clues
+    ;   last_stage_more_clues
+    ), !.
+
+odpowiedz(baca, b) :-
+    can_accuse,
+    \+ answered(baca, odkryte_informacje, b),
+    assert(answered(baca, odkryte_informacje, b)),
+    player_say('Baca tonie w długach. I to na takie kwoty, że aż wierzyć mi się nie chce.'),
+    baca_say('Jestem zadłużony, jo. Ale co to ma do zabójstwa Karoliny?', 'powiedział'),
+    (   answered(baca, odkryte_informacje, a) ->
+        kacper_say('Aha!!! Czyli nie miałeś z czego zapłacić Karolinie!'),
+        last_stage_more_clues
+    ;   last_stage_more_clues
+    ), !.
+
+odpowiedz(baca, c) :-
+    can_accuse,
+    \+ answered(baca, odkryte_informacje, c),
+    assert(answered(baca, odkryte_informacje, c)),
+    player_say('Karolina odrzuciła zaloty Kacpra i jej kobieca intuicja mówiła jej, że jest niebezpieczny.'),
+    kacper_say('Tak, odrzuciła mnie... to prawda.', 'przyznał smutno'),
+
+    (   answered(baca, odkryte_informacje, a) ->
+        kacper_say('Aha!!! Czyli nie miałeś z czego zapłacić Karolinie!'),
+        last_stage_more_clues
+    ;   last_stage_more_clues
+    ), !.
+
+odpowiedz(baca, d) :-
+    can_accuse,
+    \+ answered(baca, odkryte_informacje, b),
+    assert(answered(baca, odkryte_informacje, b)),
+    player_say('Baca tonie w długach. I to na takie kwoty, że aż wierzyć mi się nie chce.'),
+    baca_say('Jestem zadłużony, jo. Ale co to ma do zabójstwa Karoliny?', 'powiedział'),
+    (   answered(baca, odkryte_informacje, a) ->
+        kacper_say('Aha!!! Czyli nie miałeś z czego zapłacić Karolinie!'),
+        last_stage_more_clues
+    ;   last_stage_more_clues
+    ), !.
+
+    
+
+
+
+
+baca_reavealing_bloodstain :-
+    baca_say('I jak tam młodzi?... Uuuf ale gorąco', 'powiedział baca i zdjął gruby sweter'),
+    narrate('To co się pod nim znalazło odjęło wam mowę - zobaczyliście na jego białej góralskiej koszuli plamę krwi.'),
+    kacper_say('CO TO JEST?!!!!', 'krzyknął w przerażeniu kacper, wskazując palcem na plamkę krwi'),
+    narrate('Baca spojrzał się na swoją koszulę i powiedział spokojnym głosem:'),
+    baca_say('Aaaa, o to wam się rozchodzi. Nie bójcie się. Zarzynałem wczoraj koguta na rosół. Musioł żem nie zauważyć, że mi na koszulę chlapło.'),
+    narrate('Ta sytuacja wzbudziła w Kacprze podejrzliwość do bacy.'),
+    baca_say('W każdym razie jak tam młokosy? Znaleźliśta coś?'), !.
 
 spojrz_specific(znalezisko) :-
     narrate('Przyglądasz się znalezisku Kacpra... zauważasz, że jest to twój plecak...'),
@@ -885,6 +990,10 @@ oskarz(kacper) :- % baca lubi kacpra (czy to mozliwe?)
     baca_say('Odezwoł się! A ty niby skąd jesteś? Pomyśl trochę zanim zaczniesz takie głupstwa paplać,'),
     baca_say('bo wezmę ciupogę i obu was stąd na zbity pysk wyrzucę!"\e[0m'),
     assert(baca_hates(player)), !.
+
+
+
+
 
 
 ending_kacper :-

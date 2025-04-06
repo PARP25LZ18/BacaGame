@@ -735,9 +735,8 @@ spojrz_specific(gora) :-
     assert(can_see(salon)),
     assert(can_see(twoj_pokoj)),
     assert(can_see(pokoj_kacpra)),
-    assert(can_see(lazienka)),
     narrate('Wchodzisz schodami na górę. Widzisz kilka pustych pokojów, do tego \e[1mtwój pokój\e[0m, oraz'),
-    narrate('jak się domyślasz - \e[1mpokój Kacpra\e[0m. Dostrzegasz też drzwi do \e[1młazienki\e[0m.'), !.
+    narrate('jak się domyślasz - \e[1mpokój Kacpra\e[0m. Dostrzegasz też drzwi do łazienki.'), !.
 
 
 spojrz_specific(twoj_pokoj) :-

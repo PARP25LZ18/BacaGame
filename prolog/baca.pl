@@ -393,7 +393,7 @@ odpowiedz(kacper, w) :-
 finish_kacper_body_question :-
     answered(kacper, cialo, _), !,
     (   answered(baca, cialo, _) ->
-        all_dialogued
+        all_dialogued_
     ; true
     ).
 
@@ -522,6 +522,7 @@ spojrz_specific(stol) :-
 
 
 odpowiedz(game, t) :-
+    can_answer(game, final_stage),_
     narrate('Nothing there yet'), !.
 
 odpowiedz(game, n) :-
@@ -538,7 +539,7 @@ spojrz_specific(salon) :-
     assert(can_see(pokoj_bacy)),
     assert(can_see(kacper)),
     assert(can_see(cialo)),
-    narrate('Wchodzisz do salonu, największego pomieszczenia w schronisku. Drewniane ściany są ozdobione starymi fotografiami i myśliwskimi trofeami.'),
+    narrate('Wchodzisz do salonu, największego pomieszczenia w schronisku. Drewniane ściany są ozdobione starymi fotografiami i myśliwskimi trofeami.'),_
     narrate('Po środku pokoju leży martwe \e[1mciało\e[0m Karoliny i kałużę krwi. Obok przy ścianie, \e[1mKacper\e[0m stoi przy kominku.'),
     narrate('Z prawej strony są drzwi do \e[1mprzedsionka\e[0m. Na wprost widzisz schody prowadzące na \e[1mgórę\e[0m, oraz do \e[1mpiwnicy\e[0m.'),
     narrate('Zaraz obok schodów znajduje się \e[1mpokój Bacy\e[0m.'), !,
@@ -773,24 +774,44 @@ spojrz_specific(aktowka_kacpra) :-
     exploration_stage,
     narrate('W aktówce panuje porządek - zbyt wielu rzeczy nie ma w środku - klucze, portfel, telefon i jakiś zeszyt'),
     narrate('Zaglądasz do tego zeszytu. Pełen jest wierszy. Sam na wierszach się nie znasz, ale nie wydają się szczególnie górnolotne.'),
-    narrate('Przewijasz do ostatniej najświeższej strony i zauważasz tam:'),
+    narrate('Przewijasz do ostatniej najświeższej strony i zauważasz tam:'), nl,
     narrate('Odrzuciła mnie, nic nie czuję,'),
     narrate('Jestem pusty, tylko cień,'),
     narrate('Ona śmieje się, patrzy na mnie z góry.'),
     narrate('...'),
-    narrate('Nie pośmieje się za długo.'),
+    narrate('Nie pośmieje się za długo.'), nl,
     assert(looked(aktowka_kacpra)), !.
-
-
-
-
-
 
 
 show_map :-
     exploration_stage,
     display_ground_floor_map, !, true.
 
+
+last_stage :-
+    baca_hates(player),
+    \+ looked(twoj_plecak),
+    narrate('Powoli odsuwasz krzesło, siadając do stołu zauważasz, że Baca nie odrywa od ciebie wzroku...'), nl,
+    player_think('O co mu właściwie chodzi? Przecież nawet nie ma opcji, że wydaje mu- ', 'nie zdążyłeś skończyć myśli'),
+    narrate('Słyszysz, że za twoimi plecami Kacper zbiega ze schodów'),
+    kacper_say('ZNALAZŁEM! ZNALAZŁEM! WIEM KTO ZABIŁ KAROLI-'),
+    narrate('... Nagle słyszysz głośny huk. Kacper spada ze schodów i rzuca przed siebie swoje \e[1mznalezisko\e[0m]'), nl,
+    baca_say('No no, mody... teraz to się wkopałeś...'),
+    narrate('Powiedział Baca, ciągle nie odrywając od ciebie wzroku... Kacper wciąż leży na ziemii...'),
+    baca_say('Myślałeś, że nie poznamy prawdy, warszawski morderco!?'), nl,
+    narrate('Baca chwyta za ciupagę. Widzisz tylko jak w mgnieniu oka się nią zamachuje i... padasz na ziemię.'), nl, nl,
+    narrate('Budzi cię krzyk kacpra...'),
+    kacper_say('TAK PANIE BACO!!! MAMY GO!!!'),
+    narrate('Chcesz wyjaśnić Kacprowi co się wydarzyło... ale przez ból nie jesteś w stanie wydobyć z siebie ani słowa...'),
+    narrate('Baca zauważa, że zaczynasz odzyskiwać przytomność... pewnym ruchem łapie za twoją koszulę i wyrzuca cię na \e[1mdwór\e[0m'),
+    assert(can_see(dwor)), !.
+
+last_stage :-
+    false, !.
+
+
+spojrz_specific(znalezisko) :-
+    narrate(""), !.
 
 
 

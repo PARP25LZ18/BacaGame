@@ -7,6 +7,7 @@
 
 :- use_module(conv).
 :- use_module(img).
+:- use_module(outro).
 
 :- initialization(instructions).
 
@@ -283,7 +284,7 @@ spojrz_specific(baca) :-
     narrate('Jego oczy od razu spadają z ciebie na leżącą obok Karolinę'),
     baca_say('Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać!'),
     narrate('Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie.'),
-    baca_say('Łoo pierunie! A cóż to sie tu porobiło?!'),
+    baca_say('Łoo pierunie! A cóż to sie porobiło?!'),
     write_tip('Odpowiedz bacy p/f/w) '),
     write_dialog_option('p', 'Zszedłem i Karolina już tu leżała'),
     write_dialog_option('f', 'To on już tu był (wskazujesz na gościa stojącego obok).'),
@@ -422,6 +423,7 @@ all_dialogued :-
 
 spojrz_specific(stol) :-
     \+ at_introduction,
+    \+ exploration_stage,
     narrate('Zasiadasz do stołu z Bacą i Kacprem. Ogień w kominku już się dopala...'),
     narrate('Przed tobą stoi najprawdopodobniej ostatni \e[1mdzban\e[0m słynnego kompotu \e[36mKaroliny.\e[39m'),
     narrate('Zauważasz, że Kacper trzyma ręce pod stołem i nerwowo spogląda naprzemiennie na ciebie i na Bacę.'),
@@ -510,6 +512,22 @@ spojrz_specific(baca) :-
     display_baca_smoking,
     narrate('Baca dalej siedzi przy stole - chyba ból jeszcze go nie opuścił. Pali fajkę próbując go przeczekać.'), !.
 
+spojrz_specific(stol) :-
+    exploration_stage,
+    write_info('Spojrzenie na stół będzie przeniesie cie do następnego etapu gry. Nie będziesz mógł już eksplorować'),
+    write_info('Czy jesteś pewny, że chcesz przejść dalej?'),
+    write_dialog_option('t', 'Tak, chcę przejść dalej.'),
+    write_dialog_option('n', 'Nie, chcę się jescze rozejrzeć.'),
+    assert(can_answer(game, final_stage)), !.
+
+
+odpowiedz(game, t) :-
+    narrate('Nothing there yet'), !.
+
+odpowiedz(game, n) :-
+    narrate('Wróć tu, gdy będziesz gotowy przejść do następnego etapu. Powodzenia!'),
+    retract(can_answer(game, final_stage)), !.
+
 spojrz_specific(salon) :- 
     exploration_stage,
     retractall(can_see(_)),
@@ -533,7 +551,7 @@ spojrz_specific(cialo) :-
     narrate('Ciało Karoliny leży na drewnianej podłodze, otoczona ciemniejącą kałużą krwi. Jej oczy są szeroko otwarte,'),
     narrate('jakby w ostatnich chwilach próbowała zrozumieć co się stało. Twarz zastygła w wyrazie bólu i zaskoczneia.'), nl,
     narrate('Na jej swetrze zauważasz 3 głębokie rany. Ciemne plamy krwi rozlały się wokół nich, wsiąkając w materiał.'),
-    player_think('Wygląda to jak rany po dużym nożu kuchennym.', 'wnioskujesz'), !.
+    player_think('Wygląda mi to na rany po nożu .', 'wnioskujesz'), !.
 
 spojrz_specific(przedsionek) :-
     exploration_stage,
@@ -587,16 +605,17 @@ odpowiedz(kacper, n) :-
 
 spojrz_specific(kacper) :-
     exploration_stage,
-    display_kacper_warming,
     answered(kacper, kominek, t),
+    display_kacper_warming,
     narrate('Kacper dalej stoi i wygrzewa się przy kominku. Zdaje się być zamyślony'), !.
 
 spojrz_specific(kacper) :-
-    display_kacper_near_fireplace,
     exploration_stage,
     answered(kacper, kominek, n),
+    display_kacper_near_fireplace,
     narrate('Widzisz, że Kacper dalej grzebie przy kominku. Ty mu nie pomożesz - wolisz się rozejrzeć'), !.
 
+% PIWNICA
 
 spojrz_specific(piwnica) :-
     exploration_stage,
@@ -607,8 +626,8 @@ spojrz_specific(piwnica) :-
     assert(can_see(obraz)),
     assert(can_see(laptop)),
     assert(can_see(torebka)),
-    narrate('Schodisz do piwnicy. Zauważasz że są tam jedne drzwi. Przechodzisz przez nie. Spodziewałeś się zobaczyć pomieszczenie gospodarcze.'),
-    narrate('To co widzisz jest z goła inne - pokój jak każdy inny. No prawie... Jest jeszcze mniejszy od twojego.'),
+    narrate('Schodisz do piwnicy. Zauważasz że są tam jedne drzwi. Przechodzisz przez nie. Spodziewałeś się jakiegoś pomieszczenia gospodarczego.'),
+    narrate('To co widzisz bardziej przypomina... zwykły pokój. No prawie... Jest jeszcze mniejszy od twojego.'),
     narrate('Na wprost wejścia widzisz łóżko przykryte zmiętą narzutą - jakby ktoś przed chwilą na niej leżał.'),
     narrate('Z lewej stoi \e[1mpółka\e[0m z książkami. Na ścianie wisi \e[1mobraz\e[0m'),
     narrate('Z prawej widzisz biórko na którym leży \e[1mlaptop\e[0m oraz damska \e[1mtorebka\e[0m - Zdaje się, że to pokój Karoliny.'),
@@ -642,8 +661,8 @@ spojrz_specific(laptop) :-
     karolina_say('ten dziad kolejny miesiąc spóźnia się z wypłatą'),
     karolina_say('dzisiaj to z nim skonfrontuje'),
     karolina_say('jak mi nie zapłaci to będziemy się sądzić'),
-    narrate('Wiadomości wysłane koło godziny 19...'),
-    write_info('Właśnie zdobyłeś potencjalny trop.'),
+    narrate('Wiadomości wysłane koło godziny 19...'), nl,
+    player_think('Może byłby milszy, gdybyś do niego dotrwała', 'myślisz sobie'),
     assert(looked(laptop)),
     !.
 
@@ -670,9 +689,97 @@ spojrz_specific(zeszyt) :-
     narrate('nic strasznego, ale mam wrażenie, że zaczął być inny. Boje się, że jest'),
     narrate('jakimś psycholem i coś mi zrobi - tak przynajmniej podpowiada mi intuicja'),
     narrate('Ahhhh... Mam nadzieję, że jutro będzie milszy dzień.'),
-    write_info('Właśnie zrobiłeś potencjalny trop.'),
     assert(looked(zeszyt)),
     !.
+
+
+% POKÓJ Bacy
+
+spojrz_specific(pokoj_bacy) :-
+    exploration_stage,
+    retractall(can_see(_)),
+    assert(can_see(ciupaga)),
+    assert(can_see(papiery)),
+    assert(can_see(salon)),
+    narrate('Wchodzisz do pokoju i przymykasz za sobą drzwi do \e[1msalonu\e[0m.'),
+    narrate('Pokój Bacy jest surowy i oszczędny, jakby odzwierciedlał charakter jego właściciela.'),
+    narrate('Posiada zwykłe pojedyncze łóżko. W rogu pokoju, oparta o ścianę stoi góralska \e[1mciupaga\e[0m.'),
+    narrate('Na prostym biurku leżą porozrzucane \e[1mpapiery\e[0m. W powietrzu unosi się zapach tytoniu i żywicy.'), !.
+
+
+spojrz_specific(papiery) :-
+    exploration_stage,
+    display_papers,
+    narrate('Na biurku leży sterta porozrzucanych papierów, niechlujnie ułożonych w różnych miejscach.'),
+    narrate('Wśród papierów wyróżniają się notatki, które wskazują na ogromne kłopoty finansowe Bacy.'),
+    narrate('Rachunki, wezwania do zapłaty, zapiski z tak licznymi kwotami, że aż nie wierzysz własnym oczom.'),
+    narrate('W jednym z dokumentów zauważasz szczególną pozycję, która powtarza się w różnych miejscach - leczo.'),
+    narrate('Wydaje się, że prawie wszystkie pieniądze Bacy idą na zakup składników na to danie.'),
+    narrate('Brzmi to podobnie jak w tej paście internetowej...'),
+    narrate('W każdym razie wynika z tego, że Baca tonie w długach.'),
+    assert(looked(papiery)), !.
+
+spojrz_specific(ciupaga) :-
+    exploration_stage,
+    display_ciupaga,
+    narrate('Ciupaga jest stara, ale zadbana. Wykonana jest z drewna, dokładnie starrannie zdobiona.'),
+    player_think('WOW - wygląda nieźle', 'myślisz sobie'), !.
+
+
+
+% GÓRA
+
+spojrz_specific(gora) :-
+    exploration_stage,
+    retractall(can_see(_)),
+    assert(can_see(salon)),
+    assert(can_see(twoj_pokoj)),
+    assert(can_see(pokoj_kacpra)),
+    assert(can_see(lazienka)),
+    narrate('Wchodzisz schodami na górę. Widzisz kilka pustych pokojów, do tego \e[1mtwój pokój\e[0m, oraz'),
+    narrate('jak się domyślasz - \e[1mpokój Kacpra\e[0m. Dostrzegasz też drzwi do \e[1młazienki\e[0m.'), !.
+
+
+spojrz_specific(twoj_pokoj) :-
+    exploration_stage,
+    \+ looked(twoj_plecak),
+    narrate('Wchodzisz do swojego pokoju. Zastanawiasz się w sumie po co to zrobiłeś, przecież raczej nic tu nie znajdziesz'),
+    narrate('Jednak dziwi cie to, że \e[1mtwój plecak\e[0m zdaje się być inaczej ułożony, niż go odkładałeś.'),
+    assert(can_see(twoj_plecak)), !.
+
+spojrz_specific(twoj_pokoj) :-
+    exploration_stage,
+    looked(twoj_plecak),
+    narrate('Ponownie wchodzisz do swojego pokoju i nie ma tu już nic ciekawego. Momentalnie wychodzisz.'), !.
+
+spojrz_specific(twoj_plecak) :-
+    exploration_stage,
+    narrate('Nie dawało ci to spokoju - coś z tym plecakiem zdaje się być nie tak. Przeglądasz kieszonki - nic wszystko się zgadza.'),
+    narrate('Zaglądasz do dużej kieszeni i nie możesz uwierzyć własnym oczom...'),
+    narrate('Widzisz opakowany w torebkę foliową nóż, ze śladami krwi.'),
+    player_think('Ktoś próbuje mnie wrobić! Muszę się tego jakoś pozbyć.', 'myślisz sobie'),
+    narrate('Jak najciszej otwierasz okno i wyrzucasz przez nie nóż z całej siły.'),
+    write_info('Gratulacje pozbyłeś się dowodu na siebie!'),
+    retract(can_see(twoj_plecak)),
+    assert(looked(twoj_plecak)), !.
+
+spojrz_specific(pokoj_kacpra) :-
+    exploration_stage,
+    narrate('Pokój Kacpra wygląda identycznie jak twój - stary, ciasny. Na szafce nocnej leżą książki z literaturą.'),
+    narrate('Obok łóżka dostrzegasz skórzaną, ciemnobrązową \e[1maktówkę Kacpra\e[0m.'),
+    assert(can_see(aktowka_kacpra)), !.
+
+spojrz_specific(aktowka_kacpra) :-
+    exploration_stage,
+    narrate('W aktówce panuje porządek - zbyt wielu rzeczy nie ma w środku - klucze, portfel, telefon i jakiś zeszyt'),
+    narrate('Zaglądasz do tego zeszytu. Pełen jest wierszy. Sam na wierszach się nie znasz, ale nie wydają się szczególnie górnolotne.'),
+    narrate('Przewijasz do ostatniej najświeższej strony i zauważasz tam:'),
+    narrate('Odrzuciła mnie, nic nie czuję,'),
+    narrate('Jestem pusty, tylko cień,'),
+    narrate('Ona śmieje się, patrzy na mnie z góry.'),
+    narrate('...'),
+    narrate('Nie pośmieje się za długo.'),
+    assert(looked(aktowka_kacpra)), !.
 
 
 
@@ -734,8 +841,9 @@ spojrz_specific(piecyk) :-
     write(''), nl,
     write('\e[1;31m"No młody... mamy go z głowy, teraz słuchaj mnie uważnie"\e[0m - powiedział ze spokojem baca po czym usiadł przy piecyku'), nl,
     write('\e[1;31m"Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz" - powiedział patrząc ci w oczy baca\e[0m'), nl,
-    write('\e[1;31m"A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą"\e[0m - mówiąc to wskazał na swoją ciupagę'), nl,
-    write('Słowa bacy z pewnością nie napawają cię optymizmem... No cóż, przynajmniej nie ma tu już Kacpra'), !, nl.
+    write('\e[1;31m"A jak usłyszę tutaj miastową straż, możesz być pewien że chłopaki z bacówki cię znajdą"\e[0m - mówiąc to wskazał na ciebie swoją ciupagę'), nl,
+    write('Słowa bacy z pewnością nie napawają cię optymizmem... No cóż, przynajmniej nie ma tu już Kacpra'), !, nl,
+    outro.
 
 ending_baca :-
     display_ending_baca,
@@ -752,7 +860,8 @@ spojrz_specific(podloga) :-
     write('Podnosisz Kacpra z podłogi. Baca dalej leży nieprzytomny, stwierdziliście że musicie wezwać tu policję... lub przynajmniej GOPR.'), nl,
     write('Wybiegacie z izby i kierujecie się w stronę najbliżego szlaku.'), nl,
     write('\e[1;32m"Wspaniale, że udało nam się uciec od tego popaprańca... teraz mamy chwilę by porozmawiać o prawie cywilnym!"\e[0m - rozpromieniał Kacper'), nl,
-    write('Przez chwilę przyszło ci do głowy, że mogłeś jednak iść sam'), !, nl.
+    write('Przez chwilę przyszło ci do głowy, że mogłeś jednak iść sam'), !, nl,
+    outro.
 
 ending_player:-
     display_ending_player,
@@ -768,7 +877,8 @@ ending_player:-
 spojrz_specific(dwor) :-
     display_bad_ending,
     write('Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia'), nl,
-    write('Śpiesz się, robi się ciemno...'), !, nl.
+    write('Śpiesz się, robi się ciemno...'), !, nl,
+    outro.
 
 
 

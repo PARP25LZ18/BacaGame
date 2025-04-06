@@ -3,7 +3,7 @@
 :- dynamic is_outside/0, at_introduction/0, can_see/1, can_answer/2, answered/3, spojrz/1, odpowiedz/2,
     baca_hates/1, kacper_hates/1, kacper_likes/1, oskarz/1, can_accuse/0, can_look/0, looked/1, looking/1,
     exploration_stage/0, player_location/1.
-:- discontiguous spojrz/1, spojrz_specific/1, odpowiedz/2, last_stage/0.
+:- discontiguous spojrz/1, spojrz_specific/1, odpowiedz/2, last_stage/0, oskarz/1.
 
 :- use_module(conv).
 :- use_module(img).
@@ -523,6 +523,7 @@ spojrz_specific(stol) :-
 
 odpowiedz(game, t) :-
     can_answer(game, final_stage),
+    retract(can_answer(game, final_stage)),
     last_stage, !.
 
 odpowiedz(game, n) :-
@@ -851,7 +852,7 @@ finale_display_possible_options :-
     ;   write_dialog_option('-', 'OPCJA NIEDOSTĘPNA')
     ),
     (   looked(aktowka_kacpra), \+ answered(baca, odkryte_informacje, d) ->
-        write_dialog_option('d', 'Kacper ma w zeszycie wiersz, który sugeruje, że mógł zabić Karolinę.')
+        write_dialog_option('d', 'Kacper ma w zeszycie wiersz, który sugeruje, że jest niestabilny psychicznie.')
     ;   write_dialog_option('-', 'OPCJA NIEDOSTĘPNA')
     ), !.
 
@@ -889,27 +890,26 @@ odpowiedz(baca, c) :-
     assert(answered(baca, odkryte_informacje, c)),
     player_say('Karolina odrzuciła zaloty Kacpra i jej kobieca intuicja mówiła jej, że jest niebezpieczny.'),
     kacper_say('Tak, odrzuciła mnie... to prawda.', 'przyznał smutno'),
-
-    (   answered(baca, odkryte_informacje, a) ->
-        kacper_say('Aha!!! Czyli nie miałeś z czego zapłacić Karolinie!'),
+    kacper_say('Ale to wcale nie znaczy, że ja ją skrzywdziłem.'),
+    kacper_say('Nigdy bym czegoś takiego nie zrobił...', 'dodał'),
+    (   answered(baca, odkryte_informacje, d) ->
+        baca_say('Oj mieszczuchu... Twoje zapiski mówią inaczej'),
         last_stage_more_clues
     ;   last_stage_more_clues
     ), !.
 
 odpowiedz(baca, d) :-
     can_accuse,
-    \+ answered(baca, odkryte_informacje, b),
-    assert(answered(baca, odkryte_informacje, b)),
-    player_say('Baca tonie w długach. I to na takie kwoty, że aż wierzyć mi się nie chce.'),
-    baca_say('Jestem zadłużony, jo. Ale co to ma do zabójstwa Karoliny?', 'powiedział'),
-    (   answered(baca, odkryte_informacje, a) ->
-        kacper_say('Aha!!! Czyli nie miałeś z czego zapłacić Karolinie!'),
+    \+ answered(baca, odkryte_informacje, d),
+    assert(answered(baca, odkryte_informacje, d)),
+    player_say('Kacper napisał dziwny wiersz, który może świadczyć, że jest niestabilny psychicznie.'),
+    baca_say('Przynieś no ten wiersz Kacper. Zobaczymy co żeś tam napisał', 'powiedział'),
+    narrate('Kacper przyniósł wiersz i go przeczytał'),
+    (   answered(baca, odkryte_informacje, c) ->
+        baca_say('No powiedziałbym, żeś się na piśmie do czynu przyznał!'),
         last_stage_more_clues
     ;   last_stage_more_clues
     ), !.
-
-    
-
 
 
 
@@ -963,33 +963,71 @@ odpowiedz(baca, n) :-
 %                                    ENDINGS                                   %
 % ----------------------------------------------------------------------------- %
 
-oskarz(baca) :- % kacper nie lubi gracza, bad ending
-    kacper_hates(player),
-    ending_player, !.
 
-oskarz(baca) :- % kacper nie lubi bacy
-    kacper_hates(baca),
-    ending_baca, !.
 
-oskarz(baca) :-  % kacper lubi bace
-    player_say('psst... Kacper... myślę, że to Baca zabił Karolinę'),
-    kacper_say('EKHM..! Czy masz jakieś oficjalne dowody podtrzymujące twoją tezę? Jeżeli nie prosiłbym o milczenie!'),
-    narrate('Czujesz, że Kacprowi nie spodobało się twoje oskarżenie, dodatkowo zaczął on nerwowo na ciebie spoglądać...'),
-    assert(kacper_hates(player)), !, nl.
+oskarz(baca) :-
+    can_accuse,
+    retract(can_answer(baca, odkryte_informacje)),
+    (   baca_accuse_success ->
+        ending_baca
+    ;   ending_player
+    ), !.
 
-oskarz(kacper) :- % baca nie lubi gracza, bad ending
-    baca_hates(player),
-    ending_player, !.
+oskarz(kacper) :-
+    can_accuse,
+    retract(can_answer(baca, odkryte_informacje)),
+    (   kacper_accuse_success ->
+        ending_kacper
+    ;   ending_player
+    ), !.
 
-oskarz(kacper) :- % baca nie lubi kacpra
-    baca_hates(kacper),
-    ending_kacper, !.
 
-oskarz(kacper) :- % baca lubi kacpra (czy to mozliwe?)
-    player_say('Baca... słuchaj... myślę, że to ten Warszawiak zabił-"'),
-    baca_say('Odezwoł się! A ty niby skąd jesteś? Pomyśl trochę zanim zaczniesz takie głupstwa paplać,'),
-    baca_say('bo wezmę ciupogę i obu was stąd na zbity pysk wyrzucę!"\e[0m'),
-    assert(baca_hates(player)), !.
+kacper_accuse_success :-
+    BaseScore = 0,
+    (answered(baca, odkryte_informacje, c) -> Score1 is BaseScore + 1 ; Score1 = BaseScore),
+    (answered(baca, odkryte_informacje, d) -> Score2 is Score1 + 1 ; Score2 = Score1),
+    (baca_hates(kacper) -> Score3 is Score2 + 1 ; Score3 = Score2),
+    (baca_hates(player) -> Score3 is Score3 - 1 ; Score4 = Score3),
+    Score4 >= 2.
+
+baca_accuse_success :-
+    BaseScore = 0,
+    (answered(baca, odkryte_informacje, a) -> Score1 is BaseScore + 1 ; Score1 = BaseScore),
+    (answered(baca, odkryte_informacje, b) -> Score2 is Score1 + 1 ; Score2 = Score1),
+    (answered(kacper, kominek, t) -> Score3 is Score2 + 1 ; Score3 = Score2),
+    (kacper_hates(baca) -> Score4 is Score3 + 1 ; Score4 = Score3),
+    (kacper_hates(player) -> Score5 is Score4 - 1 ; Score5 = Score4),
+    Score5 >= 3.
+
+
+
+% oskarz(baca) :- % kacper nie lubi gracza, bad ending
+%     kacper_hates(player),
+%     ending_player, !.
+% 
+% oskarz(baca) :- % kacper nie lubi bacy
+%     kacper_hates(baca),
+%     ending_baca, !.
+% 
+% oskarz(baca) :-  % kacper lubi bace
+%     player_say('psst... Kacper... myślę, że to Baca zabił Karolinę'),
+%     kacper_say('EKHM..! Czy masz jakieś oficjalne dowody podtrzymujące twoją tezę? Jeżeli nie prosiłbym o milczenie!'),
+%     narrate('Czujesz, że Kacprowi nie spodobało się twoje oskarżenie, dodatkowo zaczął on nerwowo na ciebie spoglądać...'),
+%     assert(kacper_hates(player)), !, nl.
+% 
+% oskarz(kacper) :- % baca nie lubi gracza, bad ending
+%     baca_hates(player),
+%     ending_player, !.
+% 
+% oskarz(kacper) :- % baca nie lubi kacpra
+%     baca_hates(kacper),
+%     ending_kacper, !.
+% 
+% oskarz(kacper) :- % baca lubi kacpra (czy to mozliwe?)
+%     player_say('Baca... słuchaj... myślę, że to ten Warszawiak zabił-"'),
+%     baca_say('Odezwoł się! A ty niby skąd jesteś? Pomyśl trochę zanim zaczniesz takie głupstwa paplać,'),
+%     baca_say('bo wezmę ciupogę i obu was stąd na zbity pysk wyrzucę!"\e[0m'),
+%     assert(baca_hates(player)), !.
 
 
 
@@ -998,6 +1036,7 @@ oskarz(kacper) :- % baca lubi kacpra (czy to mozliwe?)
 
 ending_kacper :-
     display_ending_kacper,
+    player_say('Myślę, że to był kacper, ale może jeszcze chwilę się zastanówmy.'),
     baca_say('Nie mogę już tego słuchać! Przyjacielu to oczywiste, że ten warszawiak zabił Karolinkę!', 'wykrzyczał patrząc na ciebie baca'),
     kacper_say('C.Co.. TO OSZCZERSTWA, ARGUMENT AD PERSONAM! Nigdy bym jej nie zab...', 'odparł szybko Kacper'),
     baca_say('Mam już tego dość! Albo ty albo on!', 'przerwał mu rozwcieczony baca'),
@@ -1063,3 +1102,6 @@ odpowiedz(_, _) :-
 
 spojrz(_) :-
     narrate('Nie możesz teraz tego zrobić - jesteś w trakcie rozmowy.').
+
+oskarz(_) :-
+    narrate('Nie możesz tego zrobić.').

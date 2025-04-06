@@ -459,7 +459,7 @@ next_stage :-
     baca_say('Ahhhh', 'westchnął'),
     baca_say('Coś mnie w krzyżu łupi. Zacznijcie sami, jo do was dołączę późnij.'),
     write_info('Za chwilę przejdziesz do kolejnej fazy gry, w której będziesz rozglądał się za poszlakami'),
-    write_tip('Możesz do niej przejść poleceniem \e[1mrozpocznij_eksploracje\e[2m.'),
+    write_tip('Możesz do niej przejść poleceniem \e[1mrozpocznij_eksploracje\e[0m.'),
     assert(exploration_stage), !, true.
 
 
@@ -469,7 +469,7 @@ rozpocznij_eksploracje :-
     spojrz(kuchnia),
     write_info('Możesz teraz eksplorować schronisko, aby zakończyć eksploracje i skonfrontować znaleziska dostań się do kuchni i spojrz na stol.'),
     write_info('Przejdziesz wtedy do finalnej rozmowy z Bacą i Kacprem rzucając swoje oskarżenie i argumentując je.'),
-    write_tip('Po mapie poruszasz się używając komendy \e[1mspojrz\e[2m, przydatna okazać się może komenda \e[1mlvo\e[2m - listująca widoczne obiekty'),
+    write_tip('Po mapie poruszasz się używając komendy \e[1mspojrz\e[0m, przydatna okazać się może komenda \e[1mlvo\e[0m - listująca widoczne obiekty'),
     write_tip('Aby wyświetlić mapę użyj komendy show_map.'), !, true.
 
 % KUCHNIA
@@ -502,7 +502,7 @@ spojrz_specific(zabrudzenie) :-
 
 spojrz_specific(lodowka) :-
     display_fridge,
-    narrate('Lodówka jest stara, zwyczajna, a jej biała farba w kilku miejscach zaczyna się łuszczyć, a na uchwycie zwisają kuchenne ścierki.'),
+    narrate('Lodówka jest stara, zwyczajna, a jej biała farba w kilku miejscach zaczyna się łuszczyć. Na uchwycie zwisają kuchenne ścierki.'),
     narrate('Otwierasz drzwiczki - lekko skrzypią. W środku są powidła, kiełbasa, smalec i jajka - nie ma tu nic ciekawego'), !.
 
 spojrz_specific(baca) :-
@@ -521,10 +521,162 @@ spojrz_specific(salon) :-
     assert(can_see(kacper)),
     assert(can_see(cialo)),
     narrate('Wchodzisz do salonu, największego pomieszczenia w schronisku. Drewniane ściany są ozdobione starymi fotografiami i myśliwskimi trofeami.'),
-    narrate('Po środku pokoju leży martwe \e[1mciało\e[0m Karoliny i kałużę krwi. Obok przy ścianie, dostrzegarz, że \e[1mKacper\e[0m coś grzebie przy kominku.'),
+    narrate('Po środku pokoju leży martwe \e[1mciało\e[0m Karoliny i kałużę krwi. Obok przy ścianie, \e[1mKacper\e[0m stoi przy kominku.'),
     narrate('Z prawej strony są drzwi do \e[1mprzedsionka\e[0m. Na wprost widzisz schody prowadzące na \e[1mgórę\e[0m, oraz do \e[1mpiwnicy\e[0m.'),
     narrate('Zaraz obok schodów znajduje się \e[1mpokój Bacy\e[0m.'), !,
     write_tip('Do pokoju Bacy odwołuj się jako pokoj_bacy').
+
+spojrz_specific(cialo) :-
+    exploration_stage,
+    display_dead_body,
+    narrate('W miarę jak zbliżasz się do ciała powietrze staje się coraz cięższe, a metaliczny zapach krwi bardziej wyraźny.'),
+    narrate('Ciało Karoliny leży na drewnianej podłodze, otoczona ciemniejącą kałużą krwi. Jej oczy są szeroko otwarte,'),
+    narrate('jakby w ostatnich chwilach próbowała zrozumieć co się stało. Twarz zastygła w wyrazie bólu i zaskoczneia.'), nl,
+    narrate('Na jej swetrze zauważasz 3 głębokie rany. Ciemne plamy krwi rozlały się wokół nich, wsiąkając w materiał.'),
+    player_think('Wygląda to jak rany po dużym nożu kuchennym.', 'wnioskujesz'), !.
+
+spojrz_specific(przedsionek) :-
+    exploration_stage,
+    display_entryway,
+    narrate('Widzisz drewniany przedsionek z prostą ławką i rzędem haczyków na ścianie. Na nich wiszą ciężkie, zimowe kurtki.'),
+    narrate('Drewniana podłoga skrzypi lekko pod stopami. Nie ma tu nic interesującego, wychodzisz i zastanawiasz się co teraz zrobić.'),! .
+
+spojrz_specific(kacper) :-
+    exploration_stage,
+    \+ answered(kacper, kominek, _),
+    display_kacper_near_fireplace,
+    narrate('Zbliżasz się do Kacpra. Trzymając w ręku drewno na zmianę pochyla się i prostuje. Wygląda jakby miał z czymś problem.'),
+    kacper_say('Czemuż nie chcesz współpracować, ty iskro z piekła rodem?!', 'krzyczy do siebie'),
+    kacper_say('Wykład z prawa rzymskiego twierdził jasno: „Pacta sunt servanda”... a jednak drewno i ogień nie zawarły żadnego paktu. Zaiste, zdrada!'),
+    narrate('Widać jak na tacy, że Kacper nie potrafi otworzyć kominka, żeby dorzucić drewno. Łapiesz się za głowę...'),
+    narrate('Chwilę później zauważa że stoisz obok niego i mówi do Ciebie:'),
+    kacper_say('Próbowałem już wszystkiego: dmuchałem, pouczałem, groziłem sankcjami prawnymi… ale ogień — ten niemy barbarzyńca — nie reaguje.'),
+    kacper_say('Jako przedstawiciel akademickiej jurysprudencji nie jestem przeszkolony w dziedzinie stosów drzewnych ani piekielnej alchemii cieplnej'),
+    kacper_say('Pomożesz mi dorzucić drewno? Ogień już przygasa, a i tak jest zimno. Nie chcę się rozchorować.'),
+    player_think('Przez całą sytuację z ciałem Karoliny nawet nie zwróciłeś uwagi na temperaturę. Faktycznie jest dość zimno.', 'myślisz sobie'),
+    kacper_say('To jak? Pomożesz mi czy nie?'),
+    write_tip('Odpowiedz Kacprowi t/n'),
+    write_dialog_option('t', 'Pewnie.'),
+    write_dialog_option('n', 'Teraz nie mam na to czasu - chcę się rozejrzeć'),
+    assert(can_answer(kacper, kominek)), !.
+
+odpowiedz(kacper, t) :-
+    exploration_stage,
+    can_answer(kacper, kominek),
+    player_say('Pewnie. Może chociaż temperatura nie będzie jak w kostnicy.', 'mimowolnie zarzuciłeś żartem'),
+    narrate('Kacper zmarszczył brwi - chyba twój żart mu się nie spodobał.'),
+    narrate('Dorzucasz drewno do kominka. Słyszysz krzyk bacy z daleka.'),
+    baca_say('Łoszaleliśta! Z dymem mnie puścić chcecie?! Myślicie, że drewno to z nieba spada?!'),
+    narrate('Obydwaj z Kacprem zdajecie się udawać, że nic nie słyszeliście.'),
+    kacper_say('Dzięki za pomoc. Przynajmniej nie zamarzniemy.', 'powiedział'),
+    kacper_say('Posiedzę tu jeszcze, żeby się ogrzać. W zimnie fluorescencja w mózgu działa wadliwie'),
+    player_think('Zimno jest, ale nie wytrzymam przy nim. Cały czas gada takie głupoty... Rozejrzę się.', 'myślisz sobie'),
+    narrate('Odchodzisz od kominka'),
+    finish_answer(kacper, kominek, t), !.
+
+odpowiedz(kacper, n) :-
+    exploration_stage,
+    can_answer(kacper, kominek),
+    player_say('Teraz nie mam na to czasu. Chcę się rozejrzeć i jak najszybciej wyjaśnić sprawę.', 'odpowidasz'),
+    kacper_say('Oczywiście… cóż za naiwność z mej strony. Liczyć na solidarność w czasach tak niepewnych, to jak oczekiwać jasności prawa w ustawie podatkowej'),
+    kacper_say('Nie szkodzi. Niech zatem zgaśnie płomień. Niech ciemność obejmie ten przybytek chłodem egzystencjalnej nicości.'),
+    kacper_say('Skoro ogień nas opuścił, może i my powinniśmy się przygotować… na koniec.'),
+    kacper_say('To tutaj. W tym salonie, wśród wspomnień i pleśni, zakończy się historia człowieka. Niegodnie. Zmarzniętego. Bez koca. Bez sensu. I bez nadziei'),
+    player_think('Ale dramatyzuje... Idę rozglądać się dalej.', 'pomyślałeś'),
+    finish_answer(kacper, kominek, n), !.
+
+spojrz_specific(kacper) :-
+    exploration_stage,
+    display_kacper_warming,
+    answered(kacper, kominek, t),
+    narrate('Kacper dalej stoi i wygrzewa się przy kominku. Zdaje się być zamyślony'), !.
+
+spojrz_specific(kacper) :-
+    display_kacper_near_fireplace,
+    exploration_stage,
+    answered(kacper, kominek, n),
+    narrate('Widzisz, że Kacper dalej grzebie przy kominku. Ty mu nie pomożesz - wolisz się rozejrzeć'), !.
+
+
+spojrz_specific(piwnica) :-
+    exploration_stage,
+    display_basement,
+    retractall(can_see(_)),
+    assert(can_see(salon)),
+    assert(can_see(polka)),
+    assert(can_see(obraz)),
+    assert(can_see(laptop)),
+    assert(can_see(torebka)),
+    narrate('Schodisz do piwnicy. Zauważasz że są tam jedne drzwi. Przechodzisz przez nie. Spodziewałeś się zobaczyć pomieszczenie gospodarcze.'),
+    narrate('To co widzisz jest z goła inne - pokój jak każdy inny. No prawie... Jest jeszcze mniejszy od twojego.'),
+    narrate('Na wprost wejścia widzisz łóżko przykryte zmiętą narzutą - jakby ktoś przed chwilą na niej leżał.'),
+    narrate('Z lewej stoi \e[1mpółka\e[0m z książkami. Na ścianie wisi \e[1mobraz\e[0m'),
+    narrate('Z prawej widzisz biórko na którym leży \e[1mlaptop\e[0m oraz damska \e[1mtorebka\e[0m - Zdaje się, że to pokój Karoliny.'),
+    narrate('I oczywiście za sobą masz schody prowadzące do \e[1msalonu\e[0m.'), !.
+
+spojrz_specific(obraz) :-
+    exploration_stage,
+    display_basement_picture,
+    narrate('Obraz przedstawia górala w tradycyjnym stroju, ukazanego od ramion w górę. Jego twarz'),
+    narrate('wyraża siłę i determinację, z charakterystycznym, mocnym spojrzeniem.'),
+    player_think('Mam wrażenie, że skądś kojarze tego górala...', 'myślisz sobie'), !.
+
+spojrz_specific(polka) :-
+    exploration_stage,
+    display_shelf,
+    narrate('Na półce dostrzegasz same klasyczne dzieła polskiej literatury - Pan Tadeusz, Dziady, Potop... Nie widzisz nic innego.'),
+    narrate('Książki są dośc stare, ale zadbane. Każda opakowana jest w elegancką skórzaną oprawkę.'), !.
+
+spojrz_specific(laptop) :-
+    exploration_stage,
+    display_laptop,
+    narrate('Laptop z góry jest cały obklejony naklejkami - kompletnie ze sobą nie powiązanymi, jakby ktoś przyklejał wszystko co mu w ręce wpadło.'),
+    narrate('Laptop jest podpięty kablem ethernet - ma dostęp do internetu'),
+    narrate('W każdym razie nie jego wygląd jest najważniejszy, ale czy uda się coś znaleźć w środku.'),
+    narrate('Otwierasz laptopa... I - zabezpieczony hasłem :('),
+    narrate('Prawie byś już zrezygnował, ale nagle wpada ci pomysł do głowy.'),
+    narrate('Wpisujesz hasło "1234" i wciskasz enter.'),
+    write_waiting,
+    narrate('Zostałeś pomyślnie zalogowany. Pierwsze co widać na ekranie to otwarty dymek czatu z koleżanką karoliny'),
+    karolina_say('to już jest gruba przesada'),
+    karolina_say('ten dziad kolejny miesiąc spóźnia się z wypłatą'),
+    karolina_say('dzisiaj to z nim skonfrontuje'),
+    karolina_say('jak mi nie zapłaci to będziemy się sądzić'),
+    narrate('Wiadomości wysłane koło godziny 19...'),
+    write_info('Właśnie zdobyłeś potencjalny trop.'),
+    assert(looked(laptop)),
+    !.
+
+spojrz_specific(torebka) :-
+    exploration_stage,
+    display_bag,
+    narrate('Jest to zwykła kórzana torba w ciemnym brązie, z gładką powierzchnią i solidnym zamkiem.'),
+    narrate('W jej wnętrzu dostrzegasz małą kosmetyczkę, książkę virginii woolf, oraz czarny \e[1mzeszyt\e[0m, na którego okładce napisane jest "NIE CZYTAĆ".'),
+    assert(can_see(zeszyt)),
+    !.
+
+spojrz_specific(zeszyt) :-
+    exploration_stage,
+    narrate('Ignorując napis na okładce otwierasz zeszyt i zaczynasz go przeglądać. Szybko orientujesz się, że jest to pamiętnik.'),
+    narrate('Przechodzisz do poszukiwania najnowszego wpisu - może on da jakąś wskazówkę.'), nl,
+    narrate('3 marca'),
+    narrate('Dziś Kacper znów próbował się do mnie zbliżyć. Na początku myślałam, że'),
+    narrate('tylko mi się wydaje, ale jego zachowanie staje się coraz bardziej nachalne'),
+    narrate('Chociaż starałam się być delikatna, powiedziałam mu wprost, że nie jestem'),
+    narrate('nim zainteresowana. Z resztą kto by był? To dzieciak z wybujanym ego, który'),
+    narrate('myśli, że używanie szykownych słówek sprawi, że będzie postrzegany jako '),
+    narrate('"ten inteligenty" - najgorsze, że to co mówi praktycznie nigdy nie ma sensu.'),
+    narrate('W każdym razie, po tym zaczął zachowywać się dziwnie. To znaczy nie zrobił'),
+    narrate('nic strasznego, ale mam wrażenie, że zaczął być inny. Boje się, że jest'),
+    narrate('jakimś psycholem i coś mi zrobi - tak przynajmniej podpowiada mi intuicja'),
+    narrate('Ahhhh... Mam nadzieję, że jutro będzie milszy dzień.'),
+    write_info('Właśnie zrobiłeś potencjalny trop.'),
+    assert(looked(zeszyt)),
+    !.
+
+
+
+
 
 
 

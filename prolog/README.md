@@ -1,0 +1,1 @@
+Gra wykorzystuje ffmpeg (ffplay) do odtworzenia dźwięku outro przy końcu gry, jeśli ffmpeg nie jest zainstalowane w środowisku uruchomieniowym - należy zakomentować 8 linię w pliku outro.pl (poprzez dodanie % na początku linii)

@@ -1,0 +1,6 @@
+# ignore build files
+*.hi
+*.o
+
+# ignore output binary
+main

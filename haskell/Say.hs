@@ -11,6 +11,11 @@
 
 module Say
     ( BacaSay
+    , baca_say
+    , kacper_say
+    , karolina_say
+    , player_say
+    , player_think
     , KacperSay
     , KarolinaSay
     , PlayerSay

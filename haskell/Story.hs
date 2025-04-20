@@ -11,10 +11,13 @@ import Game  -- GameState, pomocnicze funkcje (lvo, make_visible, hide, itd)
 import Say  -- kod od mowienia, na podstawie prologowego lukasza
 
 import Control.Monad.State
+import System.IO (hFlush, stdout)
 
 -- command definitions
 spojrz :: Object -> Game ()
 spojrz_specific :: Object -> Game ()
+odpowiedz :: Who -> Question -> Game ()
+odpowiedz_specific :: Who -> Question -> Answer -> Game ()
 
 -- story
 
@@ -24,6 +27,13 @@ spojrz obj = do
         then spojrz_specific obj
         else do
             narrate "Nie możesz teraz tego zobaczyć"
+
+odpowiedz who question = do
+    liftIO $ putStr "\n> " >> hFlush stdout
+    input <- liftIO getLine
+    if input `elem` ["p", "f", "w", "t", "n"]
+        then odpowiedz_specific who question input
+        else narrate "Nie możesz tak odpowiedzieć"
 
 spojrz_specific "schronisko" = do
     display "schronisko"
@@ -41,5 +51,51 @@ spojrz_specific "schronisko" = do
     make_visible "kominek"
     hide "schronisko"
 
+
 spojrz_specific "kominek" = do
-    narrate "widzisz kominek"
+    --display_fireplace,
+    narrate "Ogień w kominku mocno się pali, drewno musiało być dodane niedawno, całkiem tu gorąco."
+
+spojrz_specific "stol" = do
+    --display_table,
+    narrate "Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś."
+    narrate "słyszysz głos \x1b[1mbacy\x1b[0m siędzącego na krześle."
+    baca_say "Co tam tak sznupiesz, młody? Drewno wydaje się znajome?"
+    narrate "Nie masz pojęcia co to może być za drewno. Zastanawiasz się co odpowiedzieć."
+    write_tip "Odpowiedz mężczyźnie p/f/w"
+    write_dialogue_option "p" "Nie wiem, jestem z warszawy."
+    write_dialogue_option "f" "Od razu widać, że drzewo dębowe.(wymyślasz)"
+    write_dialogue_option "w" "A co tam drewno, ważne, że stolik ładny."
+    write_tip "Możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w)"
+    write_tip "Możesz odpowiedzieć za pomocą odpowiedz(<cel>, <odpowiedź>)"
+    odpowiedz "baca" "sznupanie"
+    --assert(looking(stol)),
+    hide "stol"
+
+spojrz_specific "mezczyzna" = do
+    --display_baca1,
+    maybeAns <- how_answered "baca" "sznupanie"
+    case maybeAns of
+        Just "p" -> baca_say "\x1b[1;31mWarszawiak w górach? W taką pogodę? Zaskakjące... w każdym razie witoj w moim schronisku, jestem Baca."
+        Just "f" -> baca_say "Na drzewach może się nie znosz, ale widzę, że dałeś radę nas ugościć.. i to w taką pogodę. Jestem Baca, witom."
+        Just "w" -> baca_say "Witoj, jestem Baca. Rozgość się..."
+        Nothing  -> baca_say "Ło, prawie cię nie zauważyłem. Jestem Baca, witoj w moim schronisku"
+    hide "mezczyzna"
+    narrate "Baca jest starszym mężczyzną o długich, ciemnych włosach, jego sylwetka jest wyjątkowo muskularna jak na jego wiek. Musi tu ciężko pracować."
+
+odpowiedz_specific "baca" "sznupanie" "p" = do
+    player_say ("Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy", "odpowiadasz")
+    narrate "Mężczyzna krzywo się na ciebie patrzy i momentalnie odwraca wzrok."
+    baca_hate "player"
+    add_answer "baca" "sznupanie" "p"
+
+odpowiedz_specific "baca" "sznupanie" "f" = do
+    player_say ("Stolik jest niezwykle solidny, od razu widać że to dąb", "odpowiadasz z przekonaniem")
+    baca_say ("Jaki dąb, widziałeś gdzieś tu bęby? To stara dobra sosna.", "odpowiada mężczyzna i przewraca oczami")
+    add_answer "baca" "sznupanie" "f"
+
+odpowiedz_specific "baca" "sznupanie" "w" = do
+    player_say ("Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!", "odpowiadasz")
+    baca_say ("Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata.", "opowiada mężczyzna")
+    add_answer "baca" "sznupanie" "w"
+

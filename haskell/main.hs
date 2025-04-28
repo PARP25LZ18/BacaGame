@@ -2,7 +2,8 @@ import Game
 import Story
 import Control.Monad.State
 import qualified Data.Set as Set
-import System.IO (hFlush, stdout)
+import System.IO (hSetEncoding, stdout, stdin, hFlush)
+import GHC.IO.Encoding (utf8)
 
 gameLoop :: Game ()
 gameLoop = do
@@ -24,6 +25,8 @@ initialState = GameState
 
 main :: IO ()
 main = do
+    hSetEncoding stdout utf8
+    hSetEncoding stdin utf8
     putStrLn "\x1b[31m░▒▓███████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░ ░▒▓██████▓▒░ \x1b[32m       ░▒▓██████▓▒░ ░▒▓██████▓▒░░▒▓██████████████▓▒░░▒▓████████▓▒░\x1b[0m "
     putStrLn "\x1b[31m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░\x1b[32m      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░       \x1b[0m "
     putStrLn "\x1b[31m░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░\x1b[32m      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░       \x1b[0m "

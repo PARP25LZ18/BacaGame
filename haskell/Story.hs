@@ -3,6 +3,8 @@
     Tutaj cała historia, każde polecenie powinno działać już podobnie do tego w prologu
     Nie robiłem jeszcze odpowiedzi, trzeba bedzie dodac w game state
 -}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use camelCase" #-}
 
 module Story where
 

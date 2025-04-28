@@ -3,8 +3,6 @@
     Tutaj cała historia, każde polecenie powinno działać już podobnie do tego w prologu
     Nie robiłem jeszcze odpowiedzi, trzeba bedzie dodac w game state
 -}
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use camelCase" #-}
 
 module Story where
 
@@ -22,6 +20,10 @@ odpowiedz :: Who -> Question -> Game ()
 odpowiedz_specific :: Who -> Question -> Answer -> Game ()
 
 -- story
+
+------------------------------------------------------------
+------------------------ SPOJRZ ---------------------------- 
+------------------------------------------------------------
 
 spojrz obj = do
     visible <- can_see obj
@@ -52,14 +54,13 @@ spojrz_specific "schronisko" = do
     make_visible "mezczyzna"
     make_visible "kominek"
     hide "schronisko"
-
-
+    
 spojrz_specific "kominek" = do
-    --display_fireplace,
+    display "fireplace"
     narrate "Ogień w kominku mocno się pali, drewno musiało być dodane niedawno, całkiem tu gorąco."
 
 spojrz_specific "stol" = do
-    --display_table,
+    display "table"
     narrate "Stół jest zrobiony z silnego drewna, wygląda na lokalny wytwór. Nigdy wcześniej takiego nie widziałeś."
     narrate "słyszysz głos \x1b[1mbacy\x1b[0m siędzącego na krześle."
     baca_say "Co tam tak sznupiesz, młody? Drewno wydaje się znajome?"
@@ -75,7 +76,7 @@ spojrz_specific "stol" = do
     hide "stol"
 
 spojrz_specific "mezczyzna" = do
-    --display_baca1,
+    display "baca1"
     maybeAns <- how_answered "baca" "sznupanie"
     case maybeAns of
         Just "p" -> baca_say "\x1b[1;31mWarszawiak w górach? W taką pogodę? Zaskakjące... w każdym razie witoj w moim schronisku, jestem Baca."
@@ -84,6 +85,26 @@ spojrz_specific "mezczyzna" = do
         Nothing  -> baca_say "Ło, prawie cię nie zauważyłem. Jestem Baca, witoj w moim schronisku"
     hide "mezczyzna"
     narrate "Baca jest starszym mężczyzną o długich, ciemnych włosach, jego sylwetka jest wyjątkowo muskularna jak na jego wiek. Musi tu ciężko pracować."
+
+
+-- spojrz_specific "okienko" = do
+--     display "karolina"
+--     not answered "karolina" "pokoj" "n"
+--     karolina_say ("Hej! Jestem Karolina!", "słyszysz głos zza okienka")
+--     karolina_say "Kuchnię niestety mamy już zamkniętą... ale pewnie chciałbyś wziąć pokój na noc?"
+--     karolina_say "z resztą co ja gadam... w takich warunkach nikt normalny nie wracałby do miasta..."
+--     narrate "Słyszysz brzdęk kluczy..."
+--     karolina_say "Proszę! numer 32!"
+--     karolina_say "Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!"
+--     player_say ("Dziękuję", "odpowiadasz i zabierasz klucz")
+--     karolina_say "Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?"
+--     karolina_continue_dialog_options
+--     write_tip("(t - skończ intro, n - zostań)")
+--     let ans = odpowiedz "karolina, pokoj)), !" "nl."
+
+------------------------------------------------------------
+----------------------- ODPOWIEDZ -------------------------- 
+------------------------------------------------------------
 
 odpowiedz_specific "baca" "sznupanie" "p" = do
     player_say ("Nigdy nie widziałem takiego drzewa proszę pana, jestem z Warszawy", "odpowiadasz")
@@ -100,4 +121,5 @@ odpowiedz_specific "baca" "sznupanie" "w" = do
     player_say ("Co tam rodzaj drewna, grunt że wygląda naprawdę dobrze!", "odpowiadasz")
     baca_say ("Ach, dziękuję. Sam go zrobiłem, ze starej sosny co się pod izbą zwaliła zeszłego lata.", "opowiada mężczyzna")
     add_answer "baca" "sznupanie" "w"
+
 

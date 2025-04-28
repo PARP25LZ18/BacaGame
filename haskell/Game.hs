@@ -8,6 +8,7 @@ module Game
     , lvo
     , kacper_hate
     , baca_hate
+    , do_baca_hate
     , Object
     , Who
     , Question
@@ -73,6 +74,11 @@ add_answer who question answer = modify $ \gs ->
 baca_hate :: Who -> Game ()
 baca_hate who = modify $ \gs ->
     gs { bacaHates = who  }
+
+do_baca_hate :: Who -> Game Bool
+do_baca_hate hated = do
+    gs <- get
+    return $ bacaHates gs == hated
 
 kacper_hate :: Who -> Game ()
 kacper_hate who = modify $ \gs ->

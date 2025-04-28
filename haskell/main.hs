@@ -12,6 +12,7 @@ gameLoop = do
   case words input of
     ["spojrz", obj] -> spojrz obj >> gameLoop
     ["lvo"] -> lvo >> gameLoop
+    ["start_story"] -> start_story >> gameLoop
     _ -> liftIO (putStrLn "Nie rozumiem tej komendy 😕") >> gameLoop
 
 initialState :: GameState

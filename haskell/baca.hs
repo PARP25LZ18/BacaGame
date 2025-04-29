@@ -713,7 +713,6 @@ spojrz_specific "ciupaga" = do
     player_think ("WOW - wygląda nieźle", "myślisz sobie")
 
 
-
 -- GÓRA
 
 spojrz_specific "gora" = do
@@ -766,7 +765,6 @@ spojrz_specific "aktowka_kacpra" = do
     narrate "..."
     narrate "Nie pośmieje się za długo."
     assert(looked(aktowka_kacpra)), !.
-
 
 show_map :-
     exploration_stage,
@@ -945,8 +943,6 @@ odpowiedz_specific "baca" "n" = do
 -- ----------------------------------------------------------------------------- %
 --                                    ENDINGS                                   %
 -- ----------------------------------------------------------------------------- %
-
-
 
 oskarz(baca) :-
     can_accuse,

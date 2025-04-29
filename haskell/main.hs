@@ -13,11 +13,16 @@ gameLoop = do
     ["spojrz", obj] -> spojrz obj >> gameLoop
     ["lvo"] -> lvo >> gameLoop
     ["start_story"] -> start_story >> gameLoop
+    ["show_map"] -> show_map >> gameLoop
+    ["rozpocznij_eksploracje"] -> rozpocznij_eksploracje >> gameLoop
+    ["oskarz_baca"] -> oskarz_baca >> gameLoop
+    ["oskarz_kacper"] -> oskarz_kacper >> gameLoop
     _ -> liftIO (putStrLn "Nie rozumiem tej komendy 😕") >> gameLoop
 
 initialState :: GameState
 initialState = GameState
    { visibleObjects = Set.fromList ["schronisko"]
+   , lookedObjects  = Set.fromList []
    , answers        = Set.empty
    , bacaHates      = ""
    , kacperHates    = ""

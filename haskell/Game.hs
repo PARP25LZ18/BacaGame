@@ -13,7 +13,13 @@ module Game
     , do_baca_hate
     , looked
     , did_look
+    , get_possible_answers
+    , set_possible_answers
+    , clear_possible_answers
+    , set_stage
+    , get_stage
     , Object
+    , Stage(..)
     , Who
     , Question
     , Answer
@@ -26,6 +32,7 @@ import Say
 import Control.Monad.State
 import qualified Data.Set as Set
 import Data.List (isPrefixOf)
+import Distribution.Compat.Lens (set)
 
 type Object = String
 type Who = String
@@ -36,17 +43,47 @@ safeHead :: [a] -> Maybe a
 safeHead [] = Nothing
 safeHead (x:_) = Just x
 
+data Stage = NotStarted | Introduction | MainStory | Exploration | Accusing | Ending
+    deriving (Eq, Show)
+
 -- TODO: dodac tutaj reszte zmiennych, baca_hates, odpowiedzi, pytania itd
 data GameState = GameState
-    { visibleObjects :: Set.Set Object
-    , lookedObjects  :: Set.Set Object
-    , answers        :: Set.Set (Who, Question, Answer)
-    , bacaHates      :: Who
-    , kacperHates    :: Who
-    , atIntroduction :: Bool
+    { visibleObjects  :: Set.Set Object
+    , lookedObjects   :: Set.Set Object
+    , possibleAnswers :: [Answer]
+    , answers         :: Set.Set (Who, Question, Answer)
+    , bacaHates       :: Who
+    , kacperHates     :: Who
+    , atIntroduction  :: Bool
+    , gameStarted     :: Bool
+    , currentStage    :: Stage
     }
 
 type Game = StateT GameState IO
+
+set_stage :: Stage -> Game ()
+set_stage stage = do
+    gs <- get
+    put $ gs { currentStage = stage }
+
+get_stage :: Game Stage
+get_stage = gets currentStage
+
+get_possible_answers :: Game [Answer]
+get_possible_answers = do
+    gs <- get
+    let answers = possibleAnswers gs
+    return answers
+
+set_possible_answers :: [Answer] -> Game ()
+set_possible_answers answers = do
+    gs <- get
+    put $ gs { possibleAnswers = answers }
+
+clear_possible_answers :: Game ()
+clear_possible_answers = do
+    gs <- get
+    put $ gs { possibleAnswers = [] }
 
 can_see :: Object -> Game Bool
 can_see obj = do
@@ -115,3 +152,12 @@ lvo = do
         else do
             liftIO $ putStrLn "Możesz spojrzeć na:"
             mapM_ (liftIO . putStrLn . ("- " ++)) (Set.toList objs)
+
+handle_start :: Game ()
+handle_start = do
+    started <- gets gameStarted
+    if started
+        then liftIO $ putStrLn "Gra już się rozpoczęła."
+        else do
+            modify $ \gs -> gs { gameStarted = True }
+            liftIO $ putStrLn "Rozpoczęto grę."

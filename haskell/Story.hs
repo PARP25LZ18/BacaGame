@@ -12,8 +12,11 @@ import Say  -- kod od mowienia, na podstawie prologowego lukasza
 
 import Control.Monad.State
 import System.IO (hFlush, stdout)
+import Text.XHtml (clear)
+import Distribution.Compat.Lens (set)
 
 -- command definitions
+start_game :: Game()
 spojrz :: Object -> Game ()
 spojrz_specific :: Object -> Game ()
 odpowiedz :: Who -> Question -> Game ()
@@ -42,11 +45,23 @@ spojrz obj = do
 odpowiedz who question = do
     liftIO $ putStr "\n> " >> hFlush stdout
     input <- liftIO getLine
-    if input `elem` ["p", "f", "w", "t", "n"]
-        then odpowiedz_specific who question input
-        else narrate "Nie możesz tak odpowiedzieć"
+    possible_answers <- get_possible_answers
+    if input `elem` possible_answers
+        then do 
+            odpowiedz_specific who question input
+            clear_possible_answers
+        else do 
+            narrate "Nie możesz tak odpowiedzieć, spróbuj jeszcze raz."
+            odpowiedz who question
 
 ---------- STAGE 1 ----------
+start_game = do
+    set_stage Introduction
+    narrate "Była to zimna grudniowa noc, wybrałeś się w Tatry..."
+    narrate "Po 5 godzinach wchodzenia pod górę, wreszcie widzisz przed sobą \x1b[1mschronisko\x1b[0m"
+    write_tip "Spróbuj \x1b[1mspojrzeć\x1b[22m\x1b[2m na \x1b[1mschronisko\x1b[0m"
+    make_visible "schronisko"
+
 
 spojrz_specific "schronisko" = do
     display "schronisko"
@@ -63,8 +78,6 @@ spojrz_specific "schronisko" = do
     make_visible "mezczyzna"
     make_visible "kominek"
     hide "schronisko"
-    -- DEBUG MAKE VISIBLE, DELETE LATER --
-    make_visible "kacper"
     --------------------------------------
     
 spojrz_specific "kominek" = do
@@ -83,6 +96,7 @@ spojrz_specific "mebel" = do
     write_dialogue_option "w" "A co tam drewno, ważne, że stolik ładny."
     write_tip "Możesz odpowiadać na pytania PRAWDZIWIE (p), FAŁSZYWIE (f) lub WYMIJAJĄCO (w)"
     write_tip "Możesz odpowiedzieć za pomocą odpowiedz(<cel>, <odpowiedź>)"
+    set_possible_answers ["p", "f", "w"]
     odpowiedz "baca" "sznupanie"
     hide "mebel"
 
@@ -111,8 +125,10 @@ spojrz_specific "okienko" = do
                         karolina_say "Mamy dzisiaj tylko jednego innego gościa - więc powinieneś mieć spokojną noc!"
                         player_say ("Dziękuję", "odpowiadasz i zabierasz klucz")
     karolina_say "Pokazać ci jak dojść do pokoju? Czy chcesz jeszcze się rozejrzeć?"
-    write_tip("(t - skończ intro, n - zostań)")
+    write_tip "(t - skończ intro, n - zostań)"
+    set_possible_answers ["t", "n"]
     odpowiedz "karolina" "pokoj"
+    clear_possible_answers
 
 spojrz_specific "kompot" = do
     display "compote"
@@ -134,19 +150,17 @@ spojrz_specific "obiekt" = do
     make_visible "osoba"
 
 spojrz_specific "baca" = do
-    display "baca2"
-    narrate "Baca przybiega ze złością w oczasch"
-    baca_say "KTO W MOJEJ IZBIE PO NOCY ŁOBUZI?!"
-    narrate "Jego oczy od razu spadają z ciebie na leżącą obok Karolinę"
-    baca_say "Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać!"
-    narrate "Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie."
-    baca_say "Łoo pierunie! A cóż to sie porobiło?!"
-    write_tip "Odpowiedz bacy p/f/w) "
-    write_dialogue_option "p" "Zszedłem i Karolina już tu leżała"
-    write_dialogue_option "f" "To on już tu był (wskazujesz na gościa stojącego obok)."
-    write_dialogue_option "w" "Przecież zbiegłem razem z wami."
-    hide "baca"
-    odpowiedz "baca" "cialo"
+    stage <- get_stage
+    case stage of 
+        MainStory -> do
+            spojrz_specific_baca_main_story
+        Exploration -> do
+            display "baca_smoking"
+            narrate "Baca dalej siedzi przy stole - chyba ból jeszcze go nie opuścił. Pali fajkę próbując go przeczekać."
+        _ -> do
+            narrate "TODO: catch_all_spojrz_baca"
+
+
 
 spojrz_specific "osoba" = do
     display "kacper1"
@@ -159,23 +173,24 @@ spojrz_specific "osoba" = do
     narrate "odpowiedz:"
     write_dialogue_option "t" "Tu nie ma zasięgu."
     write_dialogue_option "n" "Kocham prawo!"
+    set_possible_answers ["t", "n"]
     hide "osoba"
     odpowiedz "kacper" "cialo"
 
 ---------- STAGE 2 ----------
 
 spojrz_specific "stol" = do
-    narrate "Zasiadasz do stołu z Bacą i Kacprem. Ogień w kominku już się dopala..."
-    narrate "Przed tobą stoi najprawdopodobniej ostatni \x1b[1mdzban\x1b[0m słynnego kompotu Karoliny."
-    narrate "Zauważasz, że Kacper trzyma ręce pod stołem i nerwowo spogląda naprzemiennie na ciebie i na Bacę."
-    narrate "Baca z kolei, wydaje się spokojny, spogląda na Ciebie oraz Kacpra z wyższością... do tego stopnia, że zaczynasz drugi raz zastanawiać się, czy to nie ty zabiłeś Karolinę..."
-    make_visible "dzban"
-    hide "stol"
+    stage <- get_stage
+    case stage of
+        MainStory -> spojrz_specific_stol_main_story
+        Exploration -> spojrz_specific_stol_exploration
+        _ -> narrate "TODO: catch_all_spojrz_stol"
 
 spojrz_specific "dzban" = do
     narrate "Nalewasz kompot do szklanki i szybko pochłaniasz jej zawartość."
     player_think ("Wśród nich jest morderca. Muszę dowiedzieć się kto nim jest. No i zdobyć na to jakiś dowód...", "myślisz sobie")
     narrate "Mija dłuższa chwila milcznia - dociera do ciebie, że musisz ją przełamać - inaczej będziecie trwać w impasie."
+    display "player_talking"
     player_say "Posłuchajcie. To nie ja zabiłem Karolinę. Wczoraj, kiedy tu przyjechałem, byłem padnięty."
     player_say "Zameldowałem się tu i od razu położyłem się spać. Poza tym... Mój boże! Zabić człowieka??!"
     player_say ("I to taką miłą osobę, w życiu bym tego nie zrobił!", "przerywasz na moment aby złapać oddech")
@@ -194,13 +209,13 @@ spojrz_specific "dzban" = do
     baca_say ("Jo też sie rozejrzu.", "powiedział baca podnosząc się z krzesła")
     baca_say ("Ahhhh", "westchnął")
     baca_say "Coś mnie w krzyżu łupi. Zacznijcie sami, jo do was dołączę późnij."
-    write_info("Za chwilę przejdziesz do kolejnej fazy gry, w której będziesz rozglądał się za poszlakami")
-    write_tip "Możesz do niej przejść poleceniem \x1b[1mrozpocznij_eksploracje\x1b[0m."
     hide "dzban"
+    rozpocznij_eksploracje
 
 -- Kuchnia
 
 spojrz_specific "kuchnia" = do
+    hide_all
     make_visible "baca"
     make_visible "lodowka"
     make_visible "zlew"
@@ -208,7 +223,7 @@ spojrz_specific "kuchnia" = do
     make_visible "salon"
     narrate "Kuchnia to niewielkie, całkiem przytulne miejsce. W rogu stoi stara \x1b[1mlodówka\x1b[0m, cicho bucząca."
     narrate "Obok \x1b[1mlodówki\x1b[0m znajduje się kuchenny blat, a na nim \x1b[1mzlew\x1b[0m. Na środku pomieszczenia znajduje się"
-    narrate "drewniany \x1b[1mstol\x1b[0m, przy którym siedzi \x1b[1mgospodarz\x1b[0m. Tuż obok jest przejście do \x1b[1msalonu\x1b[1m."
+    narrate "drewniany \x1b[1mstol\x1b[0m, przy którym siedzi \x1b[1mbaca\x1b[0m. Tuż obok jest przejście do \x1b[1msalonu\x1b[0m."
 
 spojrz_specific "zlew" = do
     display "sink"
@@ -228,17 +243,6 @@ spojrz_specific "lodowka" = do
     display "fridge"
     narrate "Lodówka jest stara, zwyczajna, a jej biała farba w kilku miejscach zaczyna się łuszczyć. Na uchwycie zwisają kuchenne ścierki."
     narrate "Otwierasz drzwiczki - lekko skrzypią. W środku są powidła, kiełbasa, smalec i jajka - nie ma tu nic ciekawego"
-
-spojrz_specific "gospodarz" = do
-    display "baca_smoking"
-    narrate "Baca dalej siedzi przy stole - chyba ból jeszcze go nie opuścił. Pali fajkę próbując go przeczekać."
-
-spojrz_specific "stol" = do
-    write_info("Spojrzenie na stół będzie przeniesie cie do następnego etapu gry. Nie będziesz mógł już eksplorować")
-    write_info("Czy jesteś pewny, że chcesz przejść dalej?")
-    write_dialogue_option "t" "Tak, chcę przejść dalej."
-    write_dialogue_option "n" "Nie, chcę się jescze rozejrzeć."
-    odpowiedz "game" "final_stage"
 
 -- SALON
 
@@ -262,7 +266,7 @@ spojrz_specific "cialo" = do
     narrate "Ciało Karoliny leży na drewnianej podłodze, otoczona ciemniejącą kałużą krwi. Jej oczy są szeroko otwarte,"
     narrate "jakby w ostatnich chwilach próbowała zrozumieć co się stało. Twarz zastygła w wyrazie bólu i zaskoczneia."
     narrate "Na jej swetrze zauważasz 3 głębokie rany. Ciemne plamy krwi rozlały się wokół nich, wsiąkając w materiał."
-    player_think ("Wygląda mi to na rany po nożu .", "wnioskujesz")
+    player_think ("Wygląda mi to na rany po nożu.", "wnioskujesz")
 
 spojrz_specific "przedsionek" = do
     display "entryway"
@@ -289,7 +293,9 @@ spojrz_specific "kacper" = do
             write_tip "Odpowiedz Kacprowi t/n"
             write_dialogue_option "t" "Pewnie."
             write_dialogue_option "n" "Teraz nie mam na to czasu - chcę się rozejrzeć"
+            set_possible_answers ["t", "n"]
             odpowiedz "kacper" "kominek"
+            clear_possible_answers
 
 -- PIWNICA
 
@@ -399,12 +405,12 @@ spojrz_specific "gora" = do
 
 spojrz_specific "twoj_pokoj" = do
     didLook <- did_look "twoj_plecak"
-    if didLook == True
-        then do
+    if didLook
+        then narrate "Ponownie wchodzisz do swojego pokoju i nie ma tu już nic ciekawego. Momentalnie wychodzisz."
+        else do
             narrate "Wchodzisz do swojego pokoju. Zastanawiasz się w sumie po co to zrobiłeś, przecież raczej nic tu nie znajdziesz"
             narrate "Jednak dziwi cie to, że \x1b[1mtwój plecak\x1b[0m zdaje się być inaczej ułożony, niż go odkładałeś."
             make_visible "twoj_plecak"
-        else narrate "Ponownie wchodzisz do swojego pokoju i nie ma tu już nic ciekawego. Momentalnie wychodzisz."
 
 spojrz_specific "twoj_plecak" = do
     narrate "Nie dawało ci to spokoju - coś z tym plecakiem zdaje się być nie tak. Przeglądasz kieszonki - nic wszystko się zgadza."
@@ -412,7 +418,7 @@ spojrz_specific "twoj_plecak" = do
     narrate "Widzisz opakowany w torebkę foliową nóż, ze śladami krwi."
     player_think ("Ktoś próbuje mnie wrobić! Muszę się tego jakoś pozbyć.", "myślisz sobie")
     narrate "Jak najciszej otwierasz okno i wyrzucasz przez nie nóż z całej siły."
-    write_info("Gratulacje pozbyłeś się dowodu na siebie!")
+    write_info "Gratulacje pozbyłeś się dowodu na siebie!"
     hide "twoj_plecak"
     looked "twoj_plecak"
 
@@ -449,16 +455,21 @@ spojrz_specific "znalezisko" = do
     write_tip "Odpowiedz Bacy"
     write_dialogue_option "t" "Tym razem wygrałeś... Kacper... już wychodzę... ale wiedz, że to nie ja ją zabiłem, Baco."
     write_dialogue_option "n" "Nie wyjdę z tego pomieszczenia dopóki nie udowodnię wam swoją niewinność!"
+    set_possible_answers ["t", "n"]
+    hide "znalezisko"
     odpowiedz "baca" "wypad"
+    clear_possible_answers
 
 --- Endings ---
 
 spojrz_specific "dwor" = do
+    hide_all
     display "bad_ending"
     narrate "Nie udało się złapać mordercy, na domiar złego musisz szukać innego schornienia"
     narrate "Śpiesz się, robi się ciemno..."
 
 spojrz_specific "piecyk" = do
+    hide_all
     display "shady_ending"
     baca_say ("No młody... mamy go z głowy, teraz słuchaj mnie uważnie", "powiedział ze spokojem baca po czym usiadł przy piecyku")
     baca_say ("Jesteśmy tu tylko we dwóch. Sprzątniesz teraz ciało dziołchy i nikomu o niczym tutaj nie wspomnisz", "powiedział patrząc ci w oczy baca\x1b[0m")
@@ -466,6 +477,7 @@ spojrz_specific "piecyk" = do
     narrate "Słowa bacy z pewnością nie napawają cię optymizmem... No cóż, przynajmniej nie ma tu już Kacpra"
     
 spojrz_specific "podloga" = do
+    hide_all
     display "good_ending"
     narrate "Podnosisz Kacpra z podłogi. Baca dalej leży nieprzytomny, stwierdziliście że musicie wezwać tu policję... lub przynajmniej GOPR."
     narrate "Wybiegacie z izby i kierujecie się w stronę najbliżego szlaku."
@@ -487,9 +499,11 @@ end_intro = do
     narrate "Studia powoli dobiegają końca. Jeszcze kilka miesięcy i zostaniesz rzucony w dorosłość."
     narrate "Pracy jest więcej niż kiedykolwiek, a odpowiedzialność zaczyna ciążyć jak plecak, który niosłeś przez całą drogę tutaj."
     narrate "Zrzucasz go z siebie... Wzdychasz ciężko i padasz na materac. Niemal natychmiast zasypiasz..."
-    write_tip "Użyj słowa \x1b[1mstart_story\x1b[0m\x1b[2m aby rozpocząć następny rozdział."
+    narrate ". . ."
+    start_story
 
 start_story = do
+    set_stage MainStory
     liftIO $ putStr "\n> " >> hFlush stdout
     narrate "Budzisz się. Spoglądasz na zegarek. 1:12."
     narrate "Czujesz suchość w ustach, zmęczenie po przyjściu do schroniska spowodowało, że zapomniałeś, że od dawna nic już nie piłeś..."
@@ -500,11 +514,11 @@ start_story = do
 all_dialogued = do
     baca_say ("Dobra, siadojcie do stołu. Nikt stąd nie wyjdzie dopóki nie wyłonimy mordercy.", "powiedział Baca i postawił na \x1b[1mstole\x1b[0m wielki dzban kompotu")
     kacper_say ("Tak!! Czekałem na ten moment całe życie! Moje umiejętności społecznej dedukcji zakończą tą sprawę w sekundę!", "wtrąca Kacper i siadając do \x1b[1mstołu\x1b[0m potyka się o jego nogę.")
-    narrate("Baca spogląda na Kacpra z zażenowaniem")
+    narrate "Baca spogląda na Kacpra z zażenowaniem"
     bacaHatesPlayer <- do_baca_hate "player"
-    if bacaHatesPlayer == True
+    if bacaHatesPlayer
         then baca_say "A ty czego się patrzysz!?"
-        else narrate("Baca patrzy ci prosto w oczy.")
+        else narrate "Baca patrzy ci prosto w oczy."
     narrate "Momentalnie odwracasz spojrzenie."
     hide "kompot"
     make_visible "stol"
@@ -517,19 +531,25 @@ finish_body_question = do
         else return()
 
 rozpocznij_eksploracje = do
+    set_stage Exploration
     narrate "Wstajesz od stołu. Chcesz się rozejrzeć"
-    write_info("Możesz teraz eksplorować schronisko, aby zakończyć eksploracje i skonfrontować znaleziska dostań się do kuchni i spojrz na stol.")
-    write_info("Przejdziesz wtedy do finalnej rozmowy z Bacą i Kacprem rzucając swoje oskarżenie i argumentując je.")
-    write_tip "Po mapie poruszasz się używając komendy \x1b[1mspojrz\x1b[0m, przydatna okazać się może komenda \x1b[1mlvo\x1b[0m - listująca widoczne obiekty"
+    write_info "Możesz teraz eksplorować schronisko, aby zakończyć eksploracje i skonfrontować znaleziska dostań się do kuchni i spojrz na stol."
+    write_info "Przejdziesz wtedy do finalnej rozmowy z Bacą i Kacprem rzucając swoje oskarżenie i argumentując je."
+    write_tip "Po mapie poruszasz się używając komendy \x1b[1mspojrz\x1b[22m\x1b[2m, przydatna okazać się może komenda \x1b[1mlvo\x1b[22m\x1b[2m - listująca widoczne obiekty"
     write_tip "Aby wyświetlić mapę użyj komendy show_map."
     make_visible "kuchnia"
 
 show_map = do
-    narrate "Wstajesz od stołu. Chcesz się rozejrzeć"
-    display "ground_floor_map"
+    stage <- get_stage
+    case stage of 
+        Exploration -> do
+            display "ground_floor_map"
+        _ -> do
+            narrate "Nie możesz teraz tego zrobić. Przeglądanie mapy jest możliwe tylko w fazie eksploracji."
 
 last_stage = do
     hide_all
+
     bacaHatesPlayer <- do_baca_hate "player"
     didLookAtBackPack <- did_look "twoj_plecak"
     answeredKacperKominek <- how_answered "kacper" "kominek"
@@ -576,13 +596,10 @@ last_stage = do
                     _ -> do
                         baca_say "I jak młodzi? Znaleźiśta coś?"
 
-
-
-    write_info("Jesteś w ostatniej fazie gry. Możesz skonfrontować informacje odkryte w fazie eksploracji.")
-    write_info("Dostajesz również dostęp do komendy oskarż, która spowoduje wyprowadzenie oskarżenia w stronę bacy lub kacpra")
-    write_info("Sukces twojego oskarżenia zależy od odkrytych informacji, ale też od relacji ustanowionych z innymi osobami.")
-    finale_display_possible_options
-    odpowiedz "baca" "odkryte_informacje"
+                write_info "Jesteś w ostatniej fazie gry. Możesz skonfrontować informacje odkryte w fazie eksploracji."
+                write_info "Dostajesz również dostęp do komendy oskarż, która spowoduje wyprowadzenie oskarżenia w stronę bacy lub kacpra"
+                write_info "Sukces twojego oskarżenia zależy od odkrytych informacji, ale też od relacji ustanowionych z innymi osobami."
+                finale_display_possible_options
 
 finale_display_possible_options = do
     lookedAtLaptop <- did_look "laptop"
@@ -594,6 +611,15 @@ finale_display_possible_options = do
     answeredB <- answered "baca" "odkryte_informacje" "b"
     answeredC <- answered "baca" "odkryte_informacje" "c"
     answeredD <- answered "baca" "odkryte_informacje" "d"
+
+    let possibleAnswers = concat 
+            [ ["a" | lookedAtLaptop && not answeredA]
+            , ["b" | lookedAtPapiery && not answeredB]
+            , ["c" | lookedAtZeszyt && not answeredC]
+            , ["d" | lookedAtAktowkaKacpra && not answeredD]
+            , ["oskarz baca"]
+            , ["oskarz kacper"]
+            ]
 
     if lookedAtLaptop && not answeredA
         then write_dialogue_option "a" "Baca nie płacił Karolinie i miała to z nim skonfrontować."
@@ -611,9 +637,10 @@ finale_display_possible_options = do
         then write_dialogue_option "d" "Kacper ma w zeszycie wiersz, który sugeruje, że jest niestabilny psychicznie."
         else write_dialogue_option "-" "OPCJA NIEDOSTĘPNA"
     
-    write_info("Od teraz masz dostęp do polecenia: \x1b[1moskarz(baca/kacper)\x1b[0m")
-    write_info("Wywołanie polecenia spowoduje oskarżenie postaci o morderstwo i natychmiastowy koniec gry.")
-    write_info("W zależności od twoich relacji z postaciami, oskarżenie może mieć różny wynik")
+    write_info "Masz dostęp do polecenia: \x1b[1moskarz baca/kacper\x1b[0m"
+    write_info "Wywołanie polecenia spowoduje oskarżenie postaci o morderstwo i natychmiastowy koniec gry."
+    write_info "W zależności od twoich relacji z postaciami, oskarżenie może mieć różny wynik"
+    set_possible_answers possibleAnswers
     odpowiedz "baca" "odkryte_informacje"
 
 last_stage_more_clues = do
@@ -635,43 +662,38 @@ oskarz_kacper = do
         else ending_player
 
 bacaAccuseSuccess = do
-    maybeA <- how_answered "baca" "odkryte_informacje"
-    maybeB <- how_answered "baca" "odkryte_informacje"
-    maybeKominek <- how_answered "kacper" "kominek"
+    answeredA <- answered "baca" "odkryte_informacje" "a"
+    answeredB <- answered "baca" "odkryte_informacje" "b"
+    helpedKominek <- answered "kacper" "kominek" "t"
 
     hatesFromKacper <- do_kacper_hate "baca"
     hatesFromKacperToPlayer <- do_kacper_hate "player"
 
-    let a = maybeA == Just "a"
-        b = maybeB == Just "b"
-        kominek = maybeKominek == Just "t"
+    let score = sum
+            [ if answeredA then 1 else 0
+            , if answeredB then 1 else 0
+            , if helpedKominek then 1 else 0
+            , if hatesFromKacper then 1 else 0
+            , if hatesFromKacperToPlayer then -1 else 0
+            ]
 
-        base = 0
-        score1 = if a then base + 1 else base
-        score2 = if b then score1 + 1 else score1
-        score3 = if kominek then score2 + 1 else score2
-        score4 = if hatesFromKacper then score3 + 1 else score3
-        score5 = if hatesFromKacperToPlayer then score4 - 1 else score4
-
-    return (score5 >= 3)
+    return (score >= 3)
 
 kacperAccuseSuccess = do
-    maybeC <- how_answered "baca" "odkryte_informacje"
-    maybeD <- how_answered "baca" "odkryte_informacje"
+    answeredC <- answered "baca" "odkryte_informacje" "c"
+    answeredD <- answered "baca" "odkryte_informacje" "d"
 
     hatesFromBaca <- do_baca_hate "kacper"
     hatesFromBacaToPlayer <- do_baca_hate "player"
 
-    let c = maybeC == Just "c"
-        d = maybeD == Just "d"
+    let score = sum
+            [ if answeredC then 1 else 0
+            , if answeredD then 1 else 0
+            , if hatesFromBaca then 1 else 0
+            , if hatesFromBacaToPlayer then -1 else 0
+            ]
 
-        base = 0
-        score1 = if c then base + 1 else base
-        score2 = if d then score1 + 1 else score1
-        score3 = if hatesFromBaca then score2 + 1 else score2
-        score4 = if hatesFromBacaToPlayer then score3 - 1 else score3
-
-    return (score4 >= 2)
+    return (score >= 2) 
 
 
 --- Endings
@@ -731,10 +753,10 @@ odpowiedz_specific "baca" "sznupanie" "w" = do
 
 odpowiedz_specific "karolina" "pokoj" "n" = do
     add_answer "karolina" "pokoj" "n"
-    spojrz_specific "schronisko"
+    write_tip "Użyj komendy \x1b[1mlvo\x1b[22m\x1b[2m, aby wyświetlić widoczne obiekty"
 
 odpowiedz_specific "karolina" "pokoj" "t" = do
-    add_answer "karolina" "pokoj" "n"
+    add_answer "karolina" "pokoj" "t"
     end_intro
 
 --- Baca Ciało ---
@@ -755,7 +777,7 @@ odpowiedz_specific "baca" "cialo" "f" = do
     kacper_say ("Oszczerstwo!!!", "wykrzyczał w rekacji na twoje kłamstwo")
     add_answer "baca" "cialo" "f"
     hatesPlayer <- do_baca_hate "player"
-    if hatesPlayer == True
+    if hatesPlayer
         then baca_say ("Tyn z Warszawy i tyn z Warszawy, wszyscy siebie warci", "Baca nie wydaje się przekonany twoim wytłumaczeniem")
         else do
             baca_say ("Ja slyszał że on ze stolycy, tym nigdy nie wolno ufać", "dodał Baca")
@@ -792,6 +814,7 @@ odpowiedz_specific "kacper" "cialo" "n" = do
     write_dialogue_option "p" "Właściwie to studiuje informatykę."
     write_dialogue_option "f" "Eeee... Jestem na SWPSie."
     write_dialogue_option "w" "Jeszcze będzie czas na takie rozmowy, skupmy się na problemie."
+    set_possible_answers ["p", "f", "w"]
     odpowiedz "kacper" "uczelnia"
 
 --- Kacper Uczelnia ---
@@ -812,13 +835,13 @@ odpowiedz_specific "kacper" "uczelnia" "f" = do
 odpowiedz_specific "kacper" "uczelnia" "w" = do
     add_answer "kacper" "uczelnia" "w"
     player_say "Jeszcze będzie czas na takie rozmowy. Na razie skupmy się na problemie."
-    kacper_say("Co racja, to racja! Musimy rozwikłać zagadkę morderstwa!")
+    kacper_say "Co racja, to racja! Musimy rozwikłać zagadkę morderstwa!" 
     finish_body_question
 
 --- Game FinalStage
     
 odpowiedz_specific "game" "final_stage" "t" = do
-    spojrz "last_stage"
+    last_stage
 
 odpowiedz_specific "game" "final_stage" "n" = do
     narrate "Wróć tu, gdy będziesz gotowy przejść do następnego etapu. Powodzenia!"
@@ -881,6 +904,7 @@ odpowiedz_specific "baca" "odkryte_informacje" "c" = do
 
 odpowiedz_specific "baca" "odkryte_informacje" "d" = do
     bacaAnswered <- how_answered "baca" "odkryte_informacje"
+    add_answer "baca" "odkryte_informacje" "d"
     player_say "Kacper napisał dziwny wiersz, który może świadczyć, że jest niestabilny psychicznie."
     baca_say ("Przynieś no ten wiersz Kacper. Zobaczymy co żeś tam napisał", "powiedział")
     narrate "Kacper przyniósł wiersz i go przeczytał"
@@ -888,6 +912,15 @@ odpowiedz_specific "baca" "odkryte_informacje" "d" = do
         Just "c" -> baca_say "No powiedziałbym, żeś się na piśmie do czynu przyznał!"
         _   -> return ()
     last_stage_more_clues
+
+odpowiedz_specific "baca" "odkryte_informacje" "oskarz baca" = do
+    add_answer "baca" "odkryte_informacje" "oskarz baca"
+    oskarz_baca
+
+odpowiedz_specific "baca" "odkryte_informacje" "oskarz kacper" = do
+    add_answer "baca" "odkryte_informacje" "oskarz kacper"
+    oskarz_kacper
+
 
 --- Baca Wypad
 
@@ -905,3 +938,38 @@ odpowiedz_specific "baca" "wypad" "n" = do
     narrate "Chcesz wyjaśnić Bacy co się wydarzyło... ale przez ból nie jesteś w stanie wydobyć z siebie ani słowa..."
     narrate "Baca zauważa, że zaczynasz odzyskiwać przytomność... pewnym ruchem łapie za twoją koszulę i wyrzuca cię na \x1b[1mdwór\x1b[0m"
     make_visible "dwor"
+
+
+
+--- SPOJRZ SPECIFIC CONDITIONAL ON GAME STAGE HANDLERS
+spojrz_specific_baca_main_story = do
+    display "baca2"
+    narrate "Baca przybiega ze złością w oczasch"
+    baca_say "KTO W MOJEJ IZBIE PO NOCY ŁOBUZI?!"
+    narrate "Jego oczy od razu spadają z ciebie na leżącą obok Karolinę"
+    baca_say "Co za bałagan, tyle kompotu z suszu wylać, wstawaj dziołcha, ktoś to musi posprzątać!"
+    narrate "Karolina dalej leży bez ruchu, oczy bacy znowu wpatrują się w ciebie."
+    baca_say "Łoo pierunie! A cóż to sie porobiło?!"
+    write_tip "Odpowiedz bacy p/f/w) "
+    write_dialogue_option "p" "Zszedłem i Karolina już tu leżała"
+    write_dialogue_option "f" "To on już tu był (wskazujesz na gościa stojącego obok)."
+    write_dialogue_option "w" "Przecież zbiegłem razem z wami."
+    set_possible_answers ["p", "f", "w"]
+    hide "baca"
+    odpowiedz "baca" "cialo"
+
+spojrz_specific_stol_main_story = do
+    narrate "Zasiadasz do stołu z Bacą i Kacprem. Ogień w kominku już się dopala..."
+    narrate "Przed tobą stoi najprawdopodobniej ostatni \x1b[1mdzban\x1b[0m słynnego kompotu Karoliny."
+    narrate "Zauważasz, że Kacper trzyma ręce pod stołem i nerwowo spogląda naprzemiennie na ciebie i na Bacę."
+    narrate "Baca z kolei, wydaje się spokojny, spogląda na Ciebie oraz Kacpra z wyższością... do tego stopnia, że zaczynasz drugi raz zastanawiać się, czy to nie ty zabiłeś Karolinę..."
+    make_visible "dzban"
+    hide "stol"
+
+spojrz_specific_stol_exploration = do
+    write_info "Spojrzenie na stół będzie przeniesie cie do następnego etapu gry. Nie będziesz mógł już eksplorować"
+    write_info "Czy jesteś pewny, że chcesz przejść dalej?"
+    write_dialogue_option "t" "Tak, chcę przejść dalej."
+    write_dialogue_option "n" "Nie, chcę się jescze rozejrzeć."
+    set_possible_answers ["t", "n"]
+    odpowiedz "game" "final_stage"
